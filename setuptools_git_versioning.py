@@ -13,6 +13,7 @@ except ImportError:
 DEFAULT_TEMPLATE = "{tag}"  # type: str
 DEFAULT_DEV_TEMPLATE = "{tag}.dev{ccount}+git.{sha}"  # type: str
 DEFAULT_DIRTY_TEMPLATE = "{tag}.dev{ccount}+git.{sha}.dirty"  # type: str
+DEFAULT_STARTING_VERSION = '0.0.1'
 
 
 def _exec(cmd):  # type: (str) -> List[str]
@@ -72,16 +73,16 @@ def parse_config(dist, _, value):  # type: (Distribution, Any, Any) -> None
     if not isinstance(value, Mapping):
         raise DistutilsSetupError("Config in the wrong format")
 
-    template = value['template'] if 'template' in value else DEFAULT_TEMPLATE
-    dev_template = value['dev_template'] if 'dev_template' in value \
-        else DEFAULT_DEV_TEMPLATE
-    dirty_template = value['dirty_template'] if 'dirty_template' in value \
-        else DEFAULT_DIRTY_TEMPLATE
+    template = value.get('template', DEFAULT_TEMPLATE)
+    dev_template = value.get('dev_template', DEFAULT_DEV_TEMPLATE)
+    dirty_template = value.get('dirty_template', DEFAULT_DIRTY_TEMPLATE)
+    starting_version = value.get('starting_version', DEFAULT_STARTING_VERSION)
 
     version = version_from_git(
         template=template,
         dev_template=dev_template,
         dirty_template=dirty_template,
+        starting_version=starting_version,
     )
     dist.metadata.version = version
 
@@ -89,7 +90,8 @@ def parse_config(dist, _, value):  # type: (Distribution, Any, Any) -> None
 def version_from_git(template=DEFAULT_TEMPLATE,
                      dev_template=DEFAULT_DEV_TEMPLATE,
                      dirty_template=DEFAULT_DIRTY_TEMPLATE,
-                     ):  # type: (str, str, str) -> None
+                     starting_version=DEFAULT_STARTING_VERSION,
+                     ):  # type: (str, str, str, str) -> None
 
     # Check if PKG-INFO exists and return value in that if it does
     if os.path.exists('PKG-INFO'):
@@ -101,7 +103,7 @@ def version_from_git(template=DEFAULT_TEMPLATE,
 
     tag = get_tag()
     if tag is None:
-        raise Exception("Couldn't find tag to use.")
+        return starting_version
 
     dirty = is_dirty()
     tag_sha = get_sha(tag)
