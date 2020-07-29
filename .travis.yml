@@ -1,24 +1,27 @@
 language: python
 python:
-  - "3.7"
+- '3.7'
 install:
-  - pip install flake8
-script: 
-  - flake8 --count
-before_deploy: "python setup.py sdist bdist_wheel"
+- pip install flake8
+script:
+- flake8 --count
+before_deploy: python setup.py sdist bdist_wheel
 deploy:
   - provider: pypi
-    user: "__token__"
+    user: dolfinus
     password:
-      secure: "1PSWTFOHXIUJwHUXGHvHtzxKbiztnn0b5YMcojPvimCkOWywZrHPf+/ThQQCd3GcVhXpzsfKvxH7bnMBtXv9l5aXo0ufXrJQbam4OR9/OjVL/Yl0K+skglipQsf71PkzbGHURjwjhY3ARYIiX3vsYg+b5ta9V12IA3F3crSgbB0MkREIHDEV4MLGosEpPb2xDHvzNuaUWRc9gZbfAA8cVhKQy/6093ctKN1rsKAnk6YM4yHW/jvh4Dt466TBnSMrGYskefGDnRYeiPgt+FJNmCQ9xYI2qXaxFg79iLD0l+Q6ecBcnLBpYbbdJyd5fSiAwQmX61p9Tb31pVsyIdN5+1/2vmf4lciH6xINUnLg1hvA4ZY3yWToZjNLubo7jURW/jrSd2XDJQWL92s7u25xnmgfIqjKcyz5lNUVoq6Ig1uo9O2Uf2DBHniGRuzoHUGnduGV5zAN+68jv2KATFqScGtPTumBTfDlANEo/JHKLvfy0EpIR5hxuvj1X6OAaOrVUyDxtxStuCCZlNw9OBzxSq7K6cVUDtHmEbd5RvzhE5tboWviR0qCKJrK+t64/xEzw2U1pnpGfQfF9vLqMwT75qu2sUgR0TbdPIcblbQJQTGqONX/fTltstSuXBitIgjl7hmiq6/dbSjFcxBsqEGXuKRU6Up743CkROILwFretJw="
+      secure: I7xSC/V0Ob48x/OyMDX+r3ojFsZqEy4Gph0T5WyTVTgbEcDwI/nA3ZnRmSFM7dC9xbbN1lB1/mQ1pZcCAiCWIeSV3WHIjrUGGLunqFEXgDnbXFF8HsM9ZNKzrYt7407P4lz0NEX6SuD1yKTGv5MXtj23jMn/NsLtVTxgUZjbBjw3uNALoH1FKzRT/AETickghVLkPzrF6y7ov/6KThv6vSDMMxhHBUFJ+4uIaa8FoLBJFbKNsCbRjBLTZen4ud0VQr6SqMCwFuffcszPchqeyWec8/6dVe+v3ZbOOQIntecQynk2bapxolwCWNYyOjFQQ/NysP34G7N851YEATZGl+75cZhDxl4H7DJodedTs5vP7gura67zoTwKtIKLJgJnkEHUFGvQ5iTjrWsT7VElpddQUbBMhJM2yIpKG0RIeaPtuJP+gWFF5d1libaquiELpJ6iKsJia7yr2v45vIIGVvAYwrBNr3HlcnD5T+f97Z9+u2sibqnh7hCL7uwuzs+wsvewEh07VgnlHTc4W1LdvJO4ftatN9hcxeCEGz+gjWcykzzOWWBrYSv2AMmsmtiRJ1egEpynoPJxhx1/2WdqKi8GGG6cxocnG4wong635fqrMWtlUFkFYtSSlR+lYZOU7WXFeCuqexMx8Sn/0DKEF9rhbwDf4cDrRdgnPmIqkrc=
     on:
       tags: true
-    distributions: "sdist bdist_wheel"
+      distributions: sdist bdist_wheel
+      repo: dolfinus/setuptools-git-versioning
+    skip_cleanup: 'true'
   - provider: releases
     api_key:
-      secure: "QuH5WXrmNtbsLHtTwMz10tD+YlItKv16Gs1AsDsjAy2fVTufUarI6/HEtPm73N+xIXTScPgIEr1QLvAnGwAoYxm+i5KLuXasy0JCYFeKXXkE1oO77nCDHP9s2vN9/ptU14qDDG3TaE/FDSGa/83KNgCkpaDPHZaz5++peMYEReB1FQXHrueTBvwiFMNMSrFVGZvo3EuMbz9SwD0vJklNIAkrbaea/wRSktT3zX544/6eMt3j9Ntp7pJJ6gB/XJtHltgnvNT9p8SuSLfgRFEuS7jUDfbakvvAT9a5yvGwi8R6qhewq5vM8f8KiB6QmiHduQADFgQJ73XXfOqWFbwKz8H4V3LJDloSsEPfgXhlfT6LL6C2ZMcJ3PDPeXSgvX9xPo9ZYEr/t+eHr+ljI9tj/hlSm1AMMTJbrg8WUExWUQQj41F7azbhFQTSs4ZGAc8HXYp4XO4Y32ZuucyruF+EmnZDvbiLscHzLSuglGB5R9zpa+Dvs/RmBVbTZguVdtmAQRvFhjsgzTjWC774pvHMr/IlM+EqnjPV2lLMc58QCJmuadr923stxXpCobIu/Sf5QC75q8nesKPyZiGknCIEGfASOvYsNShxASFq0e6SkOLk4FpFbT1E6hZultxA64tSeDEhpzZTE6USJvHeF1ig8ZPRx0coqZStwj7fD9D5xEE="
+      secure: c5pZl7cYbwCK63923UdsJHKudrg/VE4hCosbg6SA5PpxRAusRu/gMmnSMB4KCUo6tiQZgDPOOtyLuqNpL5qVwLT6QAmzmr/CM+hYPl+zn2/bObGrnKkWvzurtZZgq8FUpS9+C7gwnHE3bZLQEDHdaaYmPoAFkhGDmDJ0MCX/J0ktr+IK4vwCJvc8ZjdnoLv5sw3XtOFjeO/B8kbCdGkSFJ/+YsPOpypdguCN+EMH5me5Vxiturq57mhPo3elDijHvsX06hmVeUATwOBFInXf3pummbC7rdqaJ4lrs/wReH4Ar0Vrjo1mAndB0MVKXhJ6nyHmsRLWVeI2crtTDqdnw29W2FHLVGiFWPNzNneZgRm1itgfKflzRtq7rM7439shixw5cNKI6EbhYtC2jiOBeK/I7zhQXa+cOK/H/PAumdy9e34HsElhHhGCFoINZYXzNW4AtVYzDl9GF1W4hXCbCB22h3V8sm1pGyywQ2cB80iLb4oRx9OdyWr/dbzlOim8u/lj0ORPMV70oRElHn4sCst35g5OP9goLlXpxHy0P9DzSwDe6mfZyB4/mXZ7lyI6RPgrN3A50dsIDoLMn06w2t4C4h37kGmU2VIBfu1lJR54YJQQViWeLaExid4/3jRajLKyB+KsS3+acwZwGnW5KYBKOg2QAdcsLfntGBKC4o0=
     file_glob: true
     file: dist/*
-    skip_cleanup: true
     on:
+      repo: dolfinus/setuptools-git-versioning
       tags: true
+    skip_cleanup: 'true'

@@ -1,15 +1,26 @@
-# setuptools-git-ver
+# setuptools-git-versioning
 
-[![PyPI version](https://badge.fury.io/py/setuptools-git-ver.svg)](https://badge.fury.io/py/setuptools-git-ver)
-[![Build Status](https://travis-ci.com/camas/setuptools-git-ver.svg?branch=master)](https://travis-ci.com/camas/setuptools-git-ver)
+[![PyPI version](https://badge.fury.io/py/setuptools-git-versioning.svg)](https://badge.fury.io/py/setuptools-git-versioning)
+[![Build Status](https://travis-ci.com/dolfinus/setuptools-git-versioning.svg?branch=master)](https://travis-ci.com/dolfinus/setuptools-git-versioning)
 
 Automatically set package version using git tag/hash
+
+## Compairing with other packages
+
+| Package/Function                                                                                    | Lastest release | Python2 support | Python3 support | PEP 440 compatible | Separated template for not tagged HEAD | Separated template for dirty run | Using functions outside setup.py |
+|:----------------------------------------------------------------------------------------------------|----------------:|:---------------:|:---------------:|:------------------:|:--------------------------------------:|:--------------------------------:|:--------------------------------:|
+| [setuptools-git-versioning](https://github.com/dolfinus/setuptools-git-versioning)                  |            2020 |        +        |        +        |         +          |                   +                    |                +                 |                +                 |
+| [setuptools-git-ver](https://github.com/camas/setuptools-git-ver) (Base package)                    |            2020 |        -        |        +        |         +          |                   +                    |                +                 |                -                 |
+| [even-better-setuptools-git-version](https://github.com/ktemkin/even-better-setuptools-git-version) |            2019 |        -        |        +        |         +          |                   -                    |                -                 |                +                 |
+| [better-setuptools-git-version](https://github.com/vivin/better-setuptools-git-version)             |            2018 |        -        |        +        |         +          |                   -                    |                -                 |                +                 |
+| [very-good-setuptools-git-version](https://github.com/Kautenja/very-good-setuptools-git-version)    |            2018 |        -        |        +        |         -          |                   -                    |                -                 |                +                 |
+| [setuptools-git-version](https://github.com/pyfidelity/setuptools-git-version)                      |            2018 |        +        |        +        |         -          |                   -                    |                -                 |                -                 |
 
 ## Installation
 
 No need.
 
-Adding `setup_requires=['setuptools-git-ver']` somewhere in `setup.py` will automatically download the latest version from PyPi and save it in the `.eggs` folder when `setup.py` is run.
+Adding `setup_requires=['setuptools-git-versioning']` somewhere in `setup.py` will automatically download the latest version from PyPi and save it in the `.eggs` folder when `setup.py` is run.
 
 ## Usage
 
@@ -20,7 +31,7 @@ setuptools.setup(
     ...
     version_config=True,
     ...
-    setup_requires=['setuptools-git-ver'],
+    setup_requires=['setuptools-git-versioning'],
     ...
 )
 ```
@@ -36,7 +47,7 @@ setuptools.setup(
         "dirty_template": "{tag}.dev{ccount}+git.{sha}.dirty"
     },
     ...
-    setup_requires=['setuptools-git-ver'],
+    setup_requires=['setuptools-git-versioning'],
     ...
 )
 ```
