@@ -22,8 +22,15 @@ def _exec(cmd): # type: (str) -> List[str]
     return [l.rstrip() for l in lines if l.rstrip()]
 
 
-def get_tag(): # type: () -> Optional[str]
+def get_tags(): # type: () -> List[str]
     tags = _exec("git tag --sort=-version:refname --merged")
+    if tags:
+        return tags
+    return []
+
+
+def get_tag(): # type: () -> Optional[str]
+    tags = get_tags()
     if tags:
         return tags[0]
     return None
