@@ -22,28 +22,28 @@ def _exec(cmd): # type: (str) -> List[str]
     return [l.rstrip() for l in lines if l.rstrip()]
 
 
-def _get_tag(): # type: () -> Optional[str]
+def get_tag(): # type: () -> Optional[str]
     tags = _exec("git tag --sort=-version:refname --merged")
     if tags:
         return tags[0]
     return None
 
 
-def _get_sha(name): # type: (str) -> Optional[str]
+def get_sha(name): # type: (str) -> Optional[str]
     sha = _exec("git rev-list -n 1 {name}".format(name=name))
     if sha:
         return sha[0]
     return None
 
 
-def _is_dirty(): # type: () -> bool
+def is_dirty(): # type: () -> bool
     res = _exec("git status --short")
     if res:
         return True
     return False
 
 
-def _count_since(name): # type: (str) -> Optional[int]
+def count_since(name): # type: (str) -> Optional[int]
     res = _exec("git rev-list --count HEAD ^{name}".format(name=name))
     if res:
         return int(res[0])
@@ -89,14 +89,14 @@ def version_from_git(template = DEFAULT_TEMPLATE,
             if line.startswith('Version:'):
                 return line[8:].strip()
 
-    tag = _get_tag()
+    tag = get_tag()
     if tag is None:
         raise Exception("Couldn't find tag to use.")
 
-    dirty = _is_dirty()
-    tag_sha = _get_sha(tag)
-    head_sha = _get_sha('HEAD')
-    ccount = _count_since(tag)
+    dirty = is_dirty()
+    tag_sha = get_sha(tag)
+    head_sha = get_sha('HEAD')
+    ccount = count_since(tag)
     on_tag = head_sha == tag_sha
 
     if dirty:
