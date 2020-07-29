@@ -1,49 +1,56 @@
-from typing import List
 import subprocess
 from setuptools.dist import Distribution
 from distutils.errors import DistutilsSetupError
-from collections.abc import Mapping
-import os.path
+import os
 
-DEFAULT_TEMPLATE: str = "{tag}"
-DEFAULT_DEV_TEMPLATE: str = "{tag}.dev{ccount}+git.{sha}"
-DEFAULT_DIRTY_TEMPLATE: str = "{tag}.dev{ccount}+git.{sha}.dirty"
+try:
+    from collections.abs import Mapping
+except ImportError:
+    from collections import Mapping
 
-
-def _exec(cmd: List[str]) -> List[str]:
-    result = subprocess.run(cmd, capture_output=True, check=True)
-    lines = result.stdout.decode().splitlines()
-    return [l.rstrip() for l in lines]
+DEFAULT_TEMPLATE = "{tag}" # type: str
+DEFAULT_DEV_TEMPLATE = "{tag}.dev{ccount}+git.{sha}" # type: str
+DEFAULT_DIRTY_TEMPLATE = "{tag}.dev{ccount}+git.{sha}.dirty" # type: str
 
 
-def _get_tag() -> str:
-    tags = _exec(
-        "git tag --sort=-version:refname --merged".split(' '))
-    if len(tags) == 0 or len(tags[0]) == 0:
-        return None
-    return tags[0]
+def _exec(cmd): # type: (str) -> List[str]
+    try:
+        stdout = subprocess.check_output(cmd, shell=True, universal_newlines=True)
+    except subprocess.CalledProcessError as e:
+        stdout = e.output
+    lines = stdout.splitlines()
+    return [l.rstrip() for l in lines if l.rstrip()]
 
 
-def _get_sha(name: str) -> str:
-    sha = _exec([*f"git rev-list -n 1".split(' '), name])
-    if len(sha) == 0 or len(sha[0]) == 0:
-        return None
-    return sha[0]
+def _get_tag(): # type: () -> Optional[str]
+    tags = _exec("git tag --sort=-version:refname --merged")
+    if tags:
+        return tags[0]
+    return None
 
 
-def _is_dirty() -> bool:
-    res = _exec("git status --short".split(' '))
-    if len(res) == 0 or len(res[0]) == 0:
-        return False
-    return True
+def _get_sha(name): # type: (str) -> Optional[str]
+    sha = _exec("git rev-list -n 1 {name}".format(name=name))
+    if sha:
+        return sha[0]
+    return None
 
 
-def _count_since(name: str) -> int:
-    res = _exec([*"git rev-list --count HEAD".split(' '), f"^{name}"])
-    return int(res[0])
+def _is_dirty(): # type: () -> bool
+    res = _exec("git status --short")
+    if res:
+        return True
+    return False
 
 
-def parse_config(dist: Distribution, _, value):
+def _count_since(name): # type: (str) -> Optional[int]
+    res = _exec("git rev-list --count HEAD ^{name}".format(name=name))
+    if res:
+        return int(res[0])
+    return None
+
+
+def parse_config(dist, _, value): # type: (Distribution, Any, Any) -> None
     if isinstance(value, bool):
         if value:
             version = version_from_git()
@@ -69,10 +76,10 @@ def parse_config(dist: Distribution, _, value):
     dist.metadata.version = version
 
 
-def version_from_git(template: str = DEFAULT_TEMPLATE,
-                     dev_template: str = DEFAULT_DEV_TEMPLATE,
-                     dirty_template: str = DEFAULT_DIRTY_TEMPLATE,
-                     ) -> None:
+def version_from_git(template = DEFAULT_TEMPLATE,
+                     dev_template = DEFAULT_DEV_TEMPLATE,
+                     dirty_template = DEFAULT_DIRTY_TEMPLATE,
+                     ): # type: (str, str, str) -> None
 
     # Check if PKG-INFO exists and return value in that if it does
     if os.path.exists('PKG-INFO'):
