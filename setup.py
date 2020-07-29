@@ -4,6 +4,9 @@ from setuptools_git_ver import version_from_git
 with open('readme.md', 'r') as fh:
     long_description = fh.read()
 
+with open('requirements.txt', 'r') as fh:
+    requirements = fh.readlines()
+
 setuptools.setup(
     name="setuptools-git-ver",
     version=version_from_git(),
@@ -24,10 +27,10 @@ setuptools.setup(
     ],
     python_requires='>=2.7',
     py_modules=['setuptools_git_ver'],
-    install_requires=['setuptools'],
+    install_requires=requirements,
     entry_points={
         'distutils.setup_keywords': [
-            'version_config = setuptools_git_ver:parse_config'
+            'version_config = setuptools_git_ver:parse_config',
         ],
     },
 )
