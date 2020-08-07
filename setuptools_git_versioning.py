@@ -26,6 +26,20 @@ def _exec(cmd):  # type: (str) -> List[str]
     return [line.rstrip() for line in lines if line.rstrip()]
 
 
+def get_branches():  # type: () -> List[str]
+    branches = _exec("git branch -l --format '%(refname:short)'")
+    if branches:
+        return branches
+    return []
+
+
+def get_branch():  # type: () -> Optional[str]
+    branches = _exec("git branch --show-current")
+    if branches:
+        return branches[0]
+    return None
+
+
 def get_tags():  # type: () -> List[str]
     tags = _exec("git tag --sort=-version:refname --merged")
     if tags:
@@ -110,6 +124,7 @@ def version_from_git(template=DEFAULT_TEMPLATE,
     head_sha = get_sha('HEAD')
     ccount = count_since(tag)
     on_tag = head_sha == tag_sha
+    branch = get_branch()
 
     if dirty:
         t = dirty_template
@@ -118,4 +133,4 @@ def version_from_git(template=DEFAULT_TEMPLATE,
     else:
         t = template
 
-    return t.format(sha=head_sha[:8], tag=tag, ccount=ccount)
+    return t.format(sha=head_sha[:8], tag=tag, ccount=ccount, branch=branch)
