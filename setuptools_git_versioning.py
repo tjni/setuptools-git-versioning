@@ -34,7 +34,7 @@ def get_branches():  # type: () -> List[str]
 
 
 def get_branch():  # type: () -> Optional[str]
-    branches = _exec("git branch --show-current")
+    branches = _exec("git rev-parse --abbrev-ref HEAD")
     if branches:
         return branches[0]
     return None
@@ -54,7 +54,7 @@ def get_tag():  # type: () -> Optional[str]
     return None
 
 
-def get_sha(name):  # type: (str) -> Optional[str]
+def get_sha(name='HEAD'):  # type: (str) -> Optional[str]
     sha = _exec("git rev-list -n 1 {name}".format(name=name))
     if sha:
         return sha[0]
@@ -121,7 +121,7 @@ def version_from_git(template=DEFAULT_TEMPLATE,
 
     dirty = is_dirty()
     tag_sha = get_sha(tag)
-    head_sha = get_sha('HEAD')
+    head_sha = get_sha()
     ccount = count_since(tag)
     on_tag = head_sha == tag_sha
     branch = get_branch()
