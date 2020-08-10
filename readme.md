@@ -1,6 +1,7 @@
 # setuptools-git-versioning
 
 [![PyPI version](https://badge.fury.io/py/setuptools-git-versioning.svg)](https://badge.fury.io/py/setuptools-git-versioning)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/setuptools-git-versioning)](https://badge.fury.io/py/setuptools-git-versioning)
 [![Build Status](https://travis-ci.com/dolfinus/setuptools-git-versioning.svg?branch=master)](https://travis-ci.com/dolfinus/setuptools-git-versioning)
 
 Automatically set package version using git tag/hash
