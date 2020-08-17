@@ -1,13 +1,13 @@
-import setuptools
+from setuptools import setup, find_packages
 from setuptools_git_versioning import version_from_git
 
-with open('readme.md', 'r') as fh:
+with open('README.md', 'r') as fh:
     long_description = fh.read()
 
 with open('requirements.txt', 'r') as fh:
     requirements = fh.readlines()
 
-setuptools.setup(
+setup(
     name="setuptools-git-versioning",
     version=version_from_git(),
     author="Camas",
@@ -17,7 +17,7 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/dolfinus/setuptools-git-versioning",
     keywords='setuptools git version-control',
-    packages=setuptools.find_packages(),
+    packages=find_packages(),
     classifiers=[
         'Framework :: Setuptools Plugin',
         'Intended Audience :: Developers',
@@ -33,7 +33,7 @@ setuptools.setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    python_requires='>=2.7',
+    python_requires='>=2.7,!=3.1,!=3.2',
     py_modules=['setuptools_git_versioning'],
     install_requires=requirements,
     entry_points={
@@ -41,4 +41,6 @@ setuptools.setup(
             'version_config = setuptools_git_versioning:parse_config',
         ],
     },
+    include_package_data=True,
+    zip_safe=False
 )
