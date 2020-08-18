@@ -6,7 +6,7 @@ jobs:
       dist: xenial
       python: '3.9-dev'
       install:
-        - pip install -r requirements.txt
+        - pip install "flake8>=3.8" -r requirements.txt
       script:
         - flake8 --count
         - python setup.py bdist_wheel sdist
@@ -14,7 +14,7 @@ jobs:
       dist: xenial
       python: '3.8'
       install:
-        - pip install -r requirements.txt
+        - pip install "flake8>=3.8" -r requirements.txt
       script:
         - flake8 --count
         - python setup.py bdist_wheel sdist
@@ -22,7 +22,7 @@ jobs:
       dist: xenial
       python: '3.7'
       install:
-        - pip install -r requirements.txt
+        - pip install "flake8>=3.8" -r requirements.txt
       script:
         - flake8 --count
         - python setup.py bdist_wheel sdist
@@ -30,7 +30,7 @@ jobs:
       dist: xenial
       python: '3.6'
       install:
-        - pip install -r requirements.txt
+        - pip install "flake8>=3.8" -r requirements.txt
       script:
         - flake8 --count
         - python setup.py bdist_wheel sdist
@@ -38,15 +38,15 @@ jobs:
       dist: xenial
       python: '3.5'
       install:
-        - pip install -r requirements.txt
-        - flake8 --count
+        - pip install "flake8>=3.8" -r requirements.txt
       script:
+        - flake8 --count
         - python setup.py bdist_wheel sdist
     - name: "Python 3.4"
       dist: trusty
       python: '3.4'
       install:
-        - pip install -I -r requirements.txt
+        - pip install -I "flake8<=2.6" -r requirements.txt
       script:
         - flake8 --count --ignore=F401 .
         - python setup.py bdist_wheel sdist
@@ -54,7 +54,7 @@ jobs:
       dist: trusty
       python: '3.3'
       install:
-        - pip install -I -r requirements.txt
+        - pip install -I "flake8<=2.6" -r requirements.txt
       script:
         - flake8 --count --ignore=F401 .
         - python setup.py bdist_wheel sdist
@@ -62,7 +62,7 @@ jobs:
       dist: xenial
       python: '2.7'
       install:
-        - pip install -r requirements.txt
+        - pip install "flake8>=3.8" -r requirements.txt
       script:
         - flake8 --count
         - python setup.py bdist_wheel sdist
