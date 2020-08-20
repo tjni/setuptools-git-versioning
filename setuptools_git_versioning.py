@@ -6,7 +6,7 @@ from distutils.errors import DistutilsSetupError
 from typing import List, Optional, Any
 
 try:
-    from collections.abs import Mapping
+    from collections.abc import Mapping
 except ImportError:
     from collections import Mapping
 
