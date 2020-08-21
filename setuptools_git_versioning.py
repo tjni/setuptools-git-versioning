@@ -4,11 +4,7 @@ import subprocess
 from setuptools.dist import Distribution
 from distutils.errors import DistutilsSetupError
 from typing import List, Optional, Any
-
-try:
-    from collections.abc import Mapping
-except ImportError:
-    from collections import Mapping
+from six.moves import collections_abc
 
 DEFAULT_TEMPLATE = "{tag}"  # type: str
 DEFAULT_DEV_TEMPLATE = "{tag}.dev{ccount}+git.{sha}"  # type: str
@@ -84,7 +80,7 @@ def parse_config(dist, _, value):  # type: (Distribution, Any, Any) -> None
         else:
             raise DistutilsSetupError("Can't be False")
 
-    if not isinstance(value, Mapping):
+    if not isinstance(value, collections_abc.Mapping):
         raise DistutilsSetupError("Config in the wrong format")
 
     template = value.get('template', DEFAULT_TEMPLATE)
