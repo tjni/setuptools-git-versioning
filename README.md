@@ -8,14 +8,14 @@ Automatically set package version using git tag/hash
 
 ## Compairing with other packages
 
-| Package/Function                                                                                    | Lastest release | Python2 support | Python3 support | PEP 440 compatible | Separated template for not tagged HEAD | Separated template for dirty run | Using functions outside setup.py | Returning starting_version if no tags |
-|:----------------------------------------------------------------------------------------------------|----------------:|:---------------:|:---------------:|:------------------:|:--------------------------------------:|:--------------------------------:|:--------------------------------:|:--------------------------------:|
-| [setuptools-git-versioning](https://github.com/dolfinus/setuptools-git-versioning)                  |            2020 |        +        |        +        |         +          |                   +                    |                +                 |                +                 |                +                 |
-| [setuptools-git-ver](https://github.com/camas/setuptools-git-ver) (Base package)                    |            2020 |        -        |        +        |         +          |                   +                    |                +                 |                -                 |                -                 |
-| [even-better-setuptools-git-version](https://github.com/ktemkin/even-better-setuptools-git-version) |            2019 |        -        |        +        |         +          |                   -                    |                -                 |                +                 |                +                 |
-| [better-setuptools-git-version](https://github.com/vivin/better-setuptools-git-version)             |            2018 |        -        |        +        |         +          |                   -                    |                -                 |                +                 |                +                 |
-| [very-good-setuptools-git-version](https://github.com/Kautenja/very-good-setuptools-git-version)    |            2018 |        -        |        +        |         -          |                   -                    |                -                 |                +                 |                -                 |
-| [setuptools-git-version](https://github.com/pyfidelity/setuptools-git-version)                      |            2018 |        +        |        +        |         -          |                   -                    |                -                 |                -                 |                -                 |
+| Package/Function                                                                                    | Lastest release | Python2 support | Python3 support | PEP 440 compatible | Separated template for not tagged HEAD | Separated template for dirty run | Using functions outside setup.py | Returning fixed version if no tags | Returning callback if no tags |
+|:----------------------------------------------------------------------------------------------------|----------------:|:---------------:|:---------------:|:------------------:|:--------------------------------------:|:--------------------------------:|:--------------------------------:|:--------------------------------:|:--------------------------------:|
+| [setuptools-git-versioning](https://github.com/dolfinus/setuptools-git-versioning)                  |            2020 |        +        |        +        |         +          |                   +                    |                +                 |                +                 |                +                 |                +                 |
+| [setuptools-git-ver](https://github.com/camas/setuptools-git-ver) (Base package)                    |            2020 |        -        |        +        |         +          |                   +                    |                +                 |                -                 |                -                 |                -                 |
+| [even-better-setuptools-git-version](https://github.com/ktemkin/even-better-setuptools-git-version) |            2019 |        -        |        +        |         +          |                   -                    |                -                 |                +                 |                +                 |                -                 |
+| [better-setuptools-git-version](https://github.com/vivin/better-setuptools-git-version)             |            2018 |        -        |        +        |         +          |                   -                    |                -                 |                +                 |                +                 |                -                 |
+| [very-good-setuptools-git-version](https://github.com/Kautenja/very-good-setuptools-git-version)    |            2018 |        -        |        +        |         -          |                   -                    |                -                 |                +                 |                -                 |                -                 |
+| [setuptools-git-version](https://github.com/pyfidelity/setuptools-git-version)                      |            2018 |        +        |        +        |         -          |                   -                    |                -                 |                -                 |                -                 |                -                 |
 
 ## Installation
 
@@ -46,7 +46,8 @@ setuptools.setup(
         "template": "{tag}",
         "dev_template": "{tag}.dev{ccount}+git.{sha}"
         "dirty_template": "{tag}.dev{ccount}+git.{sha}.dirty",
-        "starting_version": "0.0.1"
+        "starting_version": "0.0.1",
+        "version_callback": None,
     },
     ...
     setup_requires=['setuptools-git-versioning'],
@@ -64,6 +65,7 @@ setuptools.setup(
 
 - `starting_version`: static value, used if not tags exist in repo
 
+- `version_callback`: variable or callback function to get version instead of using `starting_version`
 ### Format Options
 
 - `{tag}`: Latest tag in the repository

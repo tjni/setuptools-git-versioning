@@ -3,7 +3,7 @@ import subprocess
 
 from setuptools.dist import Distribution
 from distutils.errors import DistutilsSetupError
-from typing import List, Optional, Any
+from typing import List, Optional, Any, Callable
 from six.moves import collections_abc
 
 DEFAULT_TEMPLATE = "{tag}"  # type: str
@@ -87,12 +87,14 @@ def parse_config(dist, _, value):  # type: (Distribution, Any, Any) -> None
     dev_template = value.get('dev_template', DEFAULT_DEV_TEMPLATE)
     dirty_template = value.get('dirty_template', DEFAULT_DIRTY_TEMPLATE)
     starting_version = value.get('starting_version', DEFAULT_STARTING_VERSION)
+    version_callback = value.get('version_callback', None)
 
     version = version_from_git(
         template=template,
         dev_template=dev_template,
         dirty_template=dirty_template,
         starting_version=starting_version,
+        version_callback=version_callback,
     )
     dist.metadata.version = version
 
@@ -101,7 +103,8 @@ def version_from_git(template=DEFAULT_TEMPLATE,
                      dev_template=DEFAULT_DEV_TEMPLATE,
                      dirty_template=DEFAULT_DIRTY_TEMPLATE,
                      starting_version=DEFAULT_STARTING_VERSION,
-                     ):  # type: (str, str, str, str) -> None
+                     version_callback=None,
+                     ):  # type: (str, str, str, str, Optional[Any, Callable]) -> str
 
     # Check if PKG-INFO exists and return value in that if it does
     if os.path.exists('PKG-INFO'):
@@ -113,6 +116,11 @@ def version_from_git(template=DEFAULT_TEMPLATE,
 
     tag = get_tag()
     if tag is None:
+        if version_callback is not None:
+            if callable(version_callback):
+                return version_callback()
+            else:
+                return version_callback
         return starting_version
 
     dirty = is_dirty()
