@@ -57,6 +57,13 @@ def get_sha(name='HEAD'):  # type: (str) -> Optional[str]
     return None
 
 
+def get_latest_file_commit(path):  # type: (str) -> Optional[str]
+    sha = _exec("git log -n 1 --pretty=format:%H -- {path}".format(path=path))
+    if sha:
+        return sha[0]
+    return None
+
+
 def is_dirty():  # type: () -> bool
     res = _exec("git status --short")
     if res:
@@ -89,6 +96,7 @@ def parse_config(dist, _, value):  # type: (Distribution, Any, Any) -> None
     starting_version = value.get('starting_version', DEFAULT_STARTING_VERSION)
     version_callback = value.get('version_callback', None)
     version_file = value.get('version_file', None)
+    count_commits_from_version_file = value.get('count_commits_from_version_file', False)
 
     version = version_from_git(
         template=template,
@@ -97,6 +105,7 @@ def parse_config(dist, _, value):  # type: (Distribution, Any, Any) -> None
         starting_version=starting_version,
         version_callback=version_callback,
         version_file=version_file,
+        count_commits_from_version_file=count_commits_from_version_file
     )
     dist.metadata.version = version
 
@@ -112,7 +121,8 @@ def version_from_git(template=DEFAULT_TEMPLATE,
                      starting_version=DEFAULT_STARTING_VERSION,
                      version_callback=None,
                      version_file=None,
-                     ):  # type: (str, str, str, str, Optional[Any, Callable], Optional[str]) -> str
+                     count_commits_from_version_file=False
+                     ):  # type: (str, str, str, str, Optional[Any, Callable], Optional[str], bool) -> str
 
     # Check if PKG-INFO exists and return value in that if it does
     if os.path.exists('PKG-INFO'):
@@ -134,12 +144,17 @@ def version_from_git(template=DEFAULT_TEMPLATE,
             return starting_version
         else:
             tag = read_version_from_file(version_file)
-            return tag
+
+            if not count_commits_from_version_file:
+                return tag
+
+            tag_sha = get_latest_file_commit(version_file)
+    else:
+        tag_sha = get_sha(tag)
 
     dirty = is_dirty()
-    tag_sha = get_sha(tag)
     head_sha = get_sha()
-    ccount = count_since(tag)
+    ccount = count_since(tag_sha)
     on_tag = head_sha == tag_sha
     branch = get_branch()
 
