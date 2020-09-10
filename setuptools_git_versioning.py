@@ -88,6 +88,7 @@ def parse_config(dist, _, value):  # type: (Distribution, Any, Any) -> None
     dirty_template = value.get('dirty_template', DEFAULT_DIRTY_TEMPLATE)
     starting_version = value.get('starting_version', DEFAULT_STARTING_VERSION)
     version_callback = value.get('version_callback', None)
+    version_file = value.get('version_file', None)
 
     version = version_from_git(
         template=template,
@@ -95,8 +96,14 @@ def parse_config(dist, _, value):  # type: (Distribution, Any, Any) -> None
         dirty_template=dirty_template,
         starting_version=starting_version,
         version_callback=version_callback,
+        version_file=version_file,
     )
     dist.metadata.version = version
+
+
+def read_version_from_file(path):
+    with open(path, 'r') as file:
+        return file.read().strip()
 
 
 def version_from_git(template=DEFAULT_TEMPLATE,
@@ -104,7 +111,8 @@ def version_from_git(template=DEFAULT_TEMPLATE,
                      dirty_template=DEFAULT_DIRTY_TEMPLATE,
                      starting_version=DEFAULT_STARTING_VERSION,
                      version_callback=None,
-                     ):  # type: (str, str, str, str, Optional[Any, Callable]) -> str
+                     version_file=None,
+                     ):  # type: (str, str, str, str, Optional[Any, Callable], Optional[str]) -> str
 
     # Check if PKG-INFO exists and return value in that if it does
     if os.path.exists('PKG-INFO'):
@@ -121,7 +129,12 @@ def version_from_git(template=DEFAULT_TEMPLATE,
                 return version_callback()
             else:
                 return version_callback
-        return starting_version
+
+        if not os.path.exists(version_file):
+            return starting_version
+        else:
+            tag = read_version_from_file(version_file)
+            return tag
 
     dirty = is_dirty()
     tag_sha = get_sha(tag)
