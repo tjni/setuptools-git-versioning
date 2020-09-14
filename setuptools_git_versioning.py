@@ -132,6 +132,7 @@ def version_from_git(template=DEFAULT_TEMPLATE,
             if line.startswith('Version:'):
                 return line[8:].strip()
 
+    from_file = False
     tag = get_tag()
     if tag is None:
         if version_callback is not None:
@@ -143,6 +144,7 @@ def version_from_git(template=DEFAULT_TEMPLATE,
         if not os.path.exists(version_file):
             return starting_version
         else:
+            from_file = True
             tag = read_version_from_file(version_file)
 
             if not count_commits_from_version_file:
@@ -155,7 +157,7 @@ def version_from_git(template=DEFAULT_TEMPLATE,
     dirty = is_dirty()
     head_sha = get_sha()
     ccount = count_since(tag_sha)
-    on_tag = head_sha == tag_sha
+    on_tag = head_sha == tag_sha and not from_file
     branch = get_branch()
 
     if dirty:
