@@ -50,6 +50,10 @@ def get_branch_tags():  # type: () -> List[str]
     return []
 
 
+def get_tags():  # type: () -> List[str]
+    return get_branch_tags
+
+
 def get_tag():  # type: () -> Optional[str]
     tags = get_branch_tags()
     if tags:
