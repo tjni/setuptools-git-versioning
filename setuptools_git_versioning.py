@@ -36,7 +36,14 @@ def get_branch():  # type: () -> Optional[str]
     return None
 
 
-def get_tags():  # type: () -> List[str]
+def get_all_tags():  # type: () -> List[str]
+    tags = _exec("git tag --sort=-version:refname")
+    if tags:
+        return tags
+    return []
+
+
+def get_branch_tags():  # type: () -> List[str]
     tags = _exec("git tag --sort=-version:refname --merged")
     if tags:
         return tags
@@ -44,7 +51,7 @@ def get_tags():  # type: () -> List[str]
 
 
 def get_tag():  # type: () -> Optional[str]
-    tags = get_tags()
+    tags = get_branch_tags()
     if tags:
         return tags[0]
     return None
