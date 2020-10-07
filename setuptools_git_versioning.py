@@ -167,15 +167,16 @@ def version_from_git(template=DEFAULT_TEMPLATE,
 
     dirty = is_dirty()
     head_sha = get_sha()
+    short_sha = head_sha[:8] if head_sha is not None else ''
     ccount = count_since(tag_sha)
-    on_tag = head_sha == tag_sha and not from_file
+    on_tag = head_sha is not None and head_sha == tag_sha and not from_file
     branch = get_branch()
 
     if dirty:
         t = dirty_template
-    elif not on_tag:
+    elif not on_tag and ccount is not None:
         t = dev_template
     else:
         t = template
 
-    return t.format(sha=head_sha[:8], tag=tag, ccount=ccount, branch=branch)
+    return t.format(sha=short_sha, tag=tag, ccount=ccount, branch=branch)
