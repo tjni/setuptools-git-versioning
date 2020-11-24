@@ -152,7 +152,7 @@ def version_from_git(template=DEFAULT_TEMPLATE,
             else:
                 return version_callback
 
-        if not os.path.exists(version_file):
+        if version_file is None or not os.path.exists(version_file):
             return starting_version
         else:
             from_file = True
