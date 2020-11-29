@@ -44,7 +44,7 @@ setuptools.setup(
     ...
     version_config={
         "template": "{tag}",
-        "dev_template": "{tag}.dev{ccount}+git.{sha}"
+        "dev_template": "{tag}.dev{ccount}+git.{sha}",
         "dirty_template": "{tag}.dev{ccount}+git.{sha}.dirty",
         "starting_version": "0.0.1",
         "version_callback": None,
