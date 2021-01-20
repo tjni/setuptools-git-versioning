@@ -55,8 +55,11 @@ jobs:
       - name: Build package
         run:  python setup.py bdist_wheel sdist
 
-      - name: Push build artifacts
-        uses: actions/upload-artifact@v2
-        with:
-          name: dist
-          path: dist/*
+  all_done:
+    name: Tests done
+    runs-on: ubuntu-latest
+    needs: [tests]
+
+    steps:
+      - name: All done
+        run: echo 1
