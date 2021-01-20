@@ -17,7 +17,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           checkName: Tests done
-          ref: ${{ github.ref }}
+          ref: ${{ github.pull_request.head.sha || github.sha }}
           timeoutSeconds: 3600
 
       - name: Fail the Build
