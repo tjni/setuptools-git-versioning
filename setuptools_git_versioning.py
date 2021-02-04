@@ -62,14 +62,14 @@ def get_tag():  # type: () -> Optional[str]
 
 
 def get_sha(name='HEAD'):  # type: (str) -> Optional[str]
-    sha = _exec("git rev-list -n 1 {name}".format(name=name))
+    sha = _exec("git rev-list -n 1 \"{name}\"".format(name=name))
     if sha:
         return sha[0]
     return None
 
 
 def get_latest_file_commit(path):  # type: (str) -> Optional[str]
-    sha = _exec("git log -n 1 --pretty=format:%H -- {path}".format(path=path))
+    sha = _exec("git log -n 1 --pretty=format:%H -- \"{path}\"".format(path=path))
     if sha:
         return sha[0]
     return None
@@ -83,7 +83,7 @@ def is_dirty():  # type: () -> bool
 
 
 def count_since(name):  # type: (str) -> Optional[int]
-    res = _exec("git rev-list --count HEAD ^{name}".format(name=name))
+    res = _exec("git rev-list --count HEAD \"^{name}\"".format(name=name))
     if res:
         return int(res[0])
     return None
