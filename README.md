@@ -84,6 +84,8 @@ setuptools.setup(
 
 - `{ccount}`: Number of commits since last tag or last `version_file` commit (see `count_commits_from_version_file`)
 
+- `{full_sha}`: Full sha hash of the latest commit
+
 - `{sha}`: First 8 characters of the sha hash of the latest commit
 
 - `{branch}`: Current branch name
