@@ -7,8 +7,8 @@ from typing import List, Optional, Any, Callable
 from six.moves import collections_abc
 
 DEFAULT_TEMPLATE = "{tag}"  # type: str
-DEFAULT_DEV_TEMPLATE = "{tag}.dev{ccount}+git.{sha}"  # type: str
-DEFAULT_DIRTY_TEMPLATE = "{tag}.dev{ccount}+git.{sha}.dirty"  # type: str
+DEFAULT_DEV_TEMPLATE = "{tag}.post{ccount}+git.{sha}"  # type: str
+DEFAULT_DIRTY_TEMPLATE = "{tag}.post{ccount}+git.{sha}.dirty"  # type: str
 DEFAULT_STARTING_VERSION = '0.0.1'
 
 
