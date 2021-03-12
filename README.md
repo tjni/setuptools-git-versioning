@@ -26,14 +26,14 @@ Adding `setup_requires=['setuptools-git-versioning']` somewhere in `setup.py` wi
 ## Usage
 
 Just add these lines into your `setup.py`:
-    ```python
-    setuptools.setup(
-        ...
-        version_config=True,
-        setup_requires=['setuptools-git-versioning'],
-        ...
-    )
-    ```
+```python
+setuptools.setup(
+    ...
+    version_config=True,
+    setup_requires=['setuptools-git-versioning'],
+    ...
+)
+```
 
 ### Release version = git tag
 You want to use git tag as a release number instead of duplicating it setup.py or other file.
