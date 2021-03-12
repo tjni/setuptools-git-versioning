@@ -250,7 +250,7 @@ If a value of this option is not a function but just str, it also could be used:
     )
     ```
     
-**Please take into account that no tag means `dev_template` or `dirty_template` values are not user because current repo state is ignored in such the case**
+**Please take into account that no tag means that `dev_template` or `dirty_template` values are not used because current repo state is ignored in such a case**
 
     
 ### Read current version from a file
