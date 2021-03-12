@@ -4,7 +4,7 @@
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/setuptools-git-versioning)](https://badge.fury.io/py/setuptools-git-versioning)
 [![Build Status](https://github.com/dolfinus/setuptools-git-versioning/workflows/Tests/badge.svg)](https://github.com/dolfinus/setuptools-git-versioning/actions)
 
-Use git repo data (latest tag, current commit hash, etc) for building a version number according [PEP-440(https://www.python.org/dev/peps/pep-0440/).
+Use git repo data (latest tag, current commit hash, etc) for building a version number according [PEP-440](https://www.python.org/dev/peps/pep-0440/).
 
 ## Compairing with other packages
 
