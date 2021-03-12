@@ -8,16 +8,16 @@ Use git repo data (latest tag, current commit hash, etc) for building a version 
 
 ## Compairing with other packages
 
-| Package/Function                                                                                    | Lastest release | Python2 support | Python3 support | Windows support | PEP 440 compatible | Separated template for not tagged HEAD | Separated template for dirty run | Using functions outside setup.py | Returning fixed version if no tags | Returning callback if no tags | Reading VERSION file if no tags | Counting commits from latest VERSION file change if no tags |
-|:----------------------------------------------------------------------------------------------------|----------------:|:---------------:|:---------------:|:---------------:|:------------------:|:--------------------------------------:|:--------------------------------:|:--------------------------------:|:----------------------------------:|:-----------------------------:|:-------------------------------:|:-----------------------------------------------------------:|
-| [setuptools-git-versioning](https://github.com/dolfinus/setuptools-git-versioning)                  |            2021 |        +        |        +        |        +        |         +          |                   +                    |                +                 |                +                 |                 +                  |                +              |                +                |                             +                               |
-| [setuptools-git-ver](https://github.com/camas/setuptools-git-ver) (Base package)                    |            2019 |        -        |        +        |        +        |         +          |                   +                    |                +                 |                -                 |                 -                  |                -              |                -                |                             -                               |
-| [another-setuptools-git-version](https://github.com/ZdenekM/another-setuptools-git-version) |            2020 |        -        |        +        |        -        |         +          |                   +                    |                -                 |                +                 |                 +                  |                -              |                -                |                             -                               |
-| [bad-setuptools-git-version](https://github.com/st7105/bad-setuptools-git-version) |            2020 |        +        |        +        |        +        |         +          |                   +                    |                -                 |                +                 |                 +                  |                -              |                -                |                             -                               |
-| [even-better-setuptools-git-version](https://github.com/ktemkin/even-better-setuptools-git-version) |            2019 |        -        |        +        |        -        |         +          |                   -                    |                -                 |                +                 |                 +                  |                -              |                -                |                             -                               |
-| [better-setuptools-git-version](https://github.com/vivin/better-setuptools-git-version)             |            2018 |        -        |        +        |        -        |         +          |                   -                    |                -                 |                +                 |                 +                  |                -              |                -                |                             -                               |
-| [very-good-setuptools-git-version](https://github.com/Kautenja/very-good-setuptools-git-version)    |            2018 |        -        |        +        |        -        |         -          |                   -                    |                -                 |                +                 |                 -                  |                -              |                -                |                             -                               |
-| [setuptools-git-version](https://github.com/pyfidelity/setuptools-git-version)                      |            2018 |        +        |        +        |        +        |         -          |                   -                    |                -                 |                -                 |                 -                  |                -              |                -                |                             -                               |
+| Package/Function                   | Lastest release | Python2 support | Python3 support | Windows support | PEP 440 compatible | Type hints | Version template support | Dev template support | Dirty template support | Supported substitutions                         | Initial version support | Callback/variable as current version | Read some file content as current version | Development releases support | Reusing functions in other packages |
+|------------------------------------|----------------:|:---------------:|:---------------:|:---------------:|:------------------:|:----------:|:------------------------:|:--------------------:|:----------------------:|-------------------------------------------------|:-----------------------:|:------------------------------------:|:-----------------------------------------:|:----------------------------:|:-----------------------------------:|
+| setuptools-git-versioning          |            2021 |        +        |       3.3+      |        +        |          +         |      +     |             +            |           +          |            +           | tag, commits_count, short_sha, full_sha, branch |            +            |                   +                  |                     +                     |               +              |                  +                  |
+| setuptools-git-ver (Base package)  |            2019 |        -        |       3.7+      |        +        |          +         |      +     |             +            |           +          |            +           | tag, commits_count, short_sha                   |            -            |                   -                  |                     -                     |               -              |                  -                  |
+| another-setuptools-git-version     |            2020 |        -        |       3.5+      |        -        |          +         |      +     |             +            |           +          |            -           | tag, commits_count                              |            +            |                   -                  |                     -                     |               -              |                  +                  |
+| bad-setuptools-git-version         |            2020 |        +        |        +        |        +        |          +         |      -     |             +            |           +          |            -           | tag, commits_count                              |            +            |                   -                  |                     -                     |               -              |                  +                  |
+| even-better-setuptools-git-version |            2019 |        -        |        +        |        -        |          +         |      -     |             +            |           -          |            -           | tag, short_sha                                  |            +            |                   -                  |                     -                     |               -              |                  +                  |
+| better-setuptools-git-version      |            2018 |        -        |        +        |        -        |          -         |      -     |             +            |           -          |            -           | tag, short_sha                                  |            +            |                   -                  |                     -                     |               -              |                  +                  |
+| very-good-setuptools-git-version   |            2018 |        -        |        +        |        -        |          -         |      -     |             +            |           -          |            -           | tag, commits_count, short_sha                   |            -            |                   -                  |                     -                     |               -              |                  +                  |
+| setuptools-git-version             |            2018 |        +        |        +        |        +        |          -         |      -     |             -            |           -          |            -           | tag, commits_count, short_sha                   |            -            |                   -                  |                     -                     |               -              |                  -                  |
 
 ## Installation
 
@@ -193,7 +193,7 @@ setuptools.setup(
 )
 ```
     
-### Use callback as current version
+### Callback/variable as current version
 For example, current repo state is:
 ```
 commit 233f6d72 Dev branch commit (HEAD, dev)
@@ -255,7 +255,7 @@ If a value of this option is not a function but just str, it also could be used:
 **Please take into account that no tag means that `dev_template` or `dirty_template` values are not used because current repo state is ignored in such a case**
 
     
-### Read current version from a file
+### Read some file content as current version
 Just like the previous example, but instead you can save current version in a simple test file instead of `.py` script.
 
 Just create a file (for example, `VERSION` or `VERSION.txt`) and place here a version number:
@@ -281,7 +281,7 @@ setuptools.setup(
 
 When you'll try to get current version in non-master branch, the content of this file will be returned instead.
 
-### Development releases (prereleases) from `dev`/`develop` branch
+### Development releases (prereleases) from another branch
 
 For example, current repo state is:
 ```
@@ -297,14 +297,14 @@ commit 273c47eb Long long ago
 |
 ...
 ```
-You want to make development releases (prereleases) from this branch.
-But there are just no tags in the current branch (`dev`) because all of them are placed in the `master` branch only.
+You want to make development releases (prereleases) from commits to a `dev` branch.
+But there are just no tags here because all of them are placed in the `master` branch only.
 
-Just like the examples above, create a file with a next release number (e.g. `1.1.0`) in the `dev` branch, e.g. `VERSION.txt`:
+Just like the examples above, create a file with a release number (e.g. `1.1.0`) in the `dev` branch, e.g. `VERSION.txt`:
 ```
 1.1.0
 ```
-But place here **next** release number instead of current one.
+But place here **next release number** instead of current one.
 
 Then update your `setup.py` file:
 ```python
@@ -332,7 +332,7 @@ Then you decided to release new version:
 - Save next release version (e.g. `1.2.0`) in `VERSION` or `version.py` file in the `dev` branch. **Do not place any tags in the `dev` branch!**
 - Next commits to a `dev` branch will lead to returning this next release version plus dev suffix, like `1.1.0.dev1` or so.
 - `N` in `.devN` suffix is a number of commits since the last change of a certain file.
-- **Note: every change of this file in the `dev` branch will lead to this `N` suffix to be reset. Update this file only in the case when you've setting up the next release version!**
+- **Note: every change of this file in the `dev` branch will lead to this `N` suffix to be reset to `0`. Update this file only in the case when you've setting up the next release version!**
 
 ## Options
 
