@@ -12,7 +12,7 @@ setup(
     version=version_from_git(),
     author="dolfinus",
     author_email="martinov.m.s.8@gmail.com",
-    description="Automatically set package version using git tag/hash",
+    description="Use git repo data for building a version number according PEP-440",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/dolfinus/setuptools-git-versioning",
