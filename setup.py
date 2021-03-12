@@ -10,8 +10,10 @@ with open('requirements.txt', 'r') as fh:
 setup(
     name="setuptools-git-versioning",
     version=version_from_git(),
-    author="dolfinus",
-    author_email="martinov.m.s.8@gmail.com",
+    author="Camas",
+    author_email="camas@hotmail.co.uk",
+    maintainer="dolfinus",
+    maintainer_email="martinov.m.s.8@gmail.com",
     description="Use git repo data for building a version number according PEP-440",
     license='MIT',
     long_description=long_description,
