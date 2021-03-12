@@ -10,8 +10,8 @@ with open('requirements.txt', 'r') as fh:
 setup(
     name="setuptools-git-versioning",
     version=version_from_git(),
-    author="Camas",
-    author_email="camas@hotmail.co.uk",
+    author="dolfinus",
+    author_email="martinov.m.s.8@gmail.com",
     description="Automatically set package version using git tag/hash",
     long_description=long_description,
     long_description_content_type="text/markdown",
