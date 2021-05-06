@@ -1,11 +1,14 @@
+import os
 from setuptools import setup, find_packages
 from setuptools_git_versioning import version_from_git
 
-with open('README.md', 'r') as fh:
-    long_description = fh.read()
+HERE = os.path.dirname(os.path.abspath(__file__))
 
-with open('requirements.txt', 'r') as fh:
-    requirements = fh.readlines()
+with open(os.path.join(HERE, "README.md"), "r") as f:
+    long_description = f.read()
+
+with open(os.path.join(HERE, "requirements.txt"), "r") as f:
+    requirements = f.read().split("\n")
 
 setup(
     name="setuptools-git-versioning",
