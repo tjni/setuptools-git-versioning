@@ -109,6 +109,7 @@ def parse_config(dist, _, value):  # type: (Distribution, Any, Any) -> None
     version_callback = value.get('version_callback', None)
     version_file = value.get('version_file', None)
     count_commits_from_version_file = value.get('count_commits_from_version_file', False)
+    branch_formatter = value.get('branch_formatter', None)
 
     version = version_from_git(
         template=template,
@@ -117,7 +118,8 @@ def parse_config(dist, _, value):  # type: (Distribution, Any, Any) -> None
         starting_version=starting_version,
         version_callback=version_callback,
         version_file=version_file,
-        count_commits_from_version_file=count_commits_from_version_file
+        count_commits_from_version_file=count_commits_from_version_file,
+        branch_formatter=branch_formatter
     )
     dist.metadata.version = version
 
@@ -133,8 +135,10 @@ def version_from_git(template=DEFAULT_TEMPLATE,
                      starting_version=DEFAULT_STARTING_VERSION,
                      version_callback=None,
                      version_file=None,
-                     count_commits_from_version_file=False
-                     ):  # type: (str, str, str, str, Optional[Any, Callable], Optional[str], bool) -> str
+                     count_commits_from_version_file=False,
+                     branch_formatter=None,
+                     ):
+    # type: (str, str, str, str, Optional[Any, Callable], Optional[str], bool, Optional[Callable[[str], str]]) -> str
 
     # Check if PKG-INFO exists and return value in that if it does
     if os.path.exists('PKG-INFO'):
@@ -171,7 +175,7 @@ def version_from_git(template=DEFAULT_TEMPLATE,
     full_sha = head_sha if head_sha is not None else ''
     ccount = count_since(tag_sha)
     on_tag = head_sha is not None and head_sha == tag_sha and not from_file
-    branch = get_branch()
+    branch = get_branch() if branch_formatter is None else branch_formatter(get_branch())
 
     if dirty:
         t = dirty_template
