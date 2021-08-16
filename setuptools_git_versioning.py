@@ -15,9 +15,7 @@ DEFAULT_STARTING_VERSION = "0.0.1"
 
 def _exec(cmd):  # type: (str) -> List[str]
     try:
-        stdout = subprocess.check_output(
-            cmd, shell=True, universal_newlines=True  # nosec
-        )
+        stdout = subprocess.check_output(cmd, shell=True, universal_newlines=True)  # nosec
     except subprocess.CalledProcessError as e:
         stdout = e.output
     lines = stdout.splitlines()
@@ -64,14 +62,14 @@ def get_tag():  # type: () -> Optional[str]
 
 
 def get_sha(name="HEAD"):  # type: (str) -> Optional[str]
-    sha = _exec(f'git rev-list -n 1 "{name}"')
+    sha = _exec('git rev-list -n 1 "{}"'.format(name))
     if sha:
         return sha[0]
     return None
 
 
 def get_latest_file_commit(path):  # type: (str) -> Optional[str]
-    sha = _exec(f'git log -n 1 --pretty=format:%H -- "{path}"')
+    sha = _exec('git log -n 1 --pretty=format:%H -- "{}"'.format(path))
     if sha:
         return sha[0]
     return None
@@ -85,7 +83,7 @@ def is_dirty():  # type: () -> bool
 
 
 def count_since(name):  # type: (str) -> Optional[int]
-    res = _exec(f'git rev-list --count HEAD "^{name}"')
+    res = _exec('git rev-list --count HEAD "^{}"'.format(name))
     if res:
         return int(res[0])
     return None
@@ -109,9 +107,7 @@ def parse_config(dist, _, value):  # type: (Distribution, Any, Any) -> None
     starting_version = value.get("starting_version", DEFAULT_STARTING_VERSION)
     version_callback = value.get("version_callback", None)
     version_file = value.get("version_file", None)
-    count_commits_from_version_file = value.get(
-        "count_commits_from_version_file", False
-    )
+    count_commits_from_version_file = value.get("count_commits_from_version_file", False)
     branch_formatter = value.get("branch_formatter", None)
 
     version = version_from_git(
@@ -191,9 +187,7 @@ def version_from_git(
     else:
         t = template
 
-    version = t.format(
-        sha=full_sha[:8], tag=tag, ccount=ccount, branch=branch, full_sha=full_sha
-    )
+    version = t.format(sha=full_sha[:8], tag=tag, ccount=ccount, branch=branch, full_sha=full_sha)
 
     # Ensure local version label only contains permitted characters
     public, sep, local = version.partition("+")
