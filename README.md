@@ -461,3 +461,14 @@ You can use these substitutions in `template`, `dev_template` or `dirty_template
 - `{sha}`: First 8 characters of the sha hash of the latest commit
 
 - `{branch}`: Current branch name
+
+
+## Common issues
+
+### Every version built by CI is `dirty`
+
+This is usually caused by some files created by CI pipeline like build artifacts or test reports, e.g. `dist/my_package.whl` or `reports/unit.xml`.
+If they are not mentioned in `.gitignore` file they will be recognized by git as untracked.
+Because of that `git status` will report that you have uncommited (dirty) changes in the index, so `setuptools-git-versioning` will detect current version as `dirty`.
+
+You should such files to the `.gitignore` file. See [current repo `.gitignore`](https://github.com/dolfinus/setuptools-git-versioning/blob/master/.gitignore) as an example.
