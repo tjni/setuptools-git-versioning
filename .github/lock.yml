@@ -8,10 +8,10 @@ daysUntilLock: 60
 skipCreatedBefore: false
 
 # Issues and pull requests with these labels will be ignored. Set to `[]` to disable
-exemptLabels: ['enhancement', 'help wanted']
+exemptLabels: [enhancement, help wanted]
 
 # Label to add before locking, such as `outdated`. Set to `false` to disable
-lockLabel: ['outdated']
+lockLabel: [outdated]
 
 # Comment to post before locking. Set to `false` to disable
 lockComment: false

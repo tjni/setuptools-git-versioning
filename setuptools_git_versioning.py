@@ -1,22 +1,23 @@
 import os
 import re
 import subprocess
+from distutils.errors import DistutilsSetupError
+from typing import Any, Callable, List, Optional, Union
 
 from setuptools.dist import Distribution
-from distutils.errors import DistutilsSetupError
-from typing import List, Optional, Any, Callable
 from six.moves import collections_abc
 
 DEFAULT_TEMPLATE = "{tag}"  # type: str
 DEFAULT_DEV_TEMPLATE = "{tag}.post{ccount}+git.{sha}"  # type: str
 DEFAULT_DIRTY_TEMPLATE = "{tag}.post{ccount}+git.{sha}.dirty"  # type: str
-DEFAULT_STARTING_VERSION = '0.0.1'
+DEFAULT_STARTING_VERSION = "0.0.1"
 
 
 def _exec(cmd):  # type: (str) -> List[str]
     try:
-        stdout = subprocess.check_output(cmd, shell=True,
-                                         universal_newlines=True)
+        stdout = subprocess.check_output(
+            cmd, shell=True, universal_newlines=True  # nosec
+        )
     except subprocess.CalledProcessError as e:
         stdout = e.output
     lines = stdout.splitlines()
@@ -52,7 +53,7 @@ def get_branch_tags():  # type: () -> List[str]
 
 
 def get_tags():  # type: () -> List[str]
-    return get_branch_tags
+    return get_branch_tags()
 
 
 def get_tag():  # type: () -> Optional[str]
@@ -62,15 +63,15 @@ def get_tag():  # type: () -> Optional[str]
     return None
 
 
-def get_sha(name='HEAD'):  # type: (str) -> Optional[str]
-    sha = _exec("git rev-list -n 1 \"{name}\"".format(name=name))
+def get_sha(name="HEAD"):  # type: (str) -> Optional[str]
+    sha = _exec(f'git rev-list -n 1 "{name}"')
     if sha:
         return sha[0]
     return None
 
 
 def get_latest_file_commit(path):  # type: (str) -> Optional[str]
-    sha = _exec("git log -n 1 --pretty=format:%H -- \"{path}\"".format(path=path))
+    sha = _exec(f'git log -n 1 --pretty=format:%H -- "{path}"')
     if sha:
         return sha[0]
     return None
@@ -84,7 +85,7 @@ def is_dirty():  # type: () -> bool
 
 
 def count_since(name):  # type: (str) -> Optional[int]
-    res = _exec("git rev-list --count HEAD \"^{name}\"".format(name=name))
+    res = _exec(f'git rev-list --count HEAD "^{name}"')
     if res:
         return int(res[0])
     return None
@@ -102,14 +103,16 @@ def parse_config(dist, _, value):  # type: (Distribution, Any, Any) -> None
     if not isinstance(value, collections_abc.Mapping):
         raise DistutilsSetupError("Config in the wrong format")
 
-    template = value.get('template', DEFAULT_TEMPLATE)
-    dev_template = value.get('dev_template', DEFAULT_DEV_TEMPLATE)
-    dirty_template = value.get('dirty_template', DEFAULT_DIRTY_TEMPLATE)
-    starting_version = value.get('starting_version', DEFAULT_STARTING_VERSION)
-    version_callback = value.get('version_callback', None)
-    version_file = value.get('version_file', None)
-    count_commits_from_version_file = value.get('count_commits_from_version_file', False)
-    branch_formatter = value.get('branch_formatter', None)
+    template = value.get("template", DEFAULT_TEMPLATE)
+    dev_template = value.get("dev_template", DEFAULT_DEV_TEMPLATE)
+    dirty_template = value.get("dirty_template", DEFAULT_DIRTY_TEMPLATE)
+    starting_version = value.get("starting_version", DEFAULT_STARTING_VERSION)
+    version_callback = value.get("version_callback", None)
+    version_file = value.get("version_file", None)
+    count_commits_from_version_file = value.get(
+        "count_commits_from_version_file", False
+    )
+    branch_formatter = value.get("branch_formatter", None)
 
     version = version_from_git(
         template=template,
@@ -119,33 +122,34 @@ def parse_config(dist, _, value):  # type: (Distribution, Any, Any) -> None
         version_callback=version_callback,
         version_file=version_file,
         count_commits_from_version_file=count_commits_from_version_file,
-        branch_formatter=branch_formatter
+        branch_formatter=branch_formatter,
     )
     dist.metadata.version = version
 
 
 def read_version_from_file(path):
-    with open(path, 'r') as file:
+    with open(path) as file:
         return file.read().strip()
 
 
-def version_from_git(template=DEFAULT_TEMPLATE,
-                     dev_template=DEFAULT_DEV_TEMPLATE,
-                     dirty_template=DEFAULT_DIRTY_TEMPLATE,
-                     starting_version=DEFAULT_STARTING_VERSION,
-                     version_callback=None,
-                     version_file=None,
-                     count_commits_from_version_file=False,
-                     branch_formatter=None,
-                     ):
-    # type: (str, str, str, str, Optional[Any, Callable], Optional[str], bool, Optional[Callable[[str], str]]) -> str
+def version_from_git(
+    template=DEFAULT_TEMPLATE,  # type: str
+    dev_template=DEFAULT_DEV_TEMPLATE,  # type: str
+    dirty_template=DEFAULT_DIRTY_TEMPLATE,  # type: str
+    starting_version=DEFAULT_STARTING_VERSION,  # type: str
+    version_callback=None,  # type: Union[Any, Callable, None]
+    version_file=None,  # type: Optional[str]
+    count_commits_from_version_file=False,  # type: bool
+    branch_formatter=None,  # type: Optional[Callable[[str], str]]
+):
+    # type: (...) -> str
 
     # Check if PKG-INFO exists and return value in that if it does
-    if os.path.exists('PKG-INFO'):
-        with open('PKG-INFO', 'r') as f:
+    if os.path.exists("PKG-INFO"):
+        with open("PKG-INFO") as f:
             lines = f.readlines()
         for line in lines:
-            if line.startswith('Version:'):
+            if line.startswith("Version:"):
                 return line[8:].strip()
 
     from_file = False
@@ -172,10 +176,13 @@ def version_from_git(template=DEFAULT_TEMPLATE,
 
     dirty = is_dirty()
     head_sha = get_sha()
-    full_sha = head_sha if head_sha is not None else ''
-    ccount = count_since(tag_sha)
+    full_sha = head_sha if head_sha is not None else ""
+    ccount = count_since(tag_sha) if tag_sha is not None else None
     on_tag = head_sha is not None and head_sha == tag_sha and not from_file
-    branch = get_branch() if branch_formatter is None else branch_formatter(get_branch())
+
+    branch = get_branch()
+    if branch_formatter is not None and branch is not None:
+        branch = branch_formatter(branch)
 
     if dirty:
         t = dirty_template
@@ -184,9 +191,11 @@ def version_from_git(template=DEFAULT_TEMPLATE,
     else:
         t = template
 
-    version = t.format(sha=full_sha[:8], tag=tag, ccount=ccount, branch=branch, full_sha=full_sha)
+    version = t.format(
+        sha=full_sha[:8], tag=tag, ccount=ccount, branch=branch, full_sha=full_sha
+    )
 
     # Ensure local version label only contains permitted characters
-    public, sep, local = version.partition('+')
-    local_sanitized = re.sub(r'[^a-zA-Z0-9.]', '.', local)
+    public, sep, local = version.partition("+")
+    local_sanitized = re.sub(r"[^a-zA-Z0-9.]", ".", local)
     return public + sep + local_sanitized

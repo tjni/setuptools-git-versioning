@@ -14,14 +14,14 @@ jobs:
     outputs:
       should_skip: ${{ steps.skip_check.outputs.should_skip }}
     steps:
-      - id: skip_check
-        uses: fkirc/skip-duplicate-actions@master
-        with:
-          concurrent_skipping: always
-          cancel_others: true
-          skip_after_successful_duplicate: false
-          paths_ignore: '["**/README.md", "**/LICENSE"]'
-          do_not_skip: '["pull_request"]'
+    - id: skip_check
+      uses: fkirc/skip-duplicate-actions@master
+      with:
+        concurrent_skipping: always
+        cancel_others: true
+        skip_after_successful_duplicate: false
+        paths_ignore: '["**/README.md", "**/LICENSE"]'
+        do_not_skip: '["pull_request"]'
 
   tests:
     name: Run tests
@@ -32,49 +32,49 @@ jobs:
         python-version: ['2.7', '3.3', '3.4', '3.5', '3.6', '3.7', '3.8', '3.9']
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-      - name: Inject slug/short variables
-        uses: rlespinasse/github-slug-action@v3.x
+    - name: Inject slug/short variables
+      uses: rlespinasse/github-slug-action@v3.x
 
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
-        with:
-          python-version: ${{ matrix.python-version }}
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
 
-      - name: Cache pip
-        uses: actions/cache@v2
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-python-${{ matrix.python-version }}-pip-${{ hashFiles('requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-python-${{ matrix.python-version }}-pip-${{ hashFiles('requirements.txt') }}
-            ${{ runner.os }}-python-${{ matrix.python-version }}-pip-
-            ${{ runner.os }}-python
-            ${{ runner.os }}-
+    - name: Cache pip
+      uses: actions/cache@v2
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-python-${{ matrix.python-version }}-pip-${{ hashFiles('requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-python-${{ matrix.python-version }}-pip-${{ hashFiles('requirements.txt') }}
+          ${{ runner.os }}-python-${{ matrix.python-version }}-pip-
+          ${{ runner.os }}-python
+          ${{ runner.os }}-
 
-      - name: Upgrade pip
-        run: python -m pip install --upgrade pip setuptools wheel
+    - name: Upgrade pip
+      run: python -m pip install --upgrade pip setuptools wheel
 
-      - name: Install dependencies
-        run:  pip install -I "flake8<=2.6" -r requirements.txt
-        if: matrix.python-version == '3.3' || matrix.python-version == '3.4'
+    - name: Install dependencies
+      run: pip install -I "flake8<=2.6" -r requirements.txt
+      if: matrix.python-version == '3.3' || matrix.python-version == '3.4'
 
-      - name: Install dependencies
-        run:  pip install "flake8>=3.8" -r requirements.txt
-        if: matrix.python-version != '3.3' && matrix.python-version != '3.4'
+    - name: Install dependencies
+      run: pip install "flake8>=3.8" -r requirements.txt
+      if: matrix.python-version != '3.3' && matrix.python-version != '3.4'
 
-      - name: Run flake8
-        run:  flake8 --count --ignore=F401 --max-line-length=120 .
-        if: matrix.python-version == '3.3' || matrix.python-version == '3.4'
+    - name: Run flake8
+      run: flake8 --count --ignore=F401 --max-line-length=120 .
+      if: matrix.python-version == '3.3' || matrix.python-version == '3.4'
 
-      - name: Run flake8
-        run:  flake8 --count --max-line-length=120 .
-        if: matrix.python-version != '3.3' && matrix.python-version != '3.4'
+    - name: Run flake8
+      run: flake8 --count --max-line-length=120 .
+      if: matrix.python-version != '3.3' && matrix.python-version != '3.4'
 
-      - name: Build package
-        run:  python setup.py bdist_wheel sdist
+    - name: Build package
+      run: python setup.py bdist_wheel sdist
 
   all_done:
     name: Tests done
@@ -82,5 +82,5 @@ jobs:
     needs: [tests]
 
     steps:
-      - name: All done
-        run: echo 1
+    - name: All done
+      run: echo 1

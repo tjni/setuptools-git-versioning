@@ -3,7 +3,7 @@ name: Releases
 on:
   push:
     tags:
-      - v*
+    - v*
 
 jobs:
 
@@ -12,17 +12,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: fountainhead/action-wait-for-check@v1.0.0
-        id: wait-for-tests
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          checkName: Tests done
-          ref: ${{ github.sha }}
-          timeoutSeconds: 3600
+    - uses: fountainhead/action-wait-for-check@v1.0.0
+      id: wait-for-tests
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        checkName: Tests done
+        ref: ${{ github.sha }}
+        timeoutSeconds: 3600
 
-      - name: Fail the Build
-        uses: cutenode/action-always-fail@v1
-        if: steps.wait-for-tests.outputs.conclusion != 'success'
+    - name: Fail the Build
+      uses: cutenode/action-always-fail@v1
+      if: steps.wait-for-tests.outputs.conclusion != 'success'
 
   build:
     name: Build package
@@ -33,46 +33,46 @@ jobs:
         python-version: ['2.7', '3.6']
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-      - name: Inject slug/short variables
-        uses: rlespinasse/github-slug-action@v3.x
+    - name: Inject slug/short variables
+      uses: rlespinasse/github-slug-action@v3.x
 
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
-        with:
-          python-version: ${{ matrix.python-version }}
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
 
-      - name: Cache pip
-        uses: actions/cache@v2
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-python-${{ matrix.python-version }}-pip-${{ hashFiles('requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-python-${{ matrix.python-version }}-pip-${{ hashFiles('requirements.txt') }}
-            ${{ runner.os }}-python-${{ matrix.python-version }}-pip-
-            ${{ runner.os }}-python
-            ${{ runner.os }}-
+    - name: Cache pip
+      uses: actions/cache@v2
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-python-${{ matrix.python-version }}-pip-${{ hashFiles('requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-python-${{ matrix.python-version }}-pip-${{ hashFiles('requirements.txt') }}
+          ${{ runner.os }}-python-${{ matrix.python-version }}-pip-
+          ${{ runner.os }}-python
+          ${{ runner.os }}-
 
-      - name: Upgrade pip
-        run: python -m pip install --upgrade pip setuptools wheel twine
+    - name: Upgrade pip
+      run: python -m pip install --upgrade pip setuptools wheel twine
 
-      - name: Install dependencies
-        run:  pip install -r requirements.txt
+    - name: Install dependencies
+      run: pip install -r requirements.txt
 
-      - name: Build package
-        run:  python setup.py bdist_wheel sdist
+    - name: Build package
+      run: python setup.py bdist_wheel sdist
 
-      - name: Check package
-        run:  twine check dist/*
+    - name: Check package
+      run: twine check dist/*
 
-      - name: Publish package
-        env:
-          TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
-          TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
-        run: |
-          twine upload --skip-existing dist/*
+    - name: Publish package
+      env:
+        TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
+        TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+      run: |
+        twine upload --skip-existing dist/*
 
   release:
     name: Release version
@@ -80,13 +80,13 @@ jobs:
     needs: [wait, build]
 
     steps:
-      - name: Create release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: ${{ github.ref }}
-          draft: false
-          prerelease: false
+    - name: Create release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: ${{ github.ref }}
+        draft: false
+        prerelease: false
