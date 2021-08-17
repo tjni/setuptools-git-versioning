@@ -27,6 +27,7 @@ jobs:
     name: Run tests
     runs-on: ubuntu-18.04
     needs: [check_duplicate_runs]
+    if: ${{ needs.check_duplicate_runs.outputs.should_skip != 'true' }}
     strategy:
       matrix:
         python-version: ['2.7', '3.3', '3.4', '3.5', '3.6', '3.7', '3.8', '3.9']
