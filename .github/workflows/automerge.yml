@@ -31,7 +31,7 @@ jobs:
       continue-on-error: true
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-        checkName: Tests done
+        checkName: Tests done (pull_request)
         ref: ${{ github.head_ref || github.ref }}
         intervalSeconds: 60
         timeoutSeconds: 3600
