@@ -17,6 +17,7 @@ jobs:
     - id: skip_check
       uses: fkirc/skip-duplicate-actions@master
       with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
         concurrent_skipping: always
         cancel_others: true
         skip_after_successful_duplicate: false
@@ -24,7 +25,7 @@ jobs:
         do_not_skip: '["pull_request"]'
 
   tests:
-    name: Run tests (${{ github.event_name }})
+    name: Run tests (${{ github.event_name }}, ${{ matrix.python-version }})
     runs-on: ubuntu-18.04
     needs: [check_duplicate_runs]
     if: ${{ needs.check_duplicate_runs.outputs.should_skip != 'true' }}
