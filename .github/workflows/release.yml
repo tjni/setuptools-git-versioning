@@ -16,7 +16,7 @@ jobs:
       id: wait-for-tests
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-        checkName: Tests done
+        checkName: Tests done (push)
         ref: ${{ github.sha }}
         timeoutSeconds: 3600
 
