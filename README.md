@@ -457,6 +457,7 @@ setuptools.setup(
         "version_file": None,
         "count_commits_from_version_file": False,
         "branch_formatter": None,
+        "sort_by": None,
     },
     setup_requires=["setuptools-git-versioning"],
     ...,
@@ -478,6 +479,8 @@ setuptools.setup(
 - `count_commits_from_version_file`: `True` to fetch `version_file` last commit instead of tag commit, `False` otherwise
 
 - `branch_formatter`: callback to be used for formatting a branch name before template substitution
+
+- `sort_by`: format string passed to ``git tag --sort=`` command to sort the output. Possible values: ``version:refname`` (alphanumeric sort), ``committerdate`` (commit date of tag), ``creatordate`` (tag creation date, **default**)
 
 ### Substitutions
 

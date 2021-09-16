@@ -36,26 +36,26 @@ def get_branch():  # type: () -> Optional[str]
     return None
 
 
-def get_all_tags():  # type: () -> List[str]
-    tags = _exec("git tag --sort=-committerdate")
+def get_all_tags(sort_by="creatordate"):  # type: (str) -> List[str]
+    tags = _exec("git tag --sort=-{}".format(sort_by))
     if tags:
         return tags
     return []
 
 
-def get_branch_tags():  # type: () -> List[str]
-    tags = _exec("git tag --sort=-committerdate --merged")
+def get_branch_tags(sort_by="creatordate"):  # type: (str) -> List[str]
+    tags = _exec("git tag --sort=-{} --merged".format(sort_by))
     if tags:
         return tags
     return []
 
 
-def get_tags():  # type: () -> List[str]
-    return get_branch_tags()
+def get_tags(*args, **kwargs):  # type: (*str, **str) -> List[str]
+    return get_branch_tags(*args, **kwargs)
 
 
-def get_tag():  # type: () -> Optional[str]
-    tags = get_branch_tags()
+def get_tag(*args, **kwargs):  # type: (*str, **str) -> Optional[str]
+    tags = get_branch_tags(*args, **kwargs)
     if tags:
         return tags[0]
     return None
@@ -109,6 +109,7 @@ def parse_config(dist, _, value):  # type: (Distribution, Any, Any) -> None
     version_file = value.get("version_file", None)
     count_commits_from_version_file = value.get("count_commits_from_version_file", False)
     branch_formatter = value.get("branch_formatter", None)
+    sort_by = value.get("sort_by", None)
 
     version = version_from_git(
         template=template,
@@ -119,6 +120,7 @@ def parse_config(dist, _, value):  # type: (Distribution, Any, Any) -> None
         version_file=version_file,
         count_commits_from_version_file=count_commits_from_version_file,
         branch_formatter=branch_formatter,
+        sort_by=sort_by,
     )
     dist.metadata.version = version
 
@@ -137,6 +139,7 @@ def version_from_git(
     version_file=None,  # type: Optional[str]
     count_commits_from_version_file=False,  # type: bool
     branch_formatter=None,  # type: Optional[Callable[[str], str]]
+    sort_by=None,  # type: Optional[str]
 ):
     # type: (...) -> str
 
@@ -149,7 +152,7 @@ def version_from_git(
                 return line[8:].strip()
 
     from_file = False
-    tag = get_tag()
+    tag = get_tag(sort_by) if sort_by else get_tag()
     if tag is None:
         if version_callback is not None:
             if callable(version_callback):
