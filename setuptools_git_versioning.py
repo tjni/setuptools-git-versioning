@@ -2,6 +2,7 @@ import os
 import re
 import subprocess
 from distutils.errors import DistutilsSetupError
+from re import Pattern
 from typing import Any, Callable, List, Optional, Union
 
 from setuptools.dist import Distribution
@@ -11,6 +12,7 @@ DEFAULT_TEMPLATE = "{tag}"  # type: str
 DEFAULT_DEV_TEMPLATE = "{tag}.post{ccount}+git.{sha}"  # type: str
 DEFAULT_DIRTY_TEMPLATE = "{tag}.post{ccount}+git.{sha}.dirty"  # type: str
 DEFAULT_STARTING_VERSION = "0.0.1"
+ENV_VARS_REGEXP = re.compile(r"\{env:(\S+):?(\S+)?\}", re.IGNORECASE)  # type: Pattern
 
 
 def _exec(cmd):  # type: (str) -> List[str]
@@ -190,7 +192,14 @@ def version_from_git(
     else:
         t = template
 
-    version = t.format(sha=full_sha[:8], tag=tag, ccount=ccount, branch=branch, full_sha=full_sha)
+    if "env:" in t:
+        env_vars = {}
+        for var, default in ENV_VARS_REGEXP.findall(t):
+            env_vars[var] = os.environ.get(var, default or "UNKNOWN")
+
+        t = t.replace("env:", "")
+
+    version = t.format(sha=full_sha[:8], tag=tag, ccount=ccount, branch=branch, full_sha=full_sha, **env_vars)
 
     # Ensure local version label only contains permitted characters
     public, sep, local = version.partition("+")
