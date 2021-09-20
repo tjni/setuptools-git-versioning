@@ -12,7 +12,7 @@ DEFAULT_TEMPLATE = "{tag}"  # type: str
 DEFAULT_DEV_TEMPLATE = "{tag}.post{ccount}+git.{sha}"  # type: str
 DEFAULT_DIRTY_TEMPLATE = "{tag}.post{ccount}+git.{sha}.dirty"  # type: str
 DEFAULT_STARTING_VERSION = "0.0.1"
-ENV_VARS_REGEXP = re.compile(r"\{env:(\S+):?(\S+)?\}", re.IGNORECASE)  # type: Pattern
+ENV_VARS_REGEXP = re.compile(r"\{env:([^:}]+):?([^}]+)?\}", re.IGNORECASE | re.UNICODE)  # type: Pattern
 
 
 def _exec(cmd):  # type: (str) -> List[str]
@@ -197,7 +197,7 @@ def version_from_git(
         for var, default in ENV_VARS_REGEXP.findall(t):
             env_vars[var] = os.environ.get(var, default or "UNKNOWN")
 
-        t = t.replace("env:", "")
+        t = ENV_VARS_REGEXP.sub(r"{\1}", t)
 
     version = t.format(sha=full_sha[:8], tag=tag, ccount=ccount, branch=branch, full_sha=full_sha, **env_vars)
 
