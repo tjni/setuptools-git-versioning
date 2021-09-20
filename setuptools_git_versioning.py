@@ -2,11 +2,13 @@ import os
 import re
 import subprocess
 from distutils.errors import DistutilsSetupError
-from re import Pattern
-from typing import Any, Callable, List, Optional, Union
+from typing import TYPE_CHECKING, Any, Callable, List, Optional, Union
 
 from setuptools.dist import Distribution
 from six.moves import collections_abc
+
+if TYPE_CHECKING:
+    from re import Pattern
 
 DEFAULT_TEMPLATE = "{tag}"  # type: str
 DEFAULT_DEV_TEMPLATE = "{tag}.post{ccount}+git.{sha}"  # type: str
@@ -127,9 +129,17 @@ def parse_config(dist, _, value):  # type: (Distribution, Any, Any) -> None
     dist.metadata.version = version
 
 
-def read_version_from_file(path):
+def read_version_from_file(path):  # type: (Union[str, os.PathLike]) -> str
     with open(path) as file:
         return file.read().strip()
+
+
+def subst_env_variables(template):  # type: (str) -> str
+    for var, default in ENV_VARS_REGEXP.findall(template):
+        value = os.environ.get(var, default or "UNKNOWN")
+        template = ENV_VARS_REGEXP.sub(value, template)
+
+    return template
 
 
 def version_from_git(
@@ -193,13 +203,9 @@ def version_from_git(
         t = template
 
     if "env:" in t:
-        env_vars = {}
-        for var, default in ENV_VARS_REGEXP.findall(t):
-            env_vars[var] = os.environ.get(var, default or "UNKNOWN")
+        t = subst_env_variables(t)
 
-        t = ENV_VARS_REGEXP.sub(r"{\1}", t)
-
-    version = t.format(sha=full_sha[:8], tag=tag, ccount=ccount, branch=branch, full_sha=full_sha, **env_vars)
+    version = t.format(sha=full_sha[:8], tag=tag, ccount=ccount, branch=branch, full_sha=full_sha)
 
     # Ensure local version label only contains permitted characters
     public, sep, local = version.partition("+")
