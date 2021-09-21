@@ -496,7 +496,7 @@ You can use these substitutions in `template`, `dev_template` or `dirty_template
 
 - `{branch}`: Current branch name
 
-- `{env:SOMEVAR}`: Value of environment variable `SOMEVAR`.
+- `{env:SOMEVAR}`: Value of environment variable `SOMEVAR`. Examples:
 
   - You can pass default value using `{env:SOMEVAR:"default"}` syntax. Default value for missing variables is `UNKNOWN`.
 

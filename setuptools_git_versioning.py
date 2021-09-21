@@ -135,9 +135,11 @@ def read_version_from_file(path):  # type: (Union[str, os.PathLike]) -> str
 
 
 def subst_env_variables(template):  # type: (str) -> str
-    for var, default in ENV_VARS_REGEXP.findall(template):
-        value = os.environ.get(var, default or "UNKNOWN")
-        template = ENV_VARS_REGEXP.sub(value, template)
+    if "env:" in template:
+        for var, default in ENV_VARS_REGEXP.findall(template):
+            value = os.environ.get(var, default or "UNKNOWN")
+
+            template = ENV_VARS_REGEXP.sub("{" + value + "}", template)
 
     return template
 
@@ -202,8 +204,7 @@ def version_from_git(
     else:
         t = template
 
-    if "env:" in t:
-        t = subst_env_variables(t)
+    t = subst_env_variables(t)
 
     version = t.format(sha=full_sha[:8], tag=tag, ccount=ccount, branch=branch, full_sha=full_sha)
 
