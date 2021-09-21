@@ -1,6 +1,7 @@
 import os
 import re
 import subprocess
+from datetime import datetime
 from distutils.errors import DistutilsSetupError
 from typing import TYPE_CHECKING, Any, Callable, List, Optional, Union
 
@@ -15,6 +16,7 @@ DEFAULT_DEV_TEMPLATE = "{tag}.post{ccount}+git.{sha}"  # type: str
 DEFAULT_DIRTY_TEMPLATE = "{tag}.post{ccount}+git.{sha}.dirty"  # type: str
 DEFAULT_STARTING_VERSION = "0.0.1"
 ENV_VARS_REGEXP = re.compile(r"\{env:([^:}]+):?([^}]+)?\}", re.IGNORECASE | re.UNICODE)  # type: Pattern
+TIMESTAMP_REGEXP = re.compile(r"\{timestamp:([^}]+?)\}", re.IGNORECASE | re.DOTALL | re.UNICODE)  # type: Pattern
 
 
 def _exec(cmd):  # type: (str) -> List[str]
@@ -144,6 +146,16 @@ def subst_env_variables(template):  # type: (str) -> str
     return template
 
 
+def subst_timestamp(template):  # type: (str) -> str
+    if "timestamp:" in template:
+        now = datetime.now()
+        for fmt in TIMESTAMP_REGEXP.findall(template):
+            result = now.strftime(fmt)
+            template = TIMESTAMP_REGEXP.sub(result, template)
+
+    return template
+
+
 def version_from_git(
     template=DEFAULT_TEMPLATE,  # type: str
     dev_template=DEFAULT_DEV_TEMPLATE,  # type: str
@@ -205,6 +217,7 @@ def version_from_git(
         t = template
 
     t = subst_env_variables(t)
+    t = subst_timestamp(t)
 
     version = t.format(sha=full_sha[:8], tag=tag, ccount=ccount, branch=branch, full_sha=full_sha)
 
