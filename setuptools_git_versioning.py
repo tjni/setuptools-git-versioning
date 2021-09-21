@@ -16,7 +16,7 @@ DEFAULT_DEV_TEMPLATE = "{tag}.post{ccount}+git.{sha}"  # type: str
 DEFAULT_DIRTY_TEMPLATE = "{tag}.post{ccount}+git.{sha}.dirty"  # type: str
 DEFAULT_STARTING_VERSION = "0.0.1"
 ENV_VARS_REGEXP = re.compile(r"\{env:([^:}]+):?([^}]+)?\}", re.IGNORECASE | re.UNICODE)  # type: Pattern
-TIMESTAMP_REGEXP = re.compile(r"\{timestamp:([^}]+?)\}", re.IGNORECASE | re.DOTALL | re.UNICODE)  # type: Pattern
+TIMESTAMP_REGEXP = re.compile(r"\{timestamp:?([^:}]+)?\}", re.IGNORECASE | re.UNICODE)  # type: Pattern
 
 
 def _exec(cmd):  # type: (str) -> List[str]
@@ -137,7 +137,7 @@ def read_version_from_file(path):  # type: (Union[str, os.PathLike]) -> str
 
 
 def subst_env_variables(template):  # type: (str) -> str
-    if "env:" in template:
+    if "{env" in template:
         for var, default in ENV_VARS_REGEXP.findall(template):
             value = os.environ.get(var)
 
@@ -150,7 +150,7 @@ def subst_env_variables(template):  # type: (str) -> str
 
 
 def subst_timestamp(template):  # type: (str) -> str
-    if "timestamp:" in template:
+    if "{timestamp" in template:
         now = datetime.now()
         for fmt in TIMESTAMP_REGEXP.findall(template):
             result = now.strftime(fmt)

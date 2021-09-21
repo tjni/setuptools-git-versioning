@@ -504,7 +504,7 @@ You can use these substitutions in `template`, `dev_template` or `dirty_template
 
 - `{timestamp:format}`: Current timestamp rendered into a specified format. Examples:
 
-  - `{timestamp:%s}` will result `1632181549` (Unix timestamp).
+  - `{timestamp}` or `{timestamp:%s}` will result `1632181549` (Unix timestamp).
 
   - `{timestamp:%Y-%m-%dT%H-%M-%S}` will result `2021-09-21T12:34:56`.
 
