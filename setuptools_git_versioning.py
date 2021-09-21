@@ -142,9 +142,9 @@ def subst_env_variables(template):  # type: (str) -> str
             value = os.environ.get(var)
 
             if value:
-                template = ENV_VARS_REGEXP.sub(value, template)
+                template, _ = ENV_VARS_REGEXP.subn(value, template, count=1)
             else:
-                template = ENV_VARS_REGEXP.sub("{" + (default or "UNKNOWN") + "}", template)
+                template, _ = ENV_VARS_REGEXP.subn("{" + (default or "UNKNOWN") + "}", template, count=1)
 
     return template
 
@@ -153,8 +153,8 @@ def subst_timestamp(template):  # type: (str) -> str
     if "{timestamp" in template:
         now = datetime.now()
         for fmt in TIMESTAMP_REGEXP.findall(template):
-            result = now.strftime(fmt)
-            template = TIMESTAMP_REGEXP.sub(result, template)
+            result = now.strftime(fmt or "%s")
+            template, _ = TIMESTAMP_REGEXP.subn(result, template, count=1)
 
     return template
 
