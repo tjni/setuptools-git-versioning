@@ -139,9 +139,12 @@ def read_version_from_file(path):  # type: (Union[str, os.PathLike]) -> str
 def subst_env_variables(template):  # type: (str) -> str
     if "env:" in template:
         for var, default in ENV_VARS_REGEXP.findall(template):
-            value = os.environ.get(var, default or "UNKNOWN")
+            value = os.environ.get(var)
 
-            template = ENV_VARS_REGEXP.sub("{" + value + "}", template)
+            if value:
+                template = ENV_VARS_REGEXP.sub(value, template)
+            else:
+                template = ENV_VARS_REGEXP.sub("{" + (default or "UNKNOWN") + "}", template)
 
     return template
 
