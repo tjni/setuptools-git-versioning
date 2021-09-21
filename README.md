@@ -498,9 +498,9 @@ You can use these substitutions in `template`, `dev_template` or `dirty_template
 
 - `{env:SOMEVAR}`: Value of environment variable `SOMEVAR`. Examples:
 
-  - You can pass default value using `{env:SOMEVAR:"default"}` syntax. Default value for missing variables is `UNKNOWN`.
+  - You can pass default value using `{env:SOMEVAR:default}` syntax.  Default value for missing variables is `UNKNOWN`.
 
-  - It is possible to pass another substitution instead of a default value using `{env:SOMEVAR:subst}` syntax, e.g. `{env:BUILD_NUMBER:ccount}`.
+  - It is possible to pass another substitution instead of a default value using `{env:SOMEVAR:{subst}}` syntax, e.g. `{env:BUILD_NUMBER:{ccount}}`.
 
 - `{timestamp:format}`: Current timestamp rendered into a specified format. Examples:
 
