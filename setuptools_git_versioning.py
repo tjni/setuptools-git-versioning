@@ -228,4 +228,5 @@ def version_from_git(
     # Ensure local version label only contains permitted characters
     public, sep, local = version.partition("+")
     local_sanitized = re.sub(r"[^a-zA-Z0-9.]", ".", local)
-    return public + sep + local_sanitized
+    public_sanitized = public.lstrip("v")  # for tag "v1.0.0" drop leading "v" symbol
+    return public_sanitized + sep + local_sanitized
