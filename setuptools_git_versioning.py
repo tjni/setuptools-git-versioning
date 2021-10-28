@@ -197,7 +197,7 @@ def version_from_git(
             tag = read_version_from_file(version_file)
 
             if not count_commits_from_version_file:
-                return tag
+                return tag.lstrip("v")  # for tag "v1.0.0" drop leading "v" symbol
 
             tag_sha = get_latest_file_commit(version_file)
     else:
@@ -228,5 +228,5 @@ def version_from_git(
     # Ensure local version label only contains permitted characters
     public, sep, local = version.partition("+")
     local_sanitized = re.sub(r"[^a-zA-Z0-9.]", ".", local)
-    public_sanitized = public.lstrip("v")  # for tag "v1.0.0" drop leading "v" symbol
+    public_sanitized = public.lstrip("v")  # for version "v1.0.0" drop leading "v" symbol
     return public_sanitized + sep + local_sanitized
