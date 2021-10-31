@@ -79,7 +79,6 @@ jobs:
       uses: softprops/action-gh-release@v1
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-        name: ${{ github.ref }}
         draft: false
         prerelease: false
         files: |
