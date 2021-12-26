@@ -39,6 +39,8 @@ def create_file(
 
     if add:
         execute(cwd, "git add {name}".format(name=cmd_quote(name)))
+        log.info(execute(cwd, "git status"))
+        log.info(execute(cwd, "git diff"))
 
         if commit:
             msg = "Add {}".format(name)

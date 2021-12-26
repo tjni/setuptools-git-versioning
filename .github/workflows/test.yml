@@ -79,12 +79,20 @@ jobs:
     - name: Build package
       run: python setup.py bdist_wheel sdist
 
+    - name: Archive coverage results
+      uses: actions/upload-artifact@v2
+      with:
+        name: code-coverage ${{ matrix.python-version }}
+        path: reports/.coverage*
+
   all_done:
     name: Tests done (${{ github.event_name }})
     runs-on: ubuntu-latest
     needs: [tests]
 
     steps:
+    - name: Download all coverage reports
+      uses: actions/download-artifact@v2
 
     - name: Combine coverage
       run: |

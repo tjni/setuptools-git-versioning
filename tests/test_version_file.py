@@ -308,8 +308,8 @@ def test_version_file_template_substitution_env(repo, state, template_name, temp
 @pytest.mark.parametrize(
     "template, fmt, callback",
     [
-        ("{tag}.post{timestamp}", "{tag}.post{}", lambda dt: (int(dt.timestamp()) // 100,)),
-        ("{tag}.post{timestamp:%s}", "{tag}.post{}", lambda dt: (int(dt.timestamp()) // 100,)),
+        ("{tag}.post{timestamp}", "{tag}.post{}", lambda dt: (int(dt.strftime("%s")) // 100,)),
+        ("{tag}.post{timestamp:%s}", "{tag}.post{}", lambda dt: (int(dt.strftime("%s")) // 100,)),
         (
             "{timestamp:%Y}.{timestamp:%m}.{timestamp:%d}+{timestamp:%H%M%S}",
             "{}.{}.{}+{}",

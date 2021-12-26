@@ -36,9 +36,11 @@ def test_tag_missing(repo):
 
 def test_tag_non_linear_history(repo):
     execute(repo, "git checkout -b dev")
+    create_file(repo, commit=False)
     create_setup_py(repo)
 
     execute(repo, "git checkout master")
+    create_file(repo, commit=False)
     create_setup_py(repo)
     execute(repo, "git tag 1.0.0")
 
@@ -257,8 +259,8 @@ def test_tag_template_substitution_env(repo, state, template_name, template, pip
 @pytest.mark.parametrize(
     "template, fmt, callback",
     [
-        ("{tag}.post{timestamp}", "{tag}.post{}", lambda dt: (int(dt.timestamp()) // 100,)),
-        ("{tag}.post{timestamp:%s}", "{tag}.post{}", lambda dt: (int(dt.timestamp()) // 100,)),
+        ("{tag}.post{timestamp}", "{tag}.post{}", lambda dt: (int(dt.strftime("%s")) // 100,)),
+        ("{tag}.post{timestamp:%s}", "{tag}.post{}", lambda dt: (int(dt.strftime("%s")) // 100,)),
         (
             "{timestamp:%Y}.{timestamp:%m}.{timestamp:%d}+{timestamp:%H%M%S}",
             "{}.{}.{}+{}",
