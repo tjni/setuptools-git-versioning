@@ -73,7 +73,7 @@ jobs:
     - name: Run tests
       run: |
         mkdir reports/
-        coverage -m pytest --reruns 5
+        coverage run -m pytest --reruns 5
 
     - name: Build package
       run: python setup.py bdist_wheel sdist
