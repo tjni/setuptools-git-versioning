@@ -16,6 +16,9 @@ repos:
   - id: fix-byte-order-marker
   - id: fix-encoding-pragma
     args: [--remove]
+  - id: name-tests-test
+    files: ^tests/.*\.py$
+    args: [--django]
   - id: trailing-whitespace
   - id: detect-private-key
 - repo: https://github.com/Lucas-C/pre-commit-hooks
@@ -70,7 +73,7 @@ repos:
   hooks:
   - id: python-bandit-vulnerability-check
     # TODO: remove line below after https://github.com/PyCQA/bandit/issues/488
-    args: [-lll, --recursive, -x, ./venv/*, .]
+    args: [-lll, --recursive, -x, './venv/*,./tests/,./pytest_cache/*', .]
 - repo: meta
   hooks:
   - id: check-hooks-apply
