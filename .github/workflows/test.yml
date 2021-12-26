@@ -74,6 +74,7 @@ jobs:
     - name: Run tests
       run: |
         mkdir reports/
+        pip install -e .
         coverage run -m pytest --reruns 5
 
     - name: Build package
