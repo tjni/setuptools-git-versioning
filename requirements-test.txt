@@ -1,6 +1,7 @@
 coverage
-flake8<=2.6 ;python_version=='3.4'
-flake8<=2.6 ;python_version=='3.3'
-flake8>=3.8;python_version>="3.5"
+flake8<=2.6; python_version=='3.4'
+flake8<=2.6; python_version=='3.3'
+flake8>=3.8; python_version=="2.7"
+flake8>=3.8; python_version>="3.5"
 pytest
 pytest-rerunfailures
