@@ -83,6 +83,8 @@ def get_short_commit(cwd, **kwargs):  # type: (str, *Any) -> str
 def repo(tmpdir):
     repo_dir = str(tmpdir.mkdir(rand_str()))
     execute(repo_dir, "git init -b master")
+    execute(repo_dir, "git config --local user.email 'tests@example.com'")
+    execute(repo_dir, "git config --local user.name 'Tests runner'")
     create_file(
         repo_dir,
         ".gitignore",
