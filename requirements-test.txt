@@ -5,4 +5,4 @@ flake8>=3.8; python_version=="2.7"
 flake8>=3.8; python_version>="3.5"
 pytest
 pytest-rerunfailures<=2.2; python_version=='3.3'
-pytest-rerunfailures
+pytest-rerunfailures; python_version!='3.3'
