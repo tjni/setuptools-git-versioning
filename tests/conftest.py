@@ -1,13 +1,17 @@
 import logging
 import os
 import pytest
-import shlex
 import subprocess
 import sys
 import textwrap
 import uuid
 
 from typing import Any, Optional
+
+try:
+    from shlex import quote as cmd_quote
+except ImportError:
+    from pipes import quote as cmd_quote
 
 log = logging.getLogger(__name__)
 
@@ -34,11 +38,11 @@ def create_file(
         f.write(content)
 
     if add:
-        execute(cwd, "git add {name}".format(name=shlex.quote(name)))
+        execute(cwd, "git add {name}".format(name=cmd_quote(name)))
 
         if commit:
             msg = "Add {}".format(name)
-            execute(cwd, "git commit -m {msg}".format(msg=shlex.quote(msg)))
+            execute(cwd, "git commit -m {msg}".format(msg=cmd_quote(msg)))
             result = get_short_commit(cwd)
 
     log.info(execute(cwd, "git status"))
