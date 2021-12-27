@@ -31,7 +31,7 @@ jobs:
     if: ${{ needs.check_duplicate_runs.outputs.should_skip != 'true' }}
     strategy:
       matrix:
-        python-version: ['2.7', '3.3', '3.4', '3.5', '3.6', '3.7', '3.8', '3.9', '3.10']
+        python-version: ['2.7', '3.5', '3.6', '3.7', '3.8', '3.9', '3.10']
       fail-fast: false
 
     steps:
@@ -64,17 +64,12 @@ jobs:
       run: pip install -I -r requirements.txt -r requirements-test.txt
 
     - name: Run flake8
-      run: flake8 --count --ignore=F401 --max-line-length=120 .
-      if: matrix.python-version == '3.3' || matrix.python-version == '3.4'
-
-    - name: Run flake8
       run: flake8 --count --max-line-length=120 .
-      if: matrix.python-version != '3.3' && matrix.python-version != '3.4'
 
     - name: Run tests
       run: |
         mkdir reports/
-        pip install --trusted-host pypi.org -e .
+        pip install -e .
         coverage run -m pytest --reruns 5
 
     - name: Build package
