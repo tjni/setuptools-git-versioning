@@ -1,7 +1,7 @@
 import pytest
 import textwrap
 
-from tests.conftest import execute, create_file, get_version
+from tests.conftest import execute, create_file, get_version, rand_str
 
 
 VERSION_PY_CALLABLE_GENERIC = textwrap.dedent(
@@ -105,6 +105,29 @@ def test_version_callback_drop_leading_v(repo, version, real_version, version_py
         setup_py,
     )
     assert get_version(repo) == real_version
+
+
+@pytest.mark.parametrize(
+    "version_py, setup_py",
+    [
+        (VERSION_PY_CALLABLE, SETUP_PY_CALLABLE),
+        (VERSION_PY_STR, SETUP_PY_STR),
+    ],
+    ids=["callable input", "str input"],
+)
+def test_version_callback_not_a_repo(tmpdir, version_py, setup_py):
+    version = "1.0.0"
+    repo_dir = str(tmpdir.mkdir(rand_str()))
+    create_file(repo_dir, "version.py", version_py.format(version=version), add=False, commit=False)
+    create_file(
+        repo_dir,
+        "setup.py",
+        setup_py,
+        add=False,
+        commit=False,
+    )
+
+    assert get_version(repo_dir) == version
 
 
 @pytest.mark.parametrize(

@@ -3,7 +3,7 @@ import textwrap
 import pytest
 import re
 
-from tests.conftest import execute, create_file, create_setup_py, get_commit, get_version, get_short_commit
+from tests.conftest import execute, create_file, create_setup_py, get_commit, get_version, get_short_commit, rand_str
 
 
 def test_version_file(repo):
@@ -88,6 +88,51 @@ def test_version_file_missing(repo):
     )
 
     assert get_version(repo) == "0.0.1"
+
+
+def test_version_file_not_a_repo(tmpdir):
+    repo_dir = str(tmpdir.mkdir(rand_str()))
+
+    create_file(
+        repo_dir,
+        "VERSION.txt",
+        "1.0.0",
+        add=False,
+        commit=False,
+    )
+    create_setup_py(
+        repo_dir,
+        {
+            "version_file": "VERSION.txt",
+        },
+        add=False,
+        commit=False,
+    )
+
+    assert get_version(repo_dir) == "1.0.0"
+
+
+def test_version_file_not_a_repo_count_commits(tmpdir):
+    repo_dir = str(tmpdir.mkdir(rand_str()))
+
+    create_file(
+        repo_dir,
+        "VERSION.txt",
+        "1.0.0",
+        add=False,
+        commit=False,
+    )
+    create_setup_py(
+        repo_dir,
+        {
+            "version_file": "VERSION.txt",
+            "count_commits_from_version_file": True,
+        },
+        add=False,
+        commit=False,
+    )
+
+    assert get_version(repo_dir) == "1.0.0"
 
 
 def test_version_file_dev(repo):
@@ -264,6 +309,9 @@ def test_version_file_template_substitution_branch(repo, state, template_name, b
         ("{tag}.post{env:PIPELINE_ID:{ccount}}", "0234", "234"),
         ("{tag}.post{env:PIPELINE_ID:{ccount}}", "234", "234"),
         ("{tag}.post{env:PIPELINE_ID:{ccount}}", None, "{ccount}"),
+        ("{tag}.post{env:PIPELINE_ID}", "0234", "234"),
+        ("{tag}.post{env:PIPELINE_ID}", "234", "234"),
+        ("{tag}.post{env:PIPELINE_ID}", None, "UNKNOWN"),
     ],
 )
 @pytest.mark.parametrize(

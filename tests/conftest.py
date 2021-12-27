@@ -49,8 +49,6 @@ def create_file(
             execute(cwd, "git commit -m {msg}".format(msg=cmd_quote(msg)))
             result = get_short_commit(cwd)
 
-    log.info(execute(cwd, "git status"))
-    log.info(execute(cwd, "git diff"))
     return result
 
 
@@ -66,7 +64,7 @@ def create_setup_py(cwd, config=None, **kwargs):  # type: (str, Optional[dict], 
                 setup_requires=["setuptools-git-versioning"]
             )
         """
-        ).format(config=config or True),
+        ).format(config=config if config is not None else True),
         **kwargs
     )
 

@@ -4,7 +4,7 @@ import re
 import textwrap
 import time
 
-from tests.conftest import execute, create_file, create_setup_py, get_commit, get_version, get_short_commit
+from tests.conftest import execute, create_file, create_setup_py, get_commit, get_version, get_short_commit, rand_str
 
 
 def test_tag(repo):
@@ -32,6 +32,13 @@ def test_tag_drop_leading_v(repo, tag, version):
 def test_tag_missing(repo):
     create_setup_py(repo)
     assert get_version(repo) == "0.0.1"
+
+
+def test_tag_not_a_repo(tmpdir):
+    repo_dir = str(tmpdir.mkdir(rand_str()))
+    create_setup_py(repo_dir, add=False, commit=False)
+
+    assert get_version(repo_dir) == "0.0.1"
 
 
 def test_tag_non_linear_history(repo):
@@ -221,6 +228,9 @@ def test_tag_template_substitution_branch(repo, state, template_name, branch, su
         ("{tag}.post{env:PIPELINE_ID:{ccount}}", "0234", "234"),
         ("{tag}.post{env:PIPELINE_ID:{ccount}}", "234", "234"),
         ("{tag}.post{env:PIPELINE_ID:{ccount}}", None, "{ccount}"),
+        ("{tag}.post{env:PIPELINE_ID}", "0234", "234"),
+        ("{tag}.post{env:PIPELINE_ID}", "234", "234"),
+        ("{tag}.post{env:PIPELINE_ID}", None, "UNKNOWN"),
     ],
 )
 @pytest.mark.parametrize(
