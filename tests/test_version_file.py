@@ -3,7 +3,7 @@ import textwrap
 import pytest
 import re
 
-from tests.conftest import execute, create_file, create_setup_py, get_commit, get_version, get_short_commit, rand_str
+from tests.conftest import execute, create_file, create_setup_py, get_commit, get_version, get_short_commit
 
 
 def test_version_file(repo):
@@ -90,9 +90,7 @@ def test_version_file_missing(repo):
     assert get_version(repo) == "0.0.1"
 
 
-def test_version_file_not_a_repo(tmpdir):
-    repo_dir = str(tmpdir.mkdir(rand_str()))
-
+def test_version_file_not_a_repo(repo_dir):
     create_file(
         repo_dir,
         "VERSION.txt",
@@ -112,9 +110,7 @@ def test_version_file_not_a_repo(tmpdir):
     assert get_version(repo_dir) == "1.0.0"
 
 
-def test_version_file_not_a_repo_count_commits(tmpdir):
-    repo_dir = str(tmpdir.mkdir(rand_str()))
-
+def test_version_file_not_a_repo_count_commits(repo_dir):
     create_file(
         repo_dir,
         "VERSION.txt",

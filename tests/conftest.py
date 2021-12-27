@@ -82,11 +82,27 @@ def get_short_commit(cwd, **kwargs):  # type: (str, *Any) -> str
 
 
 @pytest.fixture
-def repo(tmpdir):
+def repo_dir(tmpdir):
     repo_dir = str(tmpdir.mkdir(rand_str()))
+    # collect coverage data
+    with open(os.path.join(root, ".coveragerc")) as f:
+        create_file(repo_dir, ".coveragerc", f.read(), add=False, commit=False)
+    os.mkdir(os.path.join(repo_dir, "reports"))
+
+    yield repo_dir
+
+    # move collect coverage data to reports directory
+    for root_path, _dirs, files in os.walk(os.path.join(repo_dir, "reports")):
+        for file in files:
+            shutil.move(os.path.join(root_path, file), os.path.join(root, "reports", file))
+
+
+@pytest.fixture
+def repo(repo_dir):
     execute(repo_dir, "git init -b master")
     execute(repo_dir, "git config --local user.email 'tests@example.com'")
     execute(repo_dir, "git config --local user.name 'Tests runner'")
+    execute(repo_dir, "git add .coveragerc")
     create_file(
         repo_dir,
         ".gitignore",
@@ -100,14 +116,5 @@ def repo(tmpdir):
     """
         ),
     )
-    # collect coverage data
-    with open(os.path.join(root, ".coveragerc")) as f:
-        create_file(repo_dir, ".coveragerc", f.read())
-    os.mkdir(os.path.join(repo_dir, "reports"))
 
-    yield repo_dir
-
-    # move collect coverage data to reports directory
-    for root_path, _dirs, files in os.walk(os.path.join(repo_dir, "reports")):
-        for file in files:
-            shutil.move(os.path.join(root_path, file), os.path.join(root, "reports", file))
+    return repo_dir

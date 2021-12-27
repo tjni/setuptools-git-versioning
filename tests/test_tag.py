@@ -4,7 +4,7 @@ import re
 import textwrap
 import time
 
-from tests.conftest import execute, create_file, create_setup_py, get_commit, get_version, get_short_commit, rand_str
+from tests.conftest import execute, create_file, create_setup_py, get_commit, get_version, get_short_commit
 
 
 def test_tag(repo):
@@ -34,8 +34,7 @@ def test_tag_missing(repo):
     assert get_version(repo) == "0.0.1"
 
 
-def test_tag_not_a_repo(tmpdir):
-    repo_dir = str(tmpdir.mkdir(rand_str()))
+def test_tag_not_a_repo(repo_dir):
     create_setup_py(repo_dir, add=False, commit=False)
 
     assert get_version(repo_dir) == "0.0.1"
