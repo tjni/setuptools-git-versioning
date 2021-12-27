@@ -78,7 +78,7 @@ jobs:
     - name: Uninstall package
       run: pip uninstall -y setuptools-git-versioning
 
-    - name: Archive coverage results
+    - name: Upload coverage results
       uses: actions/upload-artifact@v2
       with:
         name: code-coverage ${{ matrix.python-version }}
@@ -109,14 +109,19 @@ jobs:
           ${{ runner.os }}-python
           ${{ runner.os }}-
 
-    - name: Download all coverage reports
-      uses: actions/download-artifact@v2
-
     - name: Upgrade pip
       run: python -m pip install --upgrade pip setuptools wheel
 
     - name: Install dependencies
       run: pip install -I -r requirements.txt -r requirements-test.txt
+
+    - name: Download all coverage reports
+      uses: actions/download-artifact@v2
+      with:
+        path: reports
+
+    - name: Move coverage reports to the root folder
+      run: find reports -type f -exec mv '{}' reports \;
 
     - name: Combine coverage
       run: |
