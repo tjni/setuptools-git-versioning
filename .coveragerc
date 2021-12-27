@@ -1,5 +1,7 @@
 [run]
+branch = True
+source = setuptools_git_versioning.py
 omit =
-    tests/
+    tests/*
 parallel = true
 data_file = reports/.coverage
