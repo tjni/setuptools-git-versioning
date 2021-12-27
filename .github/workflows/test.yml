@@ -74,11 +74,16 @@ jobs:
         pip install dist/*.whl
         coverage run -m pytest --reruns 5
 
+    - name: Combine coverage
+      run: |
+        coverage combine
+        coverage xml -o reports/coverage-${{ matrix.python-version }}.xml -i
+
     - name: Upload coverage results
       uses: actions/upload-artifact@v2
       with:
-        name: code-coverage ${{ matrix.python-version }}
-        path: reports/.coverage*
+        name: code-coverage-${{ matrix.python-version }}
+        path: reports/coverage-${{ matrix.python-version }}.xml
 
   all_done:
     name: Tests done (${{ github.event_name }})
@@ -119,15 +124,10 @@ jobs:
     - name: Move coverage reports to the root folder
       run: find reports -type f -exec mv '{}' reports \;
 
-    - name: Combine coverage
-      run: |
-        coverage combine
-        coverage xml -o reports/coverage.xml -i
-
     - name: Check coverage
       uses: codecov/codecov-action@v2
       with:
-        files: ./reports/coverage.xml
+        directory: ./reports
         fail_ci_if_error: false
 
     - name: All done
