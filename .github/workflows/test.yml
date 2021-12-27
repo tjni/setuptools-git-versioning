@@ -102,11 +102,11 @@ jobs:
     - name: Move coverage reports to the root folder
       run: find reports -type f -exec mv '{}' reports \;
 
-    - name: Check coverage
-      uses: codecov/codecov-action@v2
-      with:
-        directory: ./reports
-        fail_ci_if_error: false
+    #- name: Check coverage
+    #  uses: codecov/codecov-action@v2
+    #  with:
+    #    directory: ./reports
+    #    fail_ci_if_error: false
 
     - name: All done
       run: echo 1
