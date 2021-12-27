@@ -72,7 +72,7 @@ jobs:
     - name: Run tests
       run: |
         mkdir reports/
-        pip install -e dist/*.whl
+        pip install dist/*.whl
         coverage run -m pytest --reruns 5
 
     - name: Uninstall package
