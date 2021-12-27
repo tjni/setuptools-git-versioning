@@ -1,6 +1,6 @@
 [run]
 branch = True
-source = setuptools_git_versioning.py
+source_pkgs = setuptools_git_versioning
 omit =
     tests/*
 parallel = true

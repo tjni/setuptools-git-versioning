@@ -3,6 +3,7 @@
 [![PyPI version](https://badge.fury.io/py/setuptools-git-versioning.svg)](https://badge.fury.io/py/setuptools-git-versioning)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/setuptools-git-versioning)](https://badge.fury.io/py/setuptools-git-versioning)
 [![Build Status](https://github.com/dolfinus/setuptools-git-versioning/workflows/Tests/badge.svg)](https://github.com/dolfinus/setuptools-git-versioning/actions)
+[![codecov](https://codecov.io/gh/dolfinus/setuptools-git-versioning/branch/master/graph/badge.svg?token=GIMVHUTNW4)](https://codecov.io/gh/dolfinus/setuptools-git-versioning)
 [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/dolfinus/setuptools-git-versioning/master.svg)](https://results.pre-commit.ci/latest/github/dolfinus/setuptools-git-versioning/master)
 
 Use git repo data (latest tag, current commit hash, etc) for building a version number according [PEP-440](https://www.python.org/dev/peps/pep-0440/).

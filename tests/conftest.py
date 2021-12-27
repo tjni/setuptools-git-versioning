@@ -1,6 +1,7 @@
 import logging
 import os
 import pytest
+import shutil
 import subprocess
 import sys
 import textwrap
@@ -14,6 +15,7 @@ except ImportError:
     from pipes import quote as cmd_quote
 
 log = logging.getLogger(__name__)
+root = os.path.dirname(os.path.dirname(__file__))
 
 
 def rand_str():  # type: () -> str
@@ -70,7 +72,7 @@ def create_setup_py(cwd, config=None, **kwargs):  # type: (str, Optional[dict], 
 
 
 def get_version(cwd, **kwargs):  # type: (str, **Any) -> str
-    return execute(cwd, "{python} setup.py --version".format(python=sys.executable), **kwargs).strip()
+    return execute(cwd, "{python} -m coverage run setup.py --version".format(python=sys.executable), **kwargs).strip()
 
 
 def get_commit(cwd, **kwargs):  # type: (str, **Any) -> str
@@ -96,7 +98,18 @@ def repo(tmpdir):
         _build
         dist
         *.py[oc]
+        reports/
     """
         ),
     )
-    return repo_dir
+    # collect coverage data
+    with open(os.path.join(root, ".coveragerc")) as f:
+        create_file(repo_dir, ".coveragerc", f.read())
+    os.mkdir(os.path.join(repo_dir, "reports"))
+
+    yield repo_dir
+
+    # move collect coverage data to reports directory
+    for root_path, _dirs, files in os.walk(os.path.join(repo_dir, "reports")):
+        for file in files:
+            shutil.move(os.path.join(root_path, file), os.path.join(root, "reports", file))
