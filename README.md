@@ -30,7 +30,14 @@ No need.
 Adding `setup_requires=['setuptools-git-versioning']` somewhere in `setup.py` will automatically download the latest version from PyPi and save it in the `.eggs` folder when `setup.py` is run.
 
 ## Usage
+### pyproject.toml
+Just add this line into your `pyproject.toml`:
 
+```toml
+[tool.setuptools_git_versioning]
+```
+
+### setup.py
 Just add these lines into your `setup.py`:
 
 ```python
@@ -447,7 +454,26 @@ setuptools.setup(
 
 Default options are:
 
+```toml
+# pyproject.toml
+[build-system]
+requires = [
+    "setuptools>=45",
+    "wheel",
+    "setuptools-git-versioning",
+]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools_git_versioning]
+template = "{tag}"
+dev_template = "{tag}.post{ccount}+git.{sha}"
+dirty_template = "{tag}.post{ccount}+git.{sha}.dirty"
+starting_version = "0.0.1"
+count_commits_from_version_file = false
+```
+
 ```python
+# setup.py
 setuptools.setup(
     version_config={
         "template": "{tag}",

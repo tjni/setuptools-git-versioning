@@ -63,7 +63,7 @@ repos:
   rev: v0.930
   hooks:
   - id: mypy
-    additional_dependencies: [types-six]
+    additional_dependencies: [types-six, types-toml]
 - repo: https://github.com/pycqa/flake8
   rev: 4.0.1
   hooks:
