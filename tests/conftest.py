@@ -77,8 +77,8 @@ def create_pyproject_toml(
         cwd,
         "setup.cfg",
         setup_cfg,
-        commit=False,
         **kwargs,
+        commit=False,
     )
 
     cfg = {
