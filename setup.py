@@ -4,11 +4,17 @@ from setuptools_git_versioning import version_from_git
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 
+
+def parse_requirements(file_content):
+    lines = file_content.splitlines()
+    return [line.strip() for line in lines if line and not line.startswith("#")]
+
+
 with open(os.path.join(HERE, "README.md")) as f:
     long_description = f.read()
 
 with open(os.path.join(HERE, "requirements.txt")) as f:
-    requirements = f.read().split("\n")
+    requirements = parse_requirements(f.read())
 
 setup(
     name="setuptools-git-versioning",
@@ -48,7 +54,6 @@ setup(
             "setuptools_git_versioning = setuptools_git_versioning:parse_config",
         ],
         "setuptools.finalize_distribution_options": [
-            "version_config = setuptools_git_versioning:infer_version",
             "setuptools_git_versioning = setuptools_git_versioning:infer_version",
         ],
     },

@@ -1,43 +1,34 @@
+import subprocess
 import pytest
 import textwrap
 
-from tests.conftest import execute, create_file, get_version
+from tests.conftest import execute, create_file, get_version, get_version_setup_py
 
 
-VERSION_PY_CALLABLE_GENERIC = textwrap.dedent(
+VERSION_PY = textwrap.dedent(
     """
     def get_version():
         return "{version}"
 
-    def get_template_name():
-        return "{template_name}"
-
-    def get_template():
-        return "{template}"
-"""
-)
-VERSION_PY_CALLABLE = VERSION_PY_CALLABLE_GENERIC.format(version="{version}", template_name="", template="")
-
-VERSION_PY_STR_GENERIC = textwrap.dedent(
-    """
     __version__ = "{version}"
-    __template_name__ = "{template_name}"
-    __template__ = "{template}"
 """
 )
-VERSION_PY_STR = VERSION_PY_STR_GENERIC.format(version="{version}", template_name="", template="")
+
 
 SETUP_PY_CALLABLE = textwrap.dedent(
     """
     import setuptools
-    from version import get_version, get_template_name, get_template
+    from version import get_version
 
     setuptools.setup(
         version_config={
-            "version_callback": get_version,
-            get_template_name(): get_template()
+            "version_callback": get_version
         },
-        setup_requires=["setuptools-git-versioning"]
+        setup_requires=[
+            "setuptools>=45",
+            "wheel",
+            "setuptools-git-versioning",
+        ]
     )
 """
 )
@@ -46,35 +37,38 @@ SETUP_PY_STR = textwrap.dedent(
     """
     import setuptools
 
-    from version import __version__, __template_name__, __template__
+    from version import __version__
 
     setuptools.setup(
         version_config={
-            "version_callback": __version__,
-            __template_name__: __template__
+            "version_callback": __version__
         },
-        setup_requires=["setuptools-git-versioning"]
+        setup_requires=[
+            "setuptools>=45",
+            "wheel",
+            "setuptools-git-versioning",
+        ]
     )
 """
 )
 
 
 @pytest.mark.parametrize(
-    "version_py, setup_py",
+    "version_callback",
     [
-        (VERSION_PY_CALLABLE, SETUP_PY_CALLABLE),
-        (VERSION_PY_STR, SETUP_PY_STR),
+        "version:get_version",
+        "version:__version__",
     ],
-    ids=["callable input", "str input"],
+    ids=["callable", "str"],
 )
-def test_version_callback(repo, version_py, setup_py):
-    create_file(repo, "version.py", version_py.format(version="1.0.0"), commit=False)
-    create_file(
-        repo,
-        "setup.py",
-        setup_py,
-    )
+def test_version_callback(repo, version_callback, create_config):
+    create_file(repo, "version.py", VERSION_PY.format(version="1.0.0"), commit=False)
 
+    create_config(repo, {"version_callback": version_callback})
+
+    assert get_version(repo) == "1.0.0"
+
+    create_file(repo)
     assert get_version(repo) == "1.0.0"
 
     create_file(repo)
@@ -82,46 +76,62 @@ def test_version_callback(repo, version_py, setup_py):
 
 
 @pytest.mark.parametrize(
-    "version_py, setup_py",
+    "setup_py",
     [
-        (VERSION_PY_CALLABLE, SETUP_PY_CALLABLE),
-        (VERSION_PY_STR, SETUP_PY_STR),
+        SETUP_PY_CALLABLE,
+        SETUP_PY_STR,
     ],
-    ids=["callable input", "str input"],
+    ids=["callable", "str"],
 )
-@pytest.mark.parametrize(
-    "version, real_version",
-    [
-        ("1.0.0", "1.0.0"),
-        ("v1.2.3", "1.2.3"),
-        ("abc1.2.3", "abc1.2.3"),
-    ],
-)
-def test_version_callback_drop_leading_v(repo, version, real_version, version_py, setup_py):
-    create_file(repo, "version.py", version_py.format(version=version), commit=False)
+def test_version_callback_setup_py_direct_import(repo, setup_py):
+    create_file(repo, "version.py", VERSION_PY.format(version="1.0.0"), commit=False)
     create_file(
         repo,
         "setup.py",
         setup_py,
     )
-    assert get_version(repo) == real_version
+
+    assert get_version_setup_py(repo) == "1.0.0"
+
+    create_file(repo)
+    assert get_version_setup_py(repo) == "1.0.0"
+
+    create_file(repo)
+    assert get_version_setup_py(repo) == "1.0.0"
+
+
+@pytest.mark.parametrize("create_version_py", [True, False])
+def test_version_callback_missing(repo, create_version_py, create_config):
+    version_callback = "version:wtf"
+
+    if create_version_py:
+        create_file(repo, "version.py", "", commit=False)
+
+    create_config(repo, {"version_callback": version_callback})
+
+    with pytest.raises(subprocess.CalledProcessError):
+        get_version(repo)
 
 
 @pytest.mark.parametrize(
-    "version_py, setup_py",
+    "version, real_version",
     [
-        (VERSION_PY_CALLABLE, SETUP_PY_CALLABLE),
-        (VERSION_PY_STR, SETUP_PY_STR),
+        ("1.0.0", "1.0.0"),
+        ("v1.2.3", "1.2.3"),
     ],
-    ids=["callable input", "str input"],
 )
-def test_version_callback_not_a_repo(repo_dir, version_py, setup_py):
+def test_version_callback_drop_leading_v(repo, version, real_version, create_config):
+    create_file(repo, "version.py", VERSION_PY.format(version=version), commit=False)
+    create_config(repo, {"version_callback": "version:get_version"})
+    assert get_version(repo) == real_version
+
+
+def test_version_callback_not_a_repo(repo_dir, create_config):
     version = "1.0.0"
-    create_file(repo_dir, "version.py", version_py.format(version=version), add=False, commit=False)
-    create_file(
+    create_file(repo_dir, "version.py", VERSION_PY.format(version=version), add=False, commit=False)
+    create_config(
         repo_dir,
-        "setup.py",
-        setup_py,
+        {"version_callback": "version:get_version"},
         add=False,
         commit=False,
     )
@@ -129,55 +139,37 @@ def test_version_callback_not_a_repo(repo_dir, version_py, setup_py):
     assert get_version(repo_dir) == version
 
 
-@pytest.mark.parametrize(
-    "version_py, setup_py",
-    [
-        (VERSION_PY_CALLABLE, SETUP_PY_CALLABLE),
-        (VERSION_PY_STR, SETUP_PY_STR),
-    ],
-    ids=["callable input", "str input"],
-)
-def test_version_callback_tag_is_preferred(repo, version_py, setup_py):
-    create_file(repo, "version.py", version_py.format(version="1.0.0"), commit=False)
-    create_file(
-        repo,
-        "setup.py",
-        setup_py,
-    )
+def test_version_callback_tag_is_preferred(repo, create_config):
+    create_file(repo, "version.py", VERSION_PY.format(version="1.0.0"), commit=False)
+    create_config(repo, {"version_callback": "version:get_version"})
 
     execute(repo, "git tag 1.2.3")
     assert get_version(repo) == "1.2.3"
 
 
-@pytest.mark.parametrize(
-    "version_py, setup_py",
-    [
-        (VERSION_PY_CALLABLE, SETUP_PY_CALLABLE),
-        (VERSION_PY_STR, SETUP_PY_STR),
-    ],
-    ids=["callable input", "str input"],
-)
-def test_version_callback_has_more_priority_than_version_file(repo, version_py, setup_py):
+def test_version_callback_has_more_priority_than_version_file(repo, create_config):
     create_file(repo, "VERSION.txt", "1.2.3")
     version = "1.0.0"
 
-    create_file(repo, "version.py", version_py.format(version=version), commit=False)
-    create_file(
+    create_file(repo, "version.py", VERSION_PY.format(version=version), commit=False)
+    create_config(
         repo,
-        "setup.py",
-        setup_py,
+        {
+            "version_file": "VERSION.txt",
+            "version_callback": "version:get_version",
+        },
     )
 
     assert get_version(repo) == version
 
 
 @pytest.mark.parametrize(
-    "version_py, setup_py",
+    "version_callback",
     [
-        (VERSION_PY_CALLABLE_GENERIC, SETUP_PY_CALLABLE),
-        (VERSION_PY_STR_GENERIC, SETUP_PY_STR),
+        "version:get_version",
+        "version:__version__",
     ],
-    ids=["callable input", "str input"],
+    ids=["callable", "str"],
 )
 @pytest.mark.parametrize(
     "template",
@@ -199,45 +191,20 @@ def test_version_callback_has_more_priority_than_version_file(repo, version_py, 
         "{tag}",
     ],
 )
-@pytest.mark.parametrize(
-    "state, template_name",
-    [
-        ("tag", "template"),
-        ("dev", "dev_template"),
-        ("dirty", "dirty_template"),
-    ],
-)
 def test_version_callback_template_substitutions_are_ignored(
     repo,
-    state,
-    template_name,
     template,
-    version_py,
-    setup_py,
+    version_callback,
+    create_config,
 ):
     version = "1.0.0"
 
     create_file(
         repo,
         "version.py",
-        version_py.format(version=version, template_name=template_name, template=template),
+        VERSION_PY.format(version=version),
         commit=False,
     )
-    create_file(
-        repo,
-        "setup.py",
-        setup_py,
-    )
-
-    if state == "tag":
-        ccount = 0
-    else:
-        ccount = 5
-
-    for _ in range(ccount):
-        create_file(repo)
-
-    if state == "dirty":
-        create_file(repo, commit=False)
+    create_config(repo, {"version_callback": version_callback, "dev_template": template})
 
     assert get_version(repo) == version

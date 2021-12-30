@@ -1,10 +1,14 @@
+import configparser
+from functools import partial
 import logging
+import io
 import os
 import pytest
 import shutil
 import subprocess
 import sys
 import textwrap
+import toml
 import uuid
 
 from typing import Any, Optional
@@ -52,16 +56,74 @@ def create_file(
     return result
 
 
-def create_setup_py(cwd, config=None, **kwargs):  # type: (str, Optional[dict], **Any) -> Optional[str]
+def create_pyproject_toml(
+    cwd,  # type: str
+    config=None,  # type: Optional[dict]
+    commit=True,  # type: bool
+    **kwargs  # type: Any
+):  # type: (...) -> Optional[str]
+    conf = configparser.ConfigParser()
+
+    conf["metadata"] = {
+        "name": "mypkg",
+    }
+
+    fd = io.StringIO()
+    conf.write(fd)
+    setup_cfg = fd.getvalue()
+    fd.close()
+
+    create_file(
+        cwd,
+        "setup.cfg",
+        setup_cfg,
+        commit=False,
+        **kwargs,
+    )
+
+    cfg = {
+        "build-system": {
+            "requires": [
+                "setuptools>=45",
+                "setuptools-localimport",
+                "wheel",
+                "setuptools-git-versioning",
+            ],
+            # with default "setuptools.build_meta" it is not possible to build package
+            # which uses its own source code to get version number,
+            # e.g. `version_callback` or `branch_formatter`
+            # mote details: https://github.com/pypa/setuptools/issues/1642#issuecomment-457673563
+            "build-backend": "setuptools_localimport",
+        },
+        "tool": {"setuptools-git-versioning": (config if config is not None else {})},
+    }
+
+    log.warning(toml.dumps(cfg))
+
+    return create_file(cwd, "pyproject.toml", toml.dumps(cfg), commit=commit, **kwargs)
+
+
+def create_setup_py(
+    cwd,  # type: str
+    config=None,  # type: Optional[dict]
+    **kwargs  # type: Any
+):  # type: (...) -> Optional[str]
     return create_file(
         cwd,
         "setup.py",
         textwrap.dedent(
             """
             import setuptools
+
             setuptools.setup(
+                name="mypkg",
                 version_config={config},
-                setup_requires=["setuptools-git-versioning"]
+                packages=setuptools.find_packages(),
+                setup_requires=[
+                    "setuptools>=45",
+                    "wheel",
+                    "setuptools-git-versioning",
+                ]
             )
         """
         ).format(config=config if config is not None else True),
@@ -69,8 +131,55 @@ def create_setup_py(cwd, config=None, **kwargs):  # type: (str, Optional[dict], 
     )
 
 
+@pytest.fixture(params=[create_setup_py, create_pyproject_toml])
+def create_config(request):
+    return request.param
+
+
+def typed_config(repo, config_creator, config_type, template=None, config=None):
+    if config_type == "tag":
+        cfg = {}
+    else:
+        cfg = {"version_file": "VERSION.txt", "count_commits_from_version_file": True}
+
+    if config_type == "tag":
+        template_name = "template"
+    else:
+        template_name = "dev_template"
+
+    if template:
+        cfg[template_name] = template
+
+    if config:
+        cfg.update(config)
+
+    config_creator(repo, cfg)
+
+    if config_type == "tag":
+        execute(repo, "git tag 1.2.3")
+    else:
+        create_file(repo, "VERSION.txt", "1.2.3")
+
+
+@pytest.fixture(params=["tag", "version_file"])
+def template_config(request):
+    return partial(typed_config, config_type=request.param)
+
+
 def get_version(cwd, **kwargs):  # type: (str, **Any) -> str
-    return execute(cwd, "{python} -m coverage run setup.py --version".format(python=sys.executable), **kwargs).strip()
+    execute(cwd, "{python} -m build --no-isolation".format(python=sys.executable), **kwargs)
+    with open(os.path.join(cwd, "mypkg.egg-info/PKG-INFO")) as f:
+        content = f.read().splitlines()
+
+    for line in content:
+        if line.startswith("Version: "):
+            return line.replace("Version: ", "").strip()
+
+    raise RuntimeError("Cannot get package version")
+
+
+def get_version_setup_py(cwd, **kwargs):  # type: (str, **Any) -> str
+    return execute(cwd, "{python} setup.py --version".format(python=sys.executable), **kwargs).strip()
 
 
 def get_commit(cwd, **kwargs):  # type: (str, **Any) -> str
@@ -109,12 +218,15 @@ def repo(repo_dir):
         textwrap.dedent(
             """
         .eggs
-        _build
+        *.egg
+        *.egg-info/
+        build
         dist
         *.py[oc]
         reports/
     """
         ),
     )
+    create_file(repo_dir, "__init__.py", "")
 
     return repo_dir
