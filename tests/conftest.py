@@ -73,14 +73,7 @@ def create_pyproject_toml(
     setup_cfg = fd.getvalue()
     fd.close()
 
-    setup_cfg_kwargs = kwargs.copy()
-    setup_cfg_kwargs["commit"] = False
-    create_file(
-        cwd,
-        "setup.cfg",
-        setup_cfg,
-        **setup_cfg_kwargs,
-    )
+    create_file(cwd, "setup.cfg", setup_cfg, commit=False, **kwargs)
 
     cfg = {
         "build-system": {
