@@ -78,7 +78,7 @@ def create_pyproject_toml(
     cfg = {
         "build-system": {
             "requires": [
-                "setuptools>=45",
+                "setuptools>=41",
                 "wheel",
                 "setuptools-git-versioning",
             ],
@@ -113,7 +113,7 @@ def create_setup_py(
                 version_config={config},
                 packages=setuptools.find_packages(),
                 setup_requires=[
-                    "setuptools>=45",
+                    "setuptools>=41",
                     "wheel",
                     "setuptools-git-versioning",
                 ]
@@ -159,8 +159,13 @@ def template_config(request):
     return partial(typed_config, config_type=request.param)
 
 
+def get_version_setup_py(cwd, **kwargs):  # type: (str, **Any) -> str
+    return execute(cwd, "{python} -m coverage run setup.py --version".format(python=sys.executable), **kwargs).strip()
+
+
 def get_version(cwd, **kwargs):  # type: (str, **Any) -> str
-    execute(cwd, "{python} -m build --no-isolation".format(python=sys.executable), **kwargs)
+    execute(cwd, "{python} -m coverage run -m build -s --no-isolation".format(python=sys.executable), **kwargs)
+
     with open(os.path.join(cwd, "mypkg.egg-info/PKG-INFO")) as f:
         content = f.read().splitlines()
 
@@ -169,10 +174,6 @@ def get_version(cwd, **kwargs):  # type: (str, **Any) -> str
             return line.replace("Version: ", "").strip()
 
     raise RuntimeError("Cannot get package version")
-
-
-def get_version_setup_py(cwd, **kwargs):  # type: (str, **Any) -> str
-    return execute(cwd, "{python} setup.py --version".format(python=sys.executable), **kwargs).strip()
 
 
 def get_commit(cwd, **kwargs):  # type: (str, **Any) -> str

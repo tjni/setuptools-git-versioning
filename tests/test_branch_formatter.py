@@ -140,7 +140,7 @@ def test_branch_formatter_setup_py_direct_import(repo, template_config):
                     name="mypkg",
                     version_config=version_config,
                     setup_requires=[
-                        "setuptools>=45",
+                        "setuptools>=41",
                         "wheel",
                         "setuptools-git-versioning",
                     ]

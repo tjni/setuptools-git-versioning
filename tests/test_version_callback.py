@@ -25,7 +25,7 @@ SETUP_PY_CALLABLE = textwrap.dedent(
             "version_callback": get_version
         },
         setup_requires=[
-            "setuptools>=45",
+            "setuptools>=41",
             "wheel",
             "setuptools-git-versioning",
         ]
@@ -44,7 +44,7 @@ SETUP_PY_STR = textwrap.dedent(
             "version_callback": __version__
         },
         setup_requires=[
-            "setuptools>=45",
+            "setuptools>=41",
             "wheel",
             "setuptools-git-versioning",
         ]
