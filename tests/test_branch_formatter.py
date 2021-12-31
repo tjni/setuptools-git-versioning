@@ -136,7 +136,7 @@ def test_branch_formatter_setup_py_direct_import(repo, template_config):
                 def branch_formatter(branch):
                     return re.sub("[^\\d]+", "", branch)
 
-                version_config = pickle.loads({cfg})
+                version_config = pickle.loads(b'''{cfg}''')
                 version_config["branch_formatter"] = branch_formatter
 
                 setuptools.setup(
@@ -148,10 +148,8 @@ def test_branch_formatter_setup_py_direct_import(repo, template_config):
                         "setuptools-git-versioning",
                     ]
                 )
-            """.format(
-                    cfg=pickle.dumps(cfg)
-                )
-            ),
+            """
+            ).format(cfg=pickle.dumps(cfg)),
         )
 
     template_config(repo, config_creator, template="{tag}.{branch}{ccount}")
