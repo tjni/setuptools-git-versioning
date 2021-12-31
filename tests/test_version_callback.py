@@ -1,56 +1,47 @@
 import subprocess
 import pytest
-import textwrap
 
 from tests.conftest import execute, create_file, get_version, get_version_setup_py
 
 
-VERSION_PY = textwrap.dedent(
-    """
-    def get_version():
-        return "{version}"
+VERSION_PY = """def get_version():
+    return "{version}"
 
-    __version__ = "{version}"
+__version__ = "{version}"
 """
+
+
+SETUP_PY_CALLABLE = """import setuptools
+from version import get_version
+
+setuptools.setup(
+    version_config={
+        "version_callback": get_version
+    },
+    setup_requires=[
+        "setuptools>=41",
+        "wheel",
+        "setuptools-git-versioning",
+    ]
 )
-
-
-SETUP_PY_CALLABLE = textwrap.dedent(
-    """
-    import setuptools
-    from version import get_version
-
-    setuptools.setup(
-        version_config={
-            "version_callback": get_version
-        },
-        setup_requires=[
-            "setuptools>=41",
-            "wheel",
-            "setuptools-git-versioning",
-        ]
-    )
 """
+
+
+SETUP_PY_STR = """import setuptools
+
+from version import __version__
+
+setuptools.setup(
+    version_config={
+        "version_callback": __version__
+    },
+    setup_requires=[
+        "setuptools>=41",
+        "wheel",
+        "setuptools-git-versioning",
+    ]
 )
-
-SETUP_PY_STR = textwrap.dedent(
-    """
-    import setuptools
-
-    from version import __version__
-
-    setuptools.setup(
-        version_config={
-            "version_callback": __version__
-        },
-        setup_requires=[
-            "setuptools>=41",
-            "wheel",
-            "setuptools-git-versioning",
-        ]
-    )
 """
-)
 
 
 @pytest.mark.parametrize(
