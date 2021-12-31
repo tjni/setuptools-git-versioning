@@ -79,7 +79,6 @@ def create_pyproject_toml(
         "build-system": {
             "requires": [
                 "setuptools>=45",
-                "setuptools-localimport",
                 "wheel",
                 "setuptools-git-versioning",
             ],
@@ -87,7 +86,7 @@ def create_pyproject_toml(
             # which uses its own source code to get version number,
             # e.g. `version_callback` or `branch_formatter`
             # mote details: https://github.com/pypa/setuptools/issues/1642#issuecomment-457673563
-            "build-backend": "setuptools_localimport",
+            "build-backend": "setuptools.build_meta:__legacy__",
         },
         "tool": {"setuptools-git-versioning": (config if config is not None else {})},
     }
