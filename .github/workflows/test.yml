@@ -30,6 +30,7 @@ jobs:
     needs: [check_duplicate_runs]
     if: ${{ needs.check_duplicate_runs.outputs.should_skip != 'true' }}
     strategy:
+      fail-fast: false
       matrix:
         python-version: ['2.7', '3.5', '3.6', '3.7', '3.8', '3.9', '3.10']
 
@@ -102,11 +103,11 @@ jobs:
     - name: Move coverage reports to the root folder
       run: find reports -type f -exec mv '{}' reports \;
 
-    #- name: Check coverage
-    #  uses: codecov/codecov-action@v2
-    #  with:
-    #    directory: ./reports
-    #    fail_ci_if_error: false
+    - name: Check coverage
+      uses: codecov/codecov-action@v2
+      with:
+        directory: ./reports
+        fail_ci_if_error: false
 
     - name: All done
       run: echo 1
