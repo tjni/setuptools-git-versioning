@@ -111,7 +111,6 @@ def create_setup_py(
             setuptools.setup(
                 name="mypkg",
                 version_config={config},
-                packages=setuptools.find_packages(),
                 setup_requires=[
                     "setuptools>=41",
                     "wheel",
@@ -211,14 +210,14 @@ def repo(repo_dir):
         ".gitignore",
         textwrap.dedent(
             """
-        .eggs
-        *.egg
-        *.egg-info/
-        build
-        dist
-        *.py[oc]
-        reports/
-    """
+            .eggs
+            *.egg
+            *.egg-info/
+            build
+            dist
+            *.py[oc]
+            reports/
+            """
         ),
     )
     create_file(repo_dir, "__init__.py", "")

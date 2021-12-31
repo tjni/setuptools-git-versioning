@@ -29,11 +29,11 @@ def test_branch_formatter(repo, template_config, create_config, branch_formatter
         "util.py",
         textwrap.dedent(
             """
-        import re
+            import re
 
-        def branch_formatter(branch):
-            return re.sub("[^\\d]+", "", branch)
-        """
+            def branch_formatter(branch):
+                return re.sub("[^\\d]+", "", branch)
+            """
         ),
     )
 
@@ -57,11 +57,11 @@ def test_branch_formatter_missing(repo, template_config, create_config, create_u
             "util.py",
             textwrap.dedent(
                 """
-            import re
+                import re
 
-            def branch_formatter(branch):
-                return re.sub("[^\\d]+", "", branch)
-            """
+                def branch_formatter(branch):
+                    return re.sub("[^\\d]+", "", branch)
+                """
             ),
         )
 
@@ -98,10 +98,10 @@ def test_branch_formatter_not_callable(repo, template_config, create_config):
         "util.py",
         textwrap.dedent(
             """
-        import re
+            import re
 
-        branch_formatter = re.compile("[^\\d]+")
-        """
+            branch_formatter = re.compile("[^\\d]+")
+            """
         ),
     )
 
@@ -129,29 +129,29 @@ def test_branch_formatter_setup_py_direct_import(repo, template_config):
             "setup.py",
             textwrap.dedent(
                 """
-            import re
-            import setuptools
-            import pickle
+                import re
+                import setuptools
+                import pickle
 
-            def branch_formatter(branch):
-                return re.sub("[^\\d]+", "", branch)
+                def branch_formatter(branch):
+                    return re.sub("[^\\d]+", "", branch)
 
-            version_config = pickle.loads({cfg})
-            version_config["branch_formatter"] = branch_formatter
+                version_config = pickle.loads({cfg})
+                version_config["branch_formatter"] = branch_formatter
 
-            setuptools.setup(
-                name="mypkg",
-                version_config=version_config,
-                setup_requires=[
-                    "setuptools>=41",
-                    "wheel",
-                    "setuptools-git-versioning",
-                ]
-            )
+                setuptools.setup(
+                    name="mypkg",
+                    version_config=version_config,
+                    setup_requires=[
+                        "setuptools>=41",
+                        "wheel",
+                        "setuptools-git-versioning",
+                    ]
+                )
             """.format(
                     cfg=pickle.dumps(cfg)
                 )
-            ).strip(),
+            ),
         )
 
     template_config(repo, config_creator, template="{tag}.{branch}{ccount}")
