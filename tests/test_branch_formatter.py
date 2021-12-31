@@ -1,7 +1,8 @@
-import textwrap
 import pickle
 import pytest
 import subprocess
+import sys
+import textwrap
 
 from tests.conftest import execute, create_file, get_version
 
@@ -72,8 +73,9 @@ def test_branch_formatter_missing(repo, template_config, create_config, create_u
         },
     )
 
-    with pytest.raises(subprocess.CalledProcessError):
-        get_version(repo)
+    if sys.version[:3] >= "3.5":
+        with pytest.raises(subprocess.CalledProcessError):
+            get_version(repo)
 
 
 def test_branch_formatter_wrong_format(repo, template_config, create_config):
@@ -85,8 +87,9 @@ def test_branch_formatter_wrong_format(repo, template_config, create_config):
         },
     )
 
-    with pytest.raises(subprocess.CalledProcessError):
-        get_version(repo)
+    if sys.version[:3] >= "3.5":
+        with pytest.raises(subprocess.CalledProcessError):
+            get_version(repo)
 
 
 def test_branch_formatter_not_callable(repo, template_config, create_config):

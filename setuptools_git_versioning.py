@@ -1,4 +1,5 @@
 import importlib
+import io
 import logging
 import os
 import re
@@ -118,7 +119,7 @@ def load_config_from_dict(dictionary):  # type: (Union[dict, collections_abc.Map
 
 
 def load_config_from_toml(file_name):  # type: (str) -> dict
-    with open(file_name, encoding="UTF-8", mode="r") as f:
+    with io.open(file_name, encoding="UTF-8", mode="r") as f:
         data = f.read()
     parsed_file = toml.loads(data)
 
