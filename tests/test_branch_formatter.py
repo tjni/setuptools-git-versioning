@@ -151,7 +151,7 @@ def test_branch_formatter_setup_py_direct_import(repo, template_config):
             """.format(
                     cfg=pickle.dumps(cfg)
                 )
-            ),
+            ).strip(),
         )
 
     template_config(repo, config_creator, template="{tag}.{branch}{ccount}")
