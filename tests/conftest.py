@@ -60,6 +60,9 @@ def create_pyproject_toml(
     commit=True,  # type: bool
     **kwargs  # type: Any
 ):  # type: (...) -> Optional[str]
+    # well, using pyproject.toml+setup.cfg is more classic
+    # but it is not easy to check code coverage in such a case
+    # so we're using pyproject.toml+setup.py
     create_file(
         cwd,
         "setup.py",
@@ -79,6 +82,7 @@ def create_pyproject_toml(
             coverage.save()
         """
         ),
+        commit=False,
         **kwargs
     )
 

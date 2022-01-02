@@ -72,5 +72,7 @@ def test_substitution_timestamp(repo, template_config, create_config, template, 
     template_config(repo, create_config, template=template)
 
     value = fmt.format(tag="1.2.3", ccount=0, *callback(datetime.now()))
-    value = re.sub("([^\\d\\w])0+(\\d)", r"\1\2", value)  # leading zeros are removed even in local part of version
+    value = re.sub(
+        "([^\\d\\w])0+(\\d+[^\\d\\w])|([^\\d\\w])0+(\\d+)$", r"\1\2", value
+    )  # leading zeros are removed even in local part of version
     assert value in get_version(repo)
