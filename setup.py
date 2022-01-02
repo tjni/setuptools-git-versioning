@@ -16,15 +16,6 @@ with open(os.path.join(HERE, "README.rst")) as f:
 with open(os.path.join(HERE, "requirements.txt")) as f:
     requirements = parse_requirements(f.read())
 
-with open(os.path.join(HERE, "requirements-test.txt")) as f:
-    requirements_test = parse_requirements(f.read())
-
-with open(os.path.join(HERE, "requirements-dev.txt")) as f:
-    requirements_dev = parse_requirements(f.read())
-
-with open(os.path.join(HERE, "requirements-doc.txt")) as f:
-    requirements_doc = parse_requirements(f.read())
-
 setup(
     name="setuptools-git-versioning",
     version=version_from_git(),
@@ -36,7 +27,7 @@ setup(
     long_description_content_type="text/x-rst",
     url="https://setuptools-git-versioning.readthedocs.io",
     keywords="setuptools git version-control",
-    packages=find_packages(exclude=["tests", "tests.*"]),
+    packages=find_packages(exclude=["docs", "tests", "docs.*", "tests.*"]),
     classifiers=[
         "Framework :: Setuptools Plugin",
         "Intended Audience :: Developers",
@@ -62,11 +53,6 @@ setup(
     python_requires=">=2.7,!=3.1,!=3.2,!=3.3,!=3.4",
     py_modules=["setuptools_git_versioning"],
     install_requires=requirements,
-    extras_require={
-        "test": requirements_test,
-        "dev": requirements_dev,
-        "doc": requirements_doc,
-    },
     entry_points={
         "distutils.setup_keywords": [
             "version_config = setuptools_git_versioning:parse_config",

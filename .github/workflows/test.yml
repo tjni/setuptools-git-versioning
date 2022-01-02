@@ -67,7 +67,10 @@ jobs:
       run: flake8 --count --max-line-length=120 .
 
     - name: Build package
-      run: python setup.py bdist_wheel sdist
+      run: |
+        git tag --sort=-creatordate --merged
+        python setup.py --version
+        python setup.py bdist_wheel sdist
 
     - name: Run tests
       run: |
