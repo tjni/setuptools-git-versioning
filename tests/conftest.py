@@ -9,7 +9,7 @@ import textwrap
 import toml
 import uuid
 
-from typing import Any, Optional
+from typing import Any, Dict, Optional
 
 try:
     from shlex import quote as cmd_quote
@@ -88,21 +88,22 @@ def create_pyproject_toml(
         **kwargs
     )
 
-    cfg = {
-        "build-system": {
-            "requires": [
-                "setuptools>=41",
-                "wheel",
-                "setuptools-git-versioning",
-            ],
-            # with default "setuptools.build_meta" it is not possible to build package
-            # which uses its own source code to get version number,
-            # e.g. `version_callback` or `branch_formatter`
-            # mote details: https://github.com/pypa/setuptools/issues/1642#issuecomment-457673563
-            "build-backend": "setuptools.build_meta:__legacy__",
-        },
-        "tool": {"setuptools-git-versioning": (config if config is not None else {})},
+    cfg = {}  # type: Dict[str, Any]
+    cfg["build-system"] = {
+        "requires": [
+            "setuptools>=41",
+            "wheel",
+            "setuptools-git-versioning",
+        ],
+        # with default "setuptools.build_meta" it is not possible to build package
+        # which uses its own source code to get version number,
+        # e.g. `version_callback` or `branch_formatter`
+        # mote details: https://github.com/pypa/setuptools/issues/1642#issuecomment-457673563
+        "build-backend": "setuptools.build_meta:__legacy__",
     }
+
+    if config is not None:
+        cfg["tool"] = {"setuptools-git-versioning": config}
 
     return create_file(cwd, "pyproject.toml", toml.dumps(cfg), commit=commit, **kwargs)
 
@@ -112,6 +113,11 @@ def create_setup_py(
     config=None,  # type: Optional[dict]
     **kwargs  # type: Any
 ):  # type: (...) -> Optional[str]
+    if config is None:
+        cfg = ""
+    else:
+        cfg = "version_config={config},".format(config=config)
+
     return create_file(
         cwd,
         "setup.py",
@@ -127,7 +133,7 @@ def create_setup_py(
 
                 setuptools.setup(
                     name="mypkg",
-                    version_config={config},
+                    {cfg}
                     setup_requires=[
                         "setuptools>=41",
                         "wheel",
@@ -138,7 +144,7 @@ def create_setup_py(
                 coverage.stop()
                 coverage.save()
         """
-        ).format(config=config if config is not None else True),
+        ).format(cfg=cfg),
         **kwargs
     )
 
