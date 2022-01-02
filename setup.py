@@ -10,11 +10,20 @@ def parse_requirements(file_content):
     return [line.strip() for line in lines if line and not line.startswith("#")]
 
 
-with open(os.path.join(HERE, "README.md")) as f:
+with open(os.path.join(HERE, "README.rst")) as f:
     long_description = f.read()
 
 with open(os.path.join(HERE, "requirements.txt")) as f:
     requirements = parse_requirements(f.read())
+
+with open(os.path.join(HERE, "requirements-test.txt")) as f:
+    requirements_test = parse_requirements(f.read())
+
+with open(os.path.join(HERE, "requirements-dev.txt")) as f:
+    requirements_dev = parse_requirements(f.read())
+
+with open(os.path.join(HERE, "requirements-doc.txt")) as f:
+    requirements_doc = parse_requirements(f.read())
 
 setup(
     name="setuptools-git-versioning",
@@ -24,8 +33,8 @@ setup(
     description="Use git repo data for building a version number according PEP-440",
     license="MIT",
     long_description=long_description,
-    long_description_content_type="text/markdown",
-    url="https://github.com/dolfinus/setuptools-git-versioning",
+    long_description_content_type="text/x-rst",
+    url="https://setuptools-git-versioning.readthedocs.io",
     keywords="setuptools git version-control",
     packages=find_packages(exclude=["tests", "tests.*"]),
     classifiers=[
@@ -43,9 +52,21 @@ setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
+    project_urls={
+        "Documentation": "https://setuptools-git-versioning.readthedocs.io",
+        "Source": "https://github.com/dolfinus/setuptools-git-versioning",
+        "CI/CD": "https://github.com/dolfinus/setuptools-git-versioning/actions",
+        "Coverage": "https://app.codecov.io/gh/dolfinus/setuptools-git-versioning",
+        "Tracker": "https://github.com/dolfinus/setuptools-git-versioning/issues",
+    },
     python_requires=">=2.7,!=3.1,!=3.2,!=3.3,!=3.4",
     py_modules=["setuptools_git_versioning"],
     install_requires=requirements,
+    extras_require={
+        "test": requirements_test,
+        "dev": requirements_dev,
+        "doc": requirements_doc,
+    },
     entry_points={
         "distutils.setup_keywords": [
             "version_config = setuptools_git_versioning:parse_config",
