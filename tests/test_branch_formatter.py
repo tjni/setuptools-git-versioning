@@ -73,7 +73,7 @@ def test_branch_formatter_missing(repo, template_config, create_config, create_u
         },
     )
 
-    if sys.version_info > (3, 5):
+    if sys.version_info >= (3, 6):
         with pytest.raises(subprocess.CalledProcessError):
             get_version(repo)
 
@@ -87,7 +87,7 @@ def test_branch_formatter_wrong_format(repo, template_config, create_config):
         },
     )
 
-    if sys.version_info > (3, 5):
+    if sys.version_info >= (3, 6):
         with pytest.raises(subprocess.CalledProcessError):
             get_version(repo)
 
