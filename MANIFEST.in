@@ -1,4 +1,4 @@
-include README.rst LICENSE requirements.txt requirements-test.txt requirements-dev.txt requirements-docs.txt
+include README.rst LICENSE requirements.txt requirements-test.txt requirements-dev.txt requirements-doc.txt
 recursive-exclude * __pycache__
 recursive-exclude * *.pyc
 recursive-exclude * *.pyo
