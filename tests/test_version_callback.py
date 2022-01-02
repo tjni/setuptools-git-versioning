@@ -16,22 +16,23 @@ SETUP_PY_CALLABLE = """from coverage.control import Coverage
 coverage = Coverage()
 coverage.start()
 
-import setuptools
-from version import get_version
+try:
+    import setuptools
+    from version import get_version
 
-setuptools.setup(
-    version_config={
-        "version_callback": get_version
-    },
-    setup_requires=[
-        "setuptools>=41",
-        "wheel",
-        "setuptools-git-versioning",
-    ]
-)
-
-coverage.stop()
-coverage.save()
+    setuptools.setup(
+        version_config={
+            "version_callback": get_version
+        },
+        setup_requires=[
+            "setuptools>=41",
+            "wheel",
+            "setuptools-git-versioning",
+        ]
+    )
+finally:
+    coverage.stop()
+    coverage.save()
 """
 
 
@@ -40,23 +41,24 @@ SETUP_PY_STR = """from coverage.control import Coverage
 coverage = Coverage()
 coverage.start()
 
-import setuptools
+try:
+    import setuptools
 
-from version import __version__
+    from version import __version__
 
-setuptools.setup(
-    version_config={
-        "version_callback": __version__
-    },
-    setup_requires=[
-        "setuptools>=41",
-        "wheel",
-        "setuptools-git-versioning",
-    ]
-)
-
-coverage.stop()
-coverage.save()
+    setuptools.setup(
+        version_config={
+            "version_callback": __version__
+        },
+        setup_requires=[
+            "setuptools>=41",
+            "wheel",
+            "setuptools-git-versioning",
+        ]
+    )
+finally:
+    coverage.stop()
+    coverage.save()
 """
 
 

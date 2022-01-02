@@ -140,27 +140,29 @@ def test_branch_formatter_setup_py_direct_import(repo, template_config):
                 coverage = Coverage()
                 coverage.start()
 
-                import re
-                import setuptools
-                import pickle
+                try:
+                    import re
+                    import setuptools
+                    import pickle
 
-                def branch_formatter(branch):
-                    return re.sub("[^\\d]+", "", branch)
+                    def branch_formatter(branch):
+                        return re.sub("[^\\d]+", "", branch)
 
-                version_config = pickle.loads({conf})
-                version_config["branch_formatter"] = branch_formatter
+                    version_config = pickle.loads({conf})
+                    version_config["branch_formatter"] = branch_formatter
 
-                setuptools.setup(
-                    name="mypkg",
-                    version_config=version_config,
-                    setup_requires=[
-                        "setuptools>=41",
-                        "wheel",
-                        "setuptools-git-versioning",
-                    ]
-                )
-                coverage.stop()
-                coverage.save()
+                    setuptools.setup(
+                        name="mypkg",
+                        version_config=version_config,
+                        setup_requires=[
+                            "setuptools>=41",
+                            "wheel",
+                            "setuptools-git-versioning",
+                        ]
+                    )
+                finally:
+                    coverage.stop()
+                    coverage.save()
             """
             ).format(conf=conf),
         )

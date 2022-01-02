@@ -70,16 +70,18 @@ def create_pyproject_toml(
             """
             from coverage.control import Coverage
 
-            coverage = Coverage()
-            coverage.start()
+            try:
+                coverage = Coverage()
+                coverage.start()
 
-            import setuptools
+                import setuptools
 
-            setuptools.setup(
-                name="mypkg",
-            )
-            coverage.stop()
-            coverage.save()
+                setuptools.setup(
+                    name="mypkg",
+                )
+            finally:
+                coverage.stop()
+                coverage.save()
         """
         ),
         commit=False,
@@ -120,19 +122,21 @@ def create_setup_py(
             coverage = Coverage()
             coverage.start()
 
-            import setuptools
+            try:
+                import setuptools
 
-            setuptools.setup(
-                name="mypkg",
-                version_config={config},
-                setup_requires=[
-                    "setuptools>=41",
-                    "wheel",
-                    "setuptools-git-versioning",
-                ]
-            )
-            coverage.stop()
-            coverage.save()
+                setuptools.setup(
+                    name="mypkg",
+                    version_config={config},
+                    setup_requires=[
+                        "setuptools>=41",
+                        "wheel",
+                        "setuptools-git-versioning",
+                    ]
+                )
+            finally:
+                coverage.stop()
+                coverage.save()
         """
         ).format(config=config if config is not None else True),
         **kwargs
