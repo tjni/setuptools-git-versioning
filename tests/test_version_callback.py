@@ -11,7 +11,12 @@ __version__ = "{version}"
 """
 
 
-SETUP_PY_CALLABLE = """import setuptools
+SETUP_PY_CALLABLE = """from coverage.control import Coverage
+
+coverage = Coverage()
+coverage.start()
+
+import setuptools
 from version import get_version
 
 setuptools.setup(
@@ -24,10 +29,18 @@ setuptools.setup(
         "setuptools-git-versioning",
     ]
 )
+
+coverage.stop()
+coverage.save()
 """
 
 
-SETUP_PY_STR = """import setuptools
+SETUP_PY_STR = """from coverage.control import Coverage
+
+coverage = Coverage()
+coverage.start()
+
+import setuptools
 
 from version import __version__
 
@@ -41,6 +54,9 @@ setuptools.setup(
         "setuptools-git-versioning",
     ]
 )
+
+coverage.stop()
+coverage.save()
 """
 
 

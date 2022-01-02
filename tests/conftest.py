@@ -1,7 +1,5 @@
-import configparser
 from functools import partial
 import logging
-import io
 import os
 import pytest
 import shutil
@@ -62,18 +60,27 @@ def create_pyproject_toml(
     commit=True,  # type: bool
     **kwargs  # type: Any
 ):  # type: (...) -> Optional[str]
-    conf = configparser.ConfigParser()
+    create_file(
+        cwd,
+        "setup.py",
+        textwrap.dedent(
+            """
+            from coverage.control import Coverage
 
-    conf["metadata"] = {
-        "name": "mypkg",
-    }
+            coverage = Coverage()
+            coverage.start()
 
-    fd = io.StringIO()
-    conf.write(fd)
-    setup_cfg = fd.getvalue()
-    fd.close()
+            import setuptools
 
-    create_file(cwd, "setup.cfg", setup_cfg, commit=False, **kwargs)
+            setuptools.setup(
+                name="mypkg",
+            )
+            coverage.stop()
+            coverage.save()
+        """
+        ),
+        **kwargs
+    )
 
     cfg = {
         "build-system": {
@@ -91,8 +98,6 @@ def create_pyproject_toml(
         "tool": {"setuptools-git-versioning": (config if config is not None else {})},
     }
 
-    log.warning(toml.dumps(cfg))
-
     return create_file(cwd, "pyproject.toml", toml.dumps(cfg), commit=commit, **kwargs)
 
 
@@ -106,6 +111,11 @@ def create_setup_py(
         "setup.py",
         textwrap.dedent(
             """
+            from coverage.control import Coverage
+
+            coverage = Coverage()
+            coverage.start()
+
             import setuptools
 
             setuptools.setup(
@@ -117,6 +127,8 @@ def create_setup_py(
                     "setuptools-git-versioning",
                 ]
             )
+            coverage.stop()
+            coverage.save()
         """
         ).format(config=config if config is not None else True),
         **kwargs
@@ -159,11 +171,11 @@ def template_config(request):
 
 
 def get_version_setup_py(cwd, **kwargs):  # type: (str, **Any) -> str
-    return execute(cwd, "{python} -m coverage run setup.py --version".format(python=sys.executable), **kwargs).strip()
+    return execute(cwd, "{python} setup.py --version".format(python=sys.executable), **kwargs).strip()
 
 
 def get_version(cwd, **kwargs):  # type: (str, **Any) -> str
-    execute(cwd, "{python} -m coverage run -m build -s --no-isolation".format(python=sys.executable), **kwargs)
+    execute(cwd, "{python} -m build -s --no-isolation".format(python=sys.executable), **kwargs)
 
     with open(os.path.join(cwd, "mypkg.egg-info/PKG-INFO")) as f:
         content = f.read().splitlines()

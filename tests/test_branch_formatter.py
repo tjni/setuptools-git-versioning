@@ -135,6 +135,11 @@ def test_branch_formatter_setup_py_direct_import(repo, template_config):
             "setup.py",
             textwrap.dedent(
                 """
+                from coverage.control import Coverage
+
+                coverage = Coverage()
+                coverage.start()
+
                 import re
                 import setuptools
                 import pickle
@@ -154,6 +159,8 @@ def test_branch_formatter_setup_py_direct_import(repo, template_config):
                         "setuptools-git-versioning",
                     ]
                 )
+                coverage.stop()
+                coverage.save()
             """
             ).format(conf=conf),
         )
