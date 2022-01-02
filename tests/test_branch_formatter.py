@@ -73,7 +73,7 @@ def test_branch_formatter_missing(repo, template_config, create_config, create_u
         },
     )
 
-    if sys.version[:3] > "3.5":
+    if sys.version_info > (3, 5):
         with pytest.raises(subprocess.CalledProcessError):
             get_version(repo)
 
@@ -83,11 +83,11 @@ def test_branch_formatter_wrong_format(repo, template_config, create_config):
         repo,
         create_config,
         config={
-            "branch_formatter": "util:wtf",
+            "branch_formatter": "(",
         },
     )
 
-    if sys.version[:3] > "3.5":
+    if sys.version_info > (3, 5):
         with pytest.raises(subprocess.CalledProcessError):
             get_version(repo)
 
@@ -125,7 +125,7 @@ def test_branch_formatter_setup_py_direct_import(repo, template_config):
 
     def config_creator(root, cfg):
         conf_pickled = pickle.dumps(cfg)
-        if sys.version.startswith("2"):
+        if sys.version_info < (3,):
             conf = "b'''{conf}'''".format(conf=conf_pickled)
         else:
             conf = conf_pickled
