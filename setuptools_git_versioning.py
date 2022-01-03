@@ -118,38 +118,41 @@ def load_config_from_dict(dictionary):  # type: (Union[dict, collections_abc.Map
     return config
 
 
-def load_config_from_toml(file_name):  # type: (str) -> dict
+def read_toml(file_name):  # type: (str) -> dict
+    if not os.path.exists(file_name) or not os.path.isfile(file_name):
+        return {}
+
     with io.open(file_name, encoding="UTF-8", mode="r") as f:
         data = f.read()
     parsed_file = toml.loads(data)
 
-    filtered_file = parsed_file.get("tool", {}).get("setuptools-git-versioning", {})
-
-    config = load_config_from_dict(filtered_file)
-
-    return config
+    return parsed_file.get("tool", {}).get("setuptools-git-versioning", {})
 
 
+# this is declared only to add keyword with default value None
+def parse_config(_dist, _attr, _value):  # type: (Distribution, Any, Any) -> None
+    return
+
+
+# real version is generated here
 def infer_version(dist):  # type: (Distribution) -> None
-    pyproject = "pyproject.toml"
-    if not os.path.isfile(pyproject):
-        return
+    value = getattr(dist, "version_config", None)
 
-    config = load_config_from_toml(pyproject)
+    toml_value = read_toml("pyproject.toml")
 
-    version = version_from_git(dist.metadata.name, **config)
+    if value is None:
+        value = toml_value
+    elif toml_value:
+        log.warning(
+            "Both setup.py and pyproject.toml have setuptools-git-versioning config. "
+            "setup.py priority is higher in such the case"
+        )
 
-    dist.metadata.version = version
+    if value is True:
+        value = {}
 
-
-def parse_config(dist, _, value):  # type: (Distribution, Any, Any) -> None
-    if isinstance(value, bool):
-        if value:
-            version = version_from_git(dist.metadata.name)
-            dist.metadata.version = version
-            return
-        else:
-            raise DistutilsSetupError("Can't be False")
+    if value is False:
+        raise DistutilsSetupError("Can't be False")
 
     if not isinstance(value, collections_abc.Mapping):
         raise DistutilsSetupError("Config in the wrong format")
@@ -157,10 +160,7 @@ def parse_config(dist, _, value):  # type: (Distribution, Any, Any) -> None
     config = load_config_from_dict(value)
 
     version = version_from_git(dist.metadata.name, **config)
-
     dist.metadata.version = version
-
-    infer_version(dist)
 
 
 def read_version_from_file(path):  # type: (Union[str, os.PathLike]) -> str

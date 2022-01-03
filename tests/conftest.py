@@ -38,6 +38,8 @@ def create_file(
         name = rand_str()
     if content is None:
         content = rand_str()
+
+    log.warning(content)
     with open(os.path.join(cwd, name), "w") as f:
         f.write(content)
 
@@ -82,7 +84,7 @@ def create_pyproject_toml(
             finally:
                 coverage.stop()
                 coverage.save()
-        """
+            """
         ),
         commit=False,
         **kwargs
@@ -102,8 +104,8 @@ def create_pyproject_toml(
         "build-backend": "setuptools.build_meta:__legacy__",
     }
 
-    if config is not None:
-        cfg["tool"] = {"setuptools-git-versioning": config}
+    if config != NotImplemented:
+        cfg["tool"] = {"setuptools-git-versioning": config if config is not None else {}}
 
     return create_file(cwd, "pyproject.toml", toml.dumps(cfg), commit=commit, **kwargs)
 
@@ -113,10 +115,10 @@ def create_setup_py(
     config=None,  # type: Optional[dict]
     **kwargs  # type: Any
 ):  # type: (...) -> Optional[str]
-    if config is None:
+    if config == NotImplemented:
         cfg = ""
     else:
-        cfg = "version_config={config},".format(config=config)
+        cfg = "version_config={config},".format(config=config if config is not None else True)
 
     return create_file(
         cwd,
@@ -143,7 +145,7 @@ def create_setup_py(
             finally:
                 coverage.stop()
                 coverage.save()
-        """
+            """
         ).format(cfg=cfg),
         **kwargs
     )
