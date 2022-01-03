@@ -68,7 +68,8 @@ jobs:
 
     - name: Build package
       run: |
-        git tag --sort=-creatordate --merged
+        git version
+        git tag -l --sort=-creatordate --merged
         python setup.py --version
         python setup.py bdist_wheel sdist
 
