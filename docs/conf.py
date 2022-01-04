@@ -45,6 +45,7 @@ release = ver.public
 # ones.
 extensions = [
     "sphinx.ext.autodoc",
+    "sphinx.ext.extlinks",
     "sphinx_autodoc_typehints",
     "changelog",
     "numpydoc",
@@ -71,9 +72,14 @@ html_title = "setuptools-git-versioning {version}".format(version=version)
 # so a file named 'default.css' will overwrite the builtin 'default.css'.
 # html_static_path = ['_static']
 
+
+extlinks = {"github-user": ("https://github.com/%s", "@%s")}
+
 changelog_sections = [
     "general",
-    "core," "dependency",
+    "core",
+    "dependency",
+    "config",
     "docs",
     "ci",
     "tests",

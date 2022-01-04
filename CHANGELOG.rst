@@ -18,7 +18,9 @@ Changelog
       :pullreq: 37
       :tickets: 35
 
-      Add support of reading config from ``pyproject.toml``
+      Add support of reading config from ``pyproject.toml``.
+
+      Thanks to :github-user:`Bloodmallet`
 
     .. change::
       :tags: tests, feature
@@ -212,14 +214,18 @@ Changelog
       :changeset: 55b8e706
       :pullreq: 13
 
-      Add JetBrains config files to ``.gitignore``
+      Add JetBrains config files to ``.gitignore``.
+
+      Thanks to :github-user:`LeComptoirDesPharmacies`
 
     .. change::
       :tags: core, feature
       :changeset: c9cafa22
-      :pullreq: 13
+      :pullreq: 14
 
-      Add ``branch_formatter`` option
+      Add ``branch_formatter`` option.
+
+      Thanks to :github-user:`LeComptoirDesPharmacies`
 
 
 1.3
@@ -283,7 +289,9 @@ Changelog
       :changeset: 44bd8fd5
       :pullreq: 11
 
-      Replace forbidden chars in local version label
+      Replace forbidden chars in local version label.
+
+      Thanks to :github-user:`ajasmin`
 
 .. changelog::
     :version: 1.3.2
@@ -385,7 +393,9 @@ Changelog
       :changeset: 89478a04
       :pullreq: 6
 
-      Fixed typo in code examples
+      Fixed typo in code examples.
+
+      Thanks to :github-user:`Stedders`
 
 .. changelog::
     :version: 1.2.7
@@ -396,7 +406,9 @@ Changelog
       :changeset: b808b01a
       :pullreq: 5
 
-      Fix python error if no tag is found
+      Fix python error if no tag is found.
+
+      Thanks to :github-user:`bmiklautz`
 
 .. changelog::
     :version: 1.2.6
@@ -590,7 +602,9 @@ Changelog
       :changeset: 8d427b31
       :pullreq: 1
 
-      Fix runtime error on Python 3.3 and 3.4
+      Fix runtime error on Python 3.3 and 3.4.
+
+      Thanks to :github-user:`WildCard65`
 
 .. changelog::
     :version: 1.1.4

@@ -13,8 +13,8 @@
     :hidden:
 
     installation
-    usage
-    common_issues
+    usage/index
+    common_issues/index
 
 .. toctree::
     :maxdepth: 2
@@ -22,7 +22,7 @@
     :name: develop
     :hidden:
 
-    contribution
+    contributing
     changelog
 
 .. toctree::
