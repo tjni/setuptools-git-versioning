@@ -46,9 +46,9 @@ release = ver.public
 extensions = [
     "sphinx.ext.autodoc",
     "sphinx_autodoc_typehints",
+    "changelog",
     "numpydoc",
 ]
-
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
