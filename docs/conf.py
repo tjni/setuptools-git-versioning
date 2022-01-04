@@ -17,7 +17,7 @@ from pathlib import Path
 from packaging.version import Version
 
 sys.path.insert(0, str(Path(__file__).parent.parent.absolute()))
-ver = Version.parse(
+ver = Version(
     subprocess.check_output(  # nosec
         "{python} ../setup.py --version".format(python=sys.executable),
         shell=True,
