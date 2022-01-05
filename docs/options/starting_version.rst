@@ -3,13 +3,14 @@
 ~~~~~~~~~~~~~~~~~~~~~
 
 If you're using:
+
 - :ref:`tag-based-release`
 - :ref:`file-based-release`
 
 without any existing tag or version file respectively, you'll get some
 initial version, like ``0.0.1``
 
-You can change this version by setting up ``starting_version``option in your config file:
+You can change this version by setting up ``starting_version`` option in your config file:
 
 - ``setup.py`` file
 

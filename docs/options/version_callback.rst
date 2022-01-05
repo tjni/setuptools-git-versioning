@@ -38,6 +38,17 @@ Possible values
 
     Variable should contain ``str`` value with version number
 
+.. note::
+
+    If your config file is ``pyproject.toml`` you should add this to allow ``setuptools-git-versioning`` to access your module source code:
+
+    .. code:: toml
+
+        [build-system]
+        ...
+        build-backend = "setuptools.build_meta:__legacy__"
+        ...
+
 .. warning::
 
     If function return value or variable content is not PEP-440 compatible version, the exception will be raised

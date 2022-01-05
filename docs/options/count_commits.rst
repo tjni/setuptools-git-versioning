@@ -16,4 +16,4 @@ Type
 
 Default value
 ^^^^^^^^^^^^^
-```False```
+``False``

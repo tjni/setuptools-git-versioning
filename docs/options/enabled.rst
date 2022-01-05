@@ -26,7 +26,7 @@ If any other config value is set, default value is ``True``.
 
     .. code:: python
 
-        setup(setuptools_git_versioning=False, ...)
+        setuptools.setup(setuptools_git_versioning=False, ...)
 
     This has the same meaning as ``"enabled"`` option of config, but it is deprecated since v1.8.0.
 

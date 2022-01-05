@@ -23,7 +23,7 @@ Type
 
 Default value
 ^^^^^^^^^^^^^
-```"{tag}"```
+``"{tag}"``
 
 Possible values
 ^^^^^^^^

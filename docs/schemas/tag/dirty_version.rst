@@ -8,7 +8,7 @@ For example, current repo state is:
 
     Unstashed changes (HEAD)
     |
-    commit 86269212 Current commit (master)
+    commit 64e68cd4 Current commit (master)
     |
     commit 86269212 Release commit (v1.0.0)
     |
@@ -20,13 +20,9 @@ For example, current repo state is:
     |
     ...
 
-When you try to get current version, you'll receive version
-number like ``1.0.0.post1+git.64e68cd.dirty``.
+And you want to generate post versions for every commit after release tag
 
-This is a PEP-440
-compliant value, but sometimes you want see value like ``1.0.0.post1+dirty``.
-
-You can change this template in the config file:
+You can enable ``setuptools-git-versioning`` for your project in the config file:
 
 - ``setup.py``:
 
@@ -35,6 +31,34 @@ You can change this template in the config file:
         setuptools.setup(
             ...,
             setuptools_git_versioning={
+                "enabled": "True",
+            },
+        )
+
+- ``pyproject.toml``:
+
+    .. code:: toml
+
+        [tool.setuptools-git-versioning]
+        enabled = true
+
+And your package version will be ``1.0.0.post1+git.64e68cd4.dirty``.
+
+Version number template
+""""""""""""""""""""""""
+
+Sometimes you want see just ``1.0.0.post1+dirty`` value or even ``1.0.0+dirty``.
+
+To get version in such a format you set a template in the config file:
+
+- ``setup.py``:
+
+    .. code:: python
+
+        setuptools.setup(
+            ...,
+            setuptools_git_versioning={
+                "enabled": True,
                 "dirty_template": "{tag}.post{ccount}+dirty",
             },
         )
@@ -44,10 +68,8 @@ You can change this template in the config file:
     .. code:: toml
 
         [tool.setuptools-git-versioning]
+        enabled = true
         dirty_template = "{tag}.post{ccount}+dirty"
-
-In this case, for 1 commit since tag ``3.4`` with some uncommitted files in the project repo
-version number will be ``3.4.post1+dirty``
 
 
 See also

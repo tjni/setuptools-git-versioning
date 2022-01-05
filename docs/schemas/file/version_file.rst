@@ -46,6 +46,7 @@ Then place it in both the branches and update your config file:
         setuptools.setup(
             ...,
             setuptools_git_versioning={
+                "enabled": True,
                 "version_file": VERSION_FILE,
             },
         )
@@ -55,6 +56,7 @@ Then place it in both the branches and update your config file:
     .. code:: toml
 
         [tool.setuptools-git-versioning]
+        enabled = true
         version_file = "VERSION"
 
 When you'll try to get current version in non-master branch, the content

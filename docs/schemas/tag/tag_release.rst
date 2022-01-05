@@ -2,9 +2,6 @@
 Release is a git tag
 ^^^^^^^^^^^^^^^^^^^^^
 
-You want to use git tag as a release number instead of duplicating it
-setup.py or other file.
-
 For example, current repo state is:
 
 .. code:: bash
@@ -19,7 +16,31 @@ For example, current repo state is:
     |
     ...
 
-Then you decided to release new version, tag commit with a proper release version (e.g. ``1.0.0``):
+And you want to use git tag as a release number instead of duplicating it in
+``setup.py`` or other file.
+
+You can enable ``setuptools-git-versioning`` for your project in the config file:
+
+- ``setup.py``:
+
+    .. code:: python
+
+        setuptools.setup(
+            ...,
+            setuptools_git_versioning={
+                "enabled": "True",
+            },
+        )
+
+- ``pyproject.toml``:
+
+    .. code:: toml
+
+        [tool.setuptools-git-versioning]
+        enabled = true
+
+
+And then tag the commit with a proper release version (e.g. ``1.0.0``):
 
 .. code:: bash
 
@@ -33,7 +54,8 @@ Then you decided to release new version, tag commit with a proper release versio
     |
     ...
 
-Tag name will be used as your package version number.
+Your package version is now ``1.0.0``.
+
 If tag number had ``v`` prefix, like ``v1.0.0``, it will be trimmed.
 
 

@@ -7,3 +7,4 @@ Common issues
     :name: common-issues
 
     all_dirty
+    wrong_tag

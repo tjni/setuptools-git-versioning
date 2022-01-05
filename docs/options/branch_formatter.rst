@@ -67,6 +67,7 @@ name and return a properly formatted one:
         setuptools.setup(
             ...,
             setuptools_git_versioning={
+                "enabled": True,
                 "dev_template": "{branch}.dev{ccount}",
                 "dirty_template": "{branch}.dev{ccount}",
                 "branch_formatter": format_branch_name,
@@ -83,9 +84,15 @@ name and return a properly formatted one:
         build-backend = "setuptools.build_meta:__legacy__"
 
         [tool.setuptools-git-versioning]
+        enabled = true
         dev_template = "{branch}.dev{ccount}"
         dirty_template = "{branch}.dev{ccount}"
         branch_formatter = "mypkg.util:format_branch_name"
+
+    .. note::
+
+        Please pay attention to ``build-backend`` item in your config, it is important
+        for ``setuptools-git-versioning`` to access your module source code.
 
 
 Possible values

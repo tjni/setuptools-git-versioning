@@ -46,6 +46,7 @@ Then update your config file:
         setuptools.setup(
             ...,
             setuptools_git_versioning={
+                "enabled": True,
                 "version_file": VERSION_FILE,
                 "count_commits_from_version_file": True,  # enable commits tracking
                 "dev_template": "{tag}.dev{ccount}",  # suffix for versions will be .dev
@@ -58,6 +59,7 @@ Then update your config file:
     .. code:: toml
 
         [tool.setuptools-git-versioning]
+        enabled = true
         version_file = "VERSION"
         count_commits_from_version_file = true
         dev_template = "{tag}.dev{ccount}"
@@ -102,6 +104,7 @@ For example, if the branch name is something like ``alpha``, ``beta``,
         setuptools.setup(
             ...,
             setuptools_git_versioning={
+                "enabled": True,
                 "version_file": VERSION_FILE,
                 "count_commits_from_version_file": True,
                 "dev_template": "{tag}.{branch}{ccount}",
@@ -114,6 +117,7 @@ For example, if the branch name is something like ``alpha``, ``beta``,
     .. code:: toml
 
         [tool.setuptools-git-versioning]
+        enabled = True
         version_file = "VERSION"
         count_commits_from_version_file = true
         dev_template = "{tag}.{branch}{ccount}"
@@ -136,6 +140,7 @@ It is also possible to use branch names like ``1.0-alpha`` or ``1.1.beta``:
     setuptools.setup(
         ...,
         setuptools_git_versioning={
+            "enabled": True,
             "count_commits_from_version_file": True,
             "dev_template": "{branch}{ccount}",
             "dirty_template": "{branch}{ccount}",
@@ -146,6 +151,7 @@ It is also possible to use branch names like ``1.0-alpha`` or ``1.1.beta``:
 .. code:: toml
 
     [tool.setuptools-git-versioning]
+    enabled = true
     version_file = "VERSION"
     count_commits_from_version_file = true
     dev_template = "{branch}{ccount}"

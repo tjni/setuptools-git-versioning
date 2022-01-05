@@ -6,9 +6,9 @@ Substituted by current timestamp with formatting it.
 
 Example
 ^^^^^^^
-``"{timestamp}"``
-``"{timestamp:%s}"``
-``"{timestamp:%Y-%m-%dT%H-%M-%S}"``
+- ``"{timestamp}"``
+- ``"{timestamp:%s}"``
+- ``"{timestamp:%Y-%m-%dT%H-%M-%S}"``
 
 Options
 ^^^^^

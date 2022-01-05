@@ -3,7 +3,7 @@ Template substitutions
 ----------------------
 
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 1
     :caption: Template substitutions
     :name: substitutions
 

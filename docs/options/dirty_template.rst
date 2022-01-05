@@ -17,7 +17,7 @@ Type
 
 Default value
 ^^^^^^^^^^^^^
-```"{tag}.post{ccount}+git.{sha}.dirty"```
+``"{tag}.post{ccount}+git.{sha}.dirty"``
 
 
 Possible values

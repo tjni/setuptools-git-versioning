@@ -42,6 +42,7 @@ Then place it in both the branches and update your ``setup.py`` or ``pyproject.t
     setuptools.setup(
         ...,
         setuptools_git_versioning={
+            "enabled": True,
             "version_callback": get_version,
         },
     )
@@ -54,6 +55,7 @@ Then place it in both the branches and update your ``setup.py`` or ``pyproject.t
     build-backend = "setuptools.build_meta:__legacy__"
 
     [tool.setuptools-git-versioning]
+    enabled = true
     version_callback = "mypkg.version:get_version"
 
 When you'll try to get current version in non-master branch, the result
