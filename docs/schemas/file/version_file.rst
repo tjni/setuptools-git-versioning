@@ -1,4 +1,5 @@
-.. _version-file
+.. _version-file:
+
 Read some file content as current version
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -68,4 +69,4 @@ is present**
 See also
 """""""""
 - :ref:`version-callback`
-- :ref:`version-file-option`
+- :ref:`version-file-option` option

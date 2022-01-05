@@ -1,4 +1,5 @@
-.. _version-callback
+.. _version-callback:
+
 Execute some callback function to get current version
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -22,7 +23,7 @@ And there are just no tags in the current branch (``dev``) because all
 of them are placed in the ``master`` branch only.
 
 By default, when you try to get current version, you'll receive some
-initial value (see :ref:`starting-version-option`).
+initial value (see :ref:`starting-version-option` option).
 But if you want to get synchronized version numbers in both on the branches?
 
 You can create a function in some file (for example, in the
@@ -101,4 +102,4 @@ is present**
 
 See also
 """"""""
-- :ref:`version-callback-option`
+- :ref:`version-callback-option` option

@@ -1,4 +1,5 @@
-.. _sha-substitution
+.. _sha-substitution:
+
 ``sha``
 ~~~~~~~~~~~~~~~~~~~~~
 
@@ -9,5 +10,5 @@ Example
 ``"{sha}"``
 
 Options
-^^^^^
+^^^^^^^
 No

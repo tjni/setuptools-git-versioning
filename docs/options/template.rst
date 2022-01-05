@@ -1,4 +1,5 @@
-.. _template-option
+.. _template-option:
+
 ``template``
 ~~~~~~~~~~~~~~~~~~~~~
 
@@ -26,5 +27,5 @@ Default value
 ``"{tag}"``
 
 Possible values
-^^^^^^^^
+^^^^^^^^^^^^^^^
 See :ref:`substitutions`

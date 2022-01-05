@@ -34,7 +34,7 @@ version number according
 - Tag-, file-, and callback-based versioning schemas are supported
 - Templates for *tag*, *dev* and *dirty* versions are separated
 - Templates support a lot of substitutions including git and environment information
-- Comprehensive and up-to-date documentation
+- Well-documented
 
 
 See `difference <https://setuptools-git-versioning.readthedocs.io/en/latest/differences.html>`_

@@ -1,4 +1,5 @@
-.. _tag-based-release
+.. _tag-based-release:
+
 Tag-based release
 ~~~~~~~~~~~~~~~~~
 

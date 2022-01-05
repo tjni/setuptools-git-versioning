@@ -18,4 +18,4 @@ both tag and commit have a creation date, and it is not possible to sort tags by
 
 See also
 ^^^^^^^^
-- :ref:`sort-by-option`
+- :ref:`sort-by-option` option

@@ -1,4 +1,5 @@
-.. _sort-by-option
+.. _sort-by-option:
+
 ``sort_by``
 ~~~~~~~~~~~~~~~~~~~~~
 
@@ -34,9 +35,9 @@ Possible values
 
     .. note::
 
-    See
-    `StackOverflow <https://stackoverflow.com/questions/67206124/what-is-the-difference-between-taggerdate-and-creatordate-for-git-tags>`__
-    for more info.
+        See
+        `StackOverflow <https://stackoverflow.com/questions/67206124/what-is-the-difference-between-taggerdate-and-creatordate-for-git-tags>`__
+        for more info.
 
 - ``"version:refname"`` (alphanumeric sort by tag name)
 

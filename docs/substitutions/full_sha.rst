@@ -1,4 +1,5 @@
-.. _full-sha-substitution
+.. _full-sha-substitution:
+
 ``full_sha``
 ~~~~~~~~~~~~~~~~~~~~~
 
@@ -9,5 +10,5 @@ Example
 ``"{full_sha}"``
 
 Options
-^^^^^
+^^^^^^^
 No

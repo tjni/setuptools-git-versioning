@@ -1,4 +1,5 @@
-.. _branch-formatter-option
+.. _branch-formatter-option:
+
 ``branch_formatter``
 ~~~~~~~~~~~~~~~~~~~~~
 
@@ -98,7 +99,7 @@ name and return a properly formatted one:
 Possible values
 ^^^^^^^^^^^^^^^
 
-- None
+- ``None``
 
     Disables this feature
 

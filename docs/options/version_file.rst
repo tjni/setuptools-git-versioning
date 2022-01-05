@@ -1,4 +1,5 @@
-.. _version-file-option
+.. _version-file-option:
+
 ``version_file``
 ~~~~~~~~~~~~~~~~~~~~~
 

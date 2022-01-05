@@ -1,4 +1,5 @@
-.. _starting-version-option
+.. _starting-version-option:
+
 ``starting_version``
 ~~~~~~~~~~~~~~~~~~~~~
 

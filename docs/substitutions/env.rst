@@ -1,4 +1,5 @@
-.. _env-substitution
+.. _env-substitution:
+
 ``env``
 ~~~~~~~~~~~~~~~~~~~~~
 
@@ -12,7 +13,7 @@ Example
 - ``"{env:MYVAR:IGNORE}"``
 
 Options
-^^^^^
+^^^^^^^
 You can pass 2 positional options to this substitution:
 
 - Env variable name (case sensitive)

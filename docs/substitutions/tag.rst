@@ -1,4 +1,5 @@
-.. _tag-substitution
+.. _tag-substitution:
+
 ``tag``
 ~~~~~~~~~~~~~~~~~~~~~
 
@@ -10,5 +11,5 @@ Example
 ``"{tag}"``
 
 Options
-^^^^^
+^^^^^^^
 No

@@ -1,4 +1,5 @@
-.. _dev-template-option
+.. _dev-template-option:
+
 ``dev_template``
 ~~~~~~~~~~~~~~~~~~~~~
 
@@ -21,5 +22,5 @@ Default value
 
 
 Possible values
-^^^^^^^^
+^^^^^^^^^^^^^^^
 See :ref:`substitutions`

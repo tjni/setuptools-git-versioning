@@ -1,4 +1,5 @@
-.. _version_callback-option
+.. _version-callback-option:
+
 ``version_callback``
 ~~~~~~~~~~~~~~~~~~~~~
 
@@ -24,7 +25,7 @@ Default value
 Possible values
 ^^^^^^^^^^^^^^^
 
-- None
+- ``None``
 
     Disables this feature
 

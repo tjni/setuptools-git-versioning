@@ -2,11 +2,6 @@
 !.vscode/launch.json
 !.vscode/settings.json
 !.vscode/tasks.json
-# Byte-compiled / optimized / DLL files
-# Distribution / packaging
-# JetBrains
-# Python
-# VSCode
 *$py.class
 *.egg
 *.egg-info/
@@ -21,6 +16,7 @@ __pycache__/
 build/
 develop-eggs/
 dist/
+docs/_build/
 downloads/
 eggs/
 lib/

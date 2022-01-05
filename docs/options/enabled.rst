@@ -1,4 +1,5 @@
-.. _enabled-option
+.. _enabled-option:
+
 ``enabled``
 ~~~~~~~~~~~~~~~~~~~~~
 

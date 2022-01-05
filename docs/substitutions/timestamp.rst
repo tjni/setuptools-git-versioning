@@ -1,4 +1,5 @@
-.. _timestamp-substitution
+.. _timestamp-substitution:
+
 ``timestamp``
 ~~~~~~~~~~~~~~~~~~~~~
 
@@ -11,7 +12,7 @@ Example
 - ``"{timestamp:%Y-%m-%dT%H-%M-%S}"``
 
 Options
-^^^^^
+^^^^^^^
 You can pass 1 positional option to this substitution:
 
 - Format (optional)

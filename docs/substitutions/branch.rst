@@ -1,4 +1,5 @@
-.. _branch-substitution
+.. _branch-substitution:
+
 ``branch``
 ~~~~~~~~~~~~~~~~~~~~~
 
@@ -14,5 +15,5 @@ Example
 ``"{branch}"``
 
 Options
-^^^^^
+^^^^^^^
 No

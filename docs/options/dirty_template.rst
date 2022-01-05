@@ -1,4 +1,5 @@
-.. _dirty-template-option
+.. _dirty-template-option:
+
 ``dirty_template``
 ~~~~~~~~~~~~~~~~~~~~~
 
@@ -21,5 +22,5 @@ Default value
 
 
 Possible values
-^^^^^^^^
+^^^^^^^^^^^^^^^
 See :ref:`substitutions`

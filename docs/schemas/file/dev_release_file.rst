@@ -1,4 +1,5 @@
-.. _dev-release-file
+.. _dev-release-file:
+
 Development releases (prereleases) from ``dev`` branch
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -76,7 +77,7 @@ Release process
 
     .. warning::
 
-    Do not place any tags in the ``dev`` branch!
+        Do not place any tags in the ``dev`` branch!
 
 -  Checkout back to ``dev`` branch
 -  Save next release version (e.g. ``1.2.0``) in ``VERSION`` or ``VERSION.txt`` file in the ``dev`` branch.
@@ -88,7 +89,8 @@ Release process
 
     Every change of this file in the ``dev`` branch will lead to this ``N`` suffix to be reset to ``0``. Update this file only in the case when you've setting up the next release version!
 
-.. _dev-release-any-branch-file
+.. _dev-release-any-branch:
+
 Development releases from any branch
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -131,7 +133,8 @@ will generate a version number like ``1.2.3a4``.
 Fifth commit to ``beta`` branch with next release number ``1.2.3``
 will generate a version number like ``1.2.3b5``.
 
-.. _dev-release-ignore-file
+.. _dev-release-ignore-file:
+
 Development releases using just branch name
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -165,7 +168,7 @@ will generate a version number like ``1.0a2``.
 Third commit to ``1.2.beta`` branch
 will generate a version number like ``1.2b3``.
 
-If branch name is not PEP-440 compliant, use :ref:`branch-formatter-option` option
+If branch name is not PEP-440 compliant, use :ref:`branch-formatter-option` option option
 
 .. note::
 
@@ -178,8 +181,8 @@ If branch name is not PEP-440 compliant, use :ref:`branch-formatter-option` opti
 
 See also
 """"""""
-- :ref:`version-file-option`
-- :ref:`count-commits-option`
-- :ref:`dev-template-option`
-- :ref:`dirty-template-option`
-- :ref:`branch-formatter-option`
+- :ref:`version-file-option` option
+- :ref:`count-commits-option` option
+- :ref:`dev-template-option` option
+- :ref:`dirty-template-option` option
+- :ref:`branch-formatter-option` option

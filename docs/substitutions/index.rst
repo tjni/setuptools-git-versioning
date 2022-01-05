@@ -1,11 +1,12 @@
-.. _substitutions
+.. _substitutions:
+
 Template substitutions
 ----------------------
 
 .. toctree::
     :maxdepth: 1
     :caption: Template substitutions
-    :name: substitutions
+    :name: template-substitutions
 
     tag
     ccount

@@ -1,4 +1,5 @@
-.. _dirty-version
+.. _dirty-version:
+
 *Dirty* version
 ^^^^^^^^^^^^^^^^^^
 
@@ -22,27 +23,8 @@ For example, current repo state is:
 
 And you want to generate post versions for every commit after release tag
 
-You can enable ``setuptools-git-versioning`` for your project in the config file:
-
-- ``setup.py``:
-
-    .. code:: python
-
-        setuptools.setup(
-            ...,
-            setuptools_git_versioning={
-                "enabled": "True",
-            },
-        )
-
-- ``pyproject.toml``:
-
-    .. code:: toml
-
-        [tool.setuptools-git-versioning]
-        enabled = true
-
-And your package version will be ``1.0.0.post1+git.64e68cd4.dirty``.
+Just :ref:`install setuptools-git-versioning <installation>`
+and then your package version will be ``1.0.0.post1+git.64e68cd4.dirty``.
 
 Version number template
 """"""""""""""""""""""""
@@ -74,6 +56,6 @@ To get version in such a format you set a template in the config file:
 
 See also
 """"""""
-- :ref:`dirty-template-option`
+- :ref:`dirty-template-option` option
+- :ref:`sort-by-option` option
 - :ref:`substitutions`
-- :ref:`sort-by-option`

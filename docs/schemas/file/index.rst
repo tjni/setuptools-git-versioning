@@ -1,4 +1,5 @@
-.. _file-based-release
+.. _file-based-release:
+
 File-based release
 ~~~~~~~~~~~~~~~~~~~~~~~
 

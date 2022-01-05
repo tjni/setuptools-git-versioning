@@ -1,4 +1,5 @@
-.. _callback-based-release
+.. _callback-based-release:
+
 Callback-based release
 ~~~~~~~~~~~~~~~~~~~~~~~
 
