@@ -36,6 +36,7 @@ def test_config_not_used(repo):
             "requires": [
                 "setuptools>=41",
                 "wheel",
+                "coverage",
             ],
             "build-backend": "setuptools.build_meta",
         }
