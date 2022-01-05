@@ -30,10 +30,15 @@ version number according
 **Features:**
 
 - Can be installed & configured through both ``setup.py`` and :pep:`518`'s ``pyproject.toml``
+
 - Does not require to change source code of the project
+
 - Tag-, file-, and callback-based versioning schemas are supported
+
 - Templates for *tag*, *dev* and *dirty* versions are separated
+
 - Templates support a lot of substitutions including git and environment information
+
 - Well-documented
 
 
@@ -43,6 +48,7 @@ between ``setuptools-git-versioning`` and other tools.
 **Limitations:**
 
 - Currently the only supported VCS supported is *Git*
+
 - Currently does not support exporting version to file for runtime use
 
 .. documentation
@@ -59,7 +65,7 @@ Contribution Guide
 
 See ./CONTRIBUTING.rst
 
-.. install
+.. installation
 
 Install
 ------------

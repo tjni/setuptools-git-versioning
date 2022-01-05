@@ -29,7 +29,7 @@ Version number template
 
 Sometimes you want see just ``1.0.0.post1`` value or even ``1.0.0``.
 
-To get version in such a format you set a template in the config file:
+To get version in such a format you can set a template in the config file:
 
 - ``setup.py``:
 
