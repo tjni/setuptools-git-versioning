@@ -22,8 +22,8 @@ And there are just no tags in the current branch (``dev``) because all
 of them are placed in the ``master`` branch only.
 
 By default, when you try to get current version, you'll receive some
-initial value. But if you want to get synchronized version numbers in
-both on the branches?
+initial value (see :ref:`starting-version-option`).
+But if you want to get synchronized version numbers in both on the branches?
 
 You can create a function in some file (for example, in the
 ``mypkg/version.py`` file):
@@ -79,6 +79,7 @@ If a value of this option is not a function but just str, it also could be used:
         setuptools.setup(
             ...,
             setuptools_git_versioning={
+                "enabled": True,
                 "version_callback": mypkg.__version__,
             },
         )
@@ -91,6 +92,7 @@ If a value of this option is not a function but just str, it also could be used:
         build-backend = "setuptools.build_meta:__legacy__"
 
         [tool.setuptools-git-versioning]
+        enabled = true
         version_callback = "mypkg:__version__"
 
 **Please take into account that version_callback is ignored if tag

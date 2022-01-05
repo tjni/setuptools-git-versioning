@@ -77,10 +77,10 @@ def create_pyproject_toml(
             """
             from coverage.control import Coverage
 
-            try:
-                coverage = Coverage()
-                coverage.start()
+            coverage = Coverage()
+            coverage.start()
 
+            try:
                 import setuptools
 
                 setuptools.setup(

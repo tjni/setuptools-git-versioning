@@ -3,7 +3,7 @@ Callback-based release
 ~~~~~~~~~~~~~~~~~~~~~~~
 
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 1
     :caption: Callback-based
     :name: callback
 

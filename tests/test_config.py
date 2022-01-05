@@ -13,11 +13,20 @@ def test_config_not_used(repo):
         "setup.py",
         textwrap.dedent(
             """
-            import setuptools
+            from coverage.control import Coverage
 
-            setuptools.setup(
-                name="mypkg",
-            )
+            coverage = Coverage()
+            coverage.start()
+
+            try:
+                import setuptools
+
+                setuptools.setup(
+                    name="mypkg",
+                )
+            finally:
+                coverage.stop()
+                coverage.save()
             """
         ),
     )
@@ -157,18 +166,27 @@ def test_config_both_old_and_new_config_are_set(repo, version_config, setuptools
         "setup.py",
         textwrap.dedent(
             """
-            import setuptools
+            from coverage.control import Coverage
 
-            setuptools.setup(
-                name="mypkg",
-                setuptools_git_versioning={setuptools_git_versioning},
-                version_config={version_config},
-                setup_requires=[
-                    "setuptools>=41",
-                    "wheel",
-                    "setuptools-git-versioning",
-                ]
-            )
+            coverage = Coverage()
+            coverage.start()
+
+            try:
+                import setuptools
+
+                setuptools.setup(
+                    name="mypkg",
+                    setuptools_git_versioning={setuptools_git_versioning},
+                    version_config={version_config},
+                    setup_requires=[
+                        "setuptools>=41",
+                        "wheel",
+                        "setuptools-git-versioning",
+                    ]
+                )
+            finally:
+                coverage.stop()
+                coverage.save()
             """
         ).format(version_config=version_config, setuptools_git_versioning=setuptools_git_versioning),
     )

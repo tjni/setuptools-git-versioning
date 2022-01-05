@@ -60,7 +60,10 @@ Then place it in both the branches and update your config file:
         version_file = "VERSION"
 
 When you'll try to get current version in non-master branch, the content
-of this file will be returned instead default version number.
+of this file (``1.0.0``) will be returned instead default version number.
+
+**Please take into account that version_file is ignored if tag
+is present**
 
 See also
 """""""""

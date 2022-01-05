@@ -21,9 +21,9 @@ For example, current repo state is:
 And there are just no tags in the current branch (``dev``) because all
 of them are placed in the ``master`` branch only.
 
-But you want to create development releases (prereleases) from for your next planned version ``1.1.0``.
-And every commit to ``dev`` branch should produce version number like ``1.0.0.dev123`` (just plain increment)
-or even ``1.0.0.dev123+git.sha`` (to describe which commit was used for this exact version).
+But you want to create development releases (prereleases) for your next planned version ``1.1.0``.
+And every commit to ``dev`` branch should produce version number like ``1.1.0.dev123`` (just plain increment)
+or even ``1.1.0.dev123+git.sha`` (to describe which commit was used for this exact version).
 
 You need to create a text file (for example, ``VERSION`` or ``VERSION.txt``)
 with your **next release number** (e.g. ``1.1.0``):
@@ -66,18 +66,20 @@ Then update your config file:
         dirty_template = "{tag}.dev{ccount}"
 
 In case of next release version ``1.1.0`` the third commit to ``dev`` branch will produce
-version number ``1.0.0.dev3``, and so on.
+version number ``1.1.0.dev3``, and so on.
 
 Release process
 """"""""""""""""
 
 -  Merge ``dev`` branch into ``master`` branch.
 -  Tag commit in the ``master`` branch with next release version (e.g. ``1.1.0``). Tag will be used as a version number for the release.
--  Save next release version (e.g. ``1.2.0``) in ``VERSION`` or ``VERSION.txt`` file in the ``dev`` branch.
 
     .. warning::
 
     Do not place any tags in the ``dev`` branch!
+
+-  Checkout back to ``dev`` branch
+-  Save next release version (e.g. ``1.2.0``) in ``VERSION`` or ``VERSION.txt`` file in the ``dev`` branch.
 
 -  Next commits to a ``dev`` branch will lead to returning this next release version plus dev suffix, like ``1.2.0.dev1`` or so.
 -  ``N`` in ``.devN`` suffix is a number of commits since the last change of a certain file.
@@ -167,11 +169,12 @@ If branch name is not PEP-440 compliant, use :ref:`branch-formatter-option` opti
 
 .. note::
 
-    Although ``VERSION`` file content is not user anymore, you still need to update it
-    after merging your branch to release one.
+    Although ``VERSION`` file content is not used in this case, you still need to update it
+    while changing your next release version.
 
-    Otherwise this tool will not be able to properly calculate version number -
-    the commits history is used for this calcucation, so no file changes means no ``ccount`` reset.
+    Otherwise this tool will not be able to properly calculate version number.
+    The commits history is used for this calcucation,
+    so no file changes means that ``ccount`` will not be reset to ``0``.
 
 See also
 """"""""

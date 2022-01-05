@@ -12,7 +12,7 @@
     :name: howto
     :hidden:
 
-    installation
+    install
     schemas/index
     options/index
     substitutions/index

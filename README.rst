@@ -38,9 +38,9 @@ Contribution Guide
 
 See ./CONTRIBUTING.rst
 
-.. installation
+.. install
 
-Installation
+Install
 ------------
 
 ``pyproject.toml``
