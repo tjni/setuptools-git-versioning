@@ -63,6 +63,11 @@ Changelog
 
       Old behavior is deprecated and will be removed in ``2.0`` version. A warning message is added
 
+    .. change::
+      :tags: docs
+
+      Add ``miniver`` and ``versioningit`` to comparison table
+
 1.7
 ----
 
@@ -188,7 +193,7 @@ Changelog
       :changeset: 147abff1
       :tickets: 15
 
-      Add ``setuptools-scm`` and ``versioneer ``to comparison table
+      Add ``setuptools-scm`` and ``versioneer`` to comparison table
 
     .. change::
       :tags: docs, feature

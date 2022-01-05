@@ -1,4 +1,4 @@
-Wrong tag ordeing/latest tag number detection
+Wrong tag ordering/latest tag number detection
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This could be caused by some unusual way of creating tags in your repo.

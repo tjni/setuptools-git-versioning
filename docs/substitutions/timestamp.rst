@@ -19,7 +19,7 @@ You can pass 1 positional option to this substitution:
   Could be any format supported by `stftime <https://docs.python.org/3/library/datetime.html#strftime-and-strptime-format-codes>`_.
 
   - no format means ``%s`` (unix timestamp, e.g. ``1641342388``)
-  - ``%Y-%m-%dT%H-%M-%S`` means current datetime like ``"2021-12-31T11-22-33"``)
+  - ``%Y-%m-%dT%H-%M-%S`` means current datetime like ``"2021-12-31T11-22-33"``
 
 
   .. note::

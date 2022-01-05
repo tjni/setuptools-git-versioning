@@ -2,17 +2,20 @@
 setuptools-git-versioning
 *************************
 
-|ReadTheDocs| |PyPI| |PyPI License| |PyPI Python Version|
-|Build| |Coverage| |pre-commit.ci|
+|status| |PyPI| |PyPI License| |PyPI Python Version|
+|ReadTheDocs| |Build| |Coverage| |pre-commit.ci|
 
-.. |ReadTheDocs| image:: https://img.shields.io/readthedocs/setuptools-git-versioning.svg
-    :target: https://setuptools-git-versioning.readthedocs.io
+.. |status| image:: https://www.repostatus.org/badges/latest/active.svg
+    :alt: Project Status: Active – The project has reached a stable, usable state and is being actively developed.
+    :target: https://www.repostatus.org/#active
 .. |PyPI| image:: https://badge.fury.io/py/setuptools-git-versioning.svg
     :target: https://badge.fury.io/py/setuptools-git-versioning
 .. |PyPI License| image:: https://img.shields.io/pypi/l/setuptools-git-versioning.svg
     :target: https://github.com/dolfinus/setuptools-git-versioning/blob/master/LICENSE
 .. |PyPI Python Version| image:: https://img.shields.io/pypi/pyversions/setuptools-git-versioning.svg
     :target: https://badge.fury.io/py/setuptools-git-versioning
+.. |ReadTheDocs| image:: https://img.shields.io/readthedocs/setuptools-git-versioning.svg
+    :target: https://setuptools-git-versioning.readthedocs.io
 .. |Build| image:: https://github.com/dolfinus/setuptools-git-versioning/workflows/Tests/badge.svg
     :target: https://github.com/dolfinus/setuptools-git-versioning/actions
 .. |Coverage| image:: https://codecov.io/gh/dolfinus/setuptools-git-versioning/branch/master/graph/badge.svg?token=GIMVHUTNW4
@@ -23,6 +26,24 @@ setuptools-git-versioning
 Use git repo data (latest tag, current commit hash, etc) for building a
 version number according
 `PEP-440 <https://www.python.org/dev/peps/pep-0440/>`__.
+
+**Features:**
+
+- Can be installed & configured through both ``setup.py`` and :pep:`518`'s ``pyproject.toml``
+- Does not require to change source code of the project
+- Tag-, file-, and callback-based versioning schemas are supported
+- Templates for *tag*, *dev* and *dirty* versions are separated
+- Templates support a lot of substitutions including git and environment information
+- Comprehensive and up-to-date documentation
+
+
+See `difference <https://setuptools-git-versioning.readthedocs.io/en/latest/differences.html>`_
+between ``setuptools-git-versioning`` and other tools.
+
+**Limitations:**
+
+- Currently the only supported VCS supported is *Git*
+- Currently does not support exporting version to file for runtime use
 
 .. documentation
 

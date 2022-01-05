@@ -1,5 +1,5 @@
-.. dirty-version
-**Dirty** version
+.. _dirty-version
+*Dirty* version
 ^^^^^^^^^^^^^^^^^^
 
 For example, current repo state is:

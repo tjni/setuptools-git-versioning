@@ -2,7 +2,7 @@ Common issues
 --------------
 
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 1
     :caption: Common issues
     :name: common-issues
 
