@@ -30,8 +30,13 @@ def execute(cwd, cmd, **kwargs):  # type: (str, str, **Any) -> str
 
 
 def create_file(
-    cwd, name=None, content=None, add=True, commit=True
-):  # type: (str, Optional[str], Optional[str], bool, bool) -> Optional[str]
+    cwd,  # type: str
+    name=None,  # type: Optional[str]
+    content=None,  # type: Optional[str]
+    add=True,  # type: bool
+    commit=True,  # type: bool
+    **kwargs  # type: Any
+):  # type: (...) -> Optional[str]
     result = None
 
     if not name:
@@ -104,8 +109,11 @@ def create_pyproject_toml(
         "build-backend": "setuptools.build_meta:__legacy__",
     }
 
+    if config is None:
+        config = {"enabled": True}
+
     if config != NotImplemented:
-        cfg["tool"] = {"setuptools-git-versioning": config if config is not None else {}}
+        cfg["tool"] = {"setuptools-git-versioning": config}
 
     return create_file(cwd, "pyproject.toml", toml.dumps(cfg), commit=commit, **kwargs)
 
@@ -113,12 +121,17 @@ def create_pyproject_toml(
 def create_setup_py(
     cwd,  # type: str
     config=None,  # type: Optional[dict]
+    option="setuptools_git_versioning",  # # type: str
     **kwargs  # type: Any
 ):  # type: (...) -> Optional[str]
+
+    if config is None:
+        config = {"enabled": True}
+
     if config == NotImplemented:
         cfg = ""
     else:
-        cfg = "version_config={config},".format(config=config if config is not None else True)
+        cfg = "{option}={config},".format(option=option, config=config)
 
     return create_file(
         cwd,
@@ -190,8 +203,11 @@ def get_version_setup_py(cwd, **kwargs):  # type: (str, **Any) -> str
     return execute(cwd, "{python} setup.py --version".format(python=sys.executable), **kwargs).strip()
 
 
-def get_version(cwd, **kwargs):  # type: (str, **Any) -> str
-    execute(cwd, "{python} -m build -s --no-isolation".format(python=sys.executable), **kwargs)
+def get_version(cwd, isolated=False, **kwargs):  # type: (str, bool, **Any) -> str
+    cmd = "{python} -m build -s".format(python=sys.executable)
+    if not isolated:
+        cmd += " --no-isolation"
+    execute(cwd, cmd, **kwargs)
 
     with open(os.path.join(cwd, "mypkg.egg-info/PKG-INFO")) as f:
         content = f.read().splitlines()

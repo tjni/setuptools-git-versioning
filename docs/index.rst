@@ -13,7 +13,9 @@
     :hidden:
 
     installation
-    usage/index
+    schemas/index
+    options/index
+    substitutions/index
     common_issues/index
 
 .. toctree::

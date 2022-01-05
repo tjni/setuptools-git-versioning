@@ -6,19 +6,19 @@ setuptools-git-versioning
 |Build| |Coverage| |pre-commit.ci|
 
 .. |ReadTheDocs| image:: https://img.shields.io/readthedocs/setuptools-git-versioning.svg
-   :target: https://setuptools-git-versioning.readthedocs.io
+    :target: https://setuptools-git-versioning.readthedocs.io
 .. |PyPI| image:: https://badge.fury.io/py/setuptools-git-versioning.svg
-   :target: https://badge.fury.io/py/setuptools-git-versioning
+    :target: https://badge.fury.io/py/setuptools-git-versioning
 .. |PyPI License| image:: https://img.shields.io/pypi/l/setuptools-git-versioning.svg
-   :target: https://github.com/dolfinus/setuptools-git-versioning/blob/master/LICENSE
+    :target: https://github.com/dolfinus/setuptools-git-versioning/blob/master/LICENSE
 .. |PyPI Python Version| image:: https://img.shields.io/pypi/pyversions/setuptools-git-versioning.svg
-   :target: https://badge.fury.io/py/setuptools-git-versioning
+    :target: https://badge.fury.io/py/setuptools-git-versioning
 .. |Build| image:: https://github.com/dolfinus/setuptools-git-versioning/workflows/Tests/badge.svg
-   :target: https://github.com/dolfinus/setuptools-git-versioning/actions
+    :target: https://github.com/dolfinus/setuptools-git-versioning/actions
 .. |Coverage| image:: https://codecov.io/gh/dolfinus/setuptools-git-versioning/branch/master/graph/badge.svg?token=GIMVHUTNW4
-   :target: https://codecov.io/gh/dolfinus/setuptools-git-versioning
+    :target: https://codecov.io/gh/dolfinus/setuptools-git-versioning
 .. |pre-commit.ci| image:: https://results.pre-commit.ci/badge/github/dolfinus/setuptools-git-versioning/master.svg
-   :target: https://results.pre-commit.ci/latest/github/dolfinus/setuptools-git-versioning/master
+    :target: https://results.pre-commit.ci/latest/github/dolfinus/setuptools-git-versioning/master
 
 Use git repo data (latest tag, current commit hash, etc) for building a
 version number according
@@ -54,6 +54,9 @@ Just add ``setuptools-git-versioning`` to ``build-sytem`` part of your ``pyproje
     requires = [ "setuptools>=41", "wheel", "setuptools-git-versioning", ]
     build-backend = "setuptools.build_meta"
 
+    [tool.setuptools-git-versioning]
+    enabled = true
+
 ``setup.py``
 ~~~~~~~~~~~~~~
 
@@ -65,5 +68,8 @@ Just add ``setuptools-git-versioning`` to ``setup_requires`` part of your ``setu
 
     setuptools.setup(
         ...,
+        setuptools_git_versioning={
+            "enabled": True,
+        },
         setup_requires=["setuptools-git-versioning"],
     )

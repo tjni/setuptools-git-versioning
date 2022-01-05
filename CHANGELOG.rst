@@ -47,6 +47,21 @@ Changelog
 
       Added CHANGELOG.rst
 
+    .. change::
+      :tags: config, deprecated
+
+      ``version_config`` keyword in ``setup.py`` is renamed to ``setuptools_git_versioning``.
+
+      It will be removed in ``2.0`` version. A warning message is added
+
+    .. change::
+      :tags: config, deprecated
+
+      Prefer using ``"enabled": True`` / ``"enabled": False`` option
+      instead of pure boolean values (``True``, ``False``) for config.
+
+
+      Old behavior is deprecated and will be removed in ``2.0`` version. A warning message is added
 
 1.7
 ----

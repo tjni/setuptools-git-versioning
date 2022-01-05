@@ -1,0 +1,176 @@
+.. _dev-release-file
+Development releases (prereleases) from ``dev`` branch
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+For example, current repo state is:
+
+.. code:: bash
+
+    commit 233f6d72 Dev branch commit (HEAD, dev)
+    |
+    |    commit 86269212 Current commit (v1.0.0, master)
+    |    |
+    |   commit e7bdbe51 Another commit
+    |    /
+    ...
+    |
+    commit 273c47eb Long long ago
+    |
+    ...
+
+And there are just no tags in the current branch (``dev``) because all
+of them are placed in the ``master`` branch only.
+
+But you want to create development releases (prereleases) from for your next planned version ``1.1.0``.
+And every commit to ``dev`` branch should produce version number like ``1.0.0.dev123`` (just plain increment)
+or even ``1.0.0.dev123+git.sha`` (to describe which commit was used for this exact version).
+
+You need to create a text file (for example, ``VERSION`` or ``VERSION.txt``)
+with your **next release number** (e.g. ``1.1.0``):
+
+.. code:: txt
+
+    1.1.0
+
+Then update your config file:
+
+- ``setup.py`` :
+
+    .. code:: python
+
+        import os
+
+        HERE = os.path.dirname(__file__)
+        VERSION_FILE = os.path.join(HERE, "VERSION.txt")
+
+        setuptools.setup(
+            ...,
+            setuptools_git_versioning={
+                "version_file": VERSION_FILE,
+                "count_commits_from_version_file": True,  # enable commits tracking
+                "dev_template": "{tag}.dev{ccount}",  # suffix for versions will be .dev
+                "dirty_template": "{tag}.dev{ccount}",  # same thing here
+            },
+        )
+
+- ``pyproject.toml``:
+
+    .. code:: toml
+
+        [tool.setuptools-git-versioning]
+        version_file = "VERSION"
+        count_commits_from_version_file = true
+        dev_template = "{tag}.dev{ccount}"
+        dirty_template = "{tag}.dev{ccount}"
+
+In case of next release version ``1.1.0`` the third commit to ``dev`` branch will produce
+version number ``1.0.0.dev3``, and so on.
+
+Release process
+""""""""""""""""
+
+-  Merge ``dev`` branch into ``master`` branch.
+-  Tag commit in the ``master`` branch with next release version (e.g. ``1.1.0``). Tag will be used as a version number for the release.
+-  Save next release version (e.g. ``1.2.0``) in ``VERSION`` or ``VERSION.txt`` file in the ``dev`` branch.
+
+    .. warning::
+
+    Do not place any tags in the ``dev`` branch!
+
+-  Next commits to a ``dev`` branch will lead to returning this next release version plus dev suffix, like ``1.2.0.dev1`` or so.
+-  ``N`` in ``.devN`` suffix is a number of commits since the last change of a certain file.
+
+.. warning::
+
+    Every change of this file in the ``dev`` branch will lead to this ``N`` suffix to be reset to ``0``. Update this file only in the case when you've setting up the next release version!
+
+.. _dev-release-any-branch-file
+Development releases from any branch
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Just like example above, but you want to make development releases
+(prereleases) with a branch name  (``feature`` / ``bugfix`` / ``preview`` / ``beta`` / etc)
+present in the version number.
+
+For example, if the branch name is something like ``alpha``, ``beta``,
+``preview`` or ``rc``, you can add ``{branch}`` substitution to template in your config file:
+
+- ``setup.py``:
+
+    .. code:: python
+
+        setuptools.setup(
+            ...,
+            setuptools_git_versioning={
+                "version_file": VERSION_FILE,
+                "count_commits_from_version_file": True,
+                "dev_template": "{tag}.{branch}{ccount}",
+                "dirty_template": "{tag}.{branch}{ccount}",
+            },
+        )
+
+- ``pyproject.toml``:
+
+    .. code:: toml
+
+        [tool.setuptools-git-versioning]
+        version_file = "VERSION"
+        count_commits_from_version_file = true
+        dev_template = "{tag}.{branch}{ccount}"
+        dirty_template = "{tag}.{branch}{ccount}"
+
+Fourth commit to ``alpha`` branch with next release number ``1.2.3``
+will generate a version number like ``1.2.3a4``.
+
+Fifth commit to ``beta`` branch with next release number ``1.2.3``
+will generate a version number like ``1.2.3b5``.
+
+.. _dev-release-ignore-file
+Development releases using just branch name
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+It is also possible to use branch names like ``1.0-alpha`` or ``1.1.beta``:
+
+.. code:: python
+
+    setuptools.setup(
+        ...,
+        setuptools_git_versioning={
+            "count_commits_from_version_file": True,
+            "dev_template": "{branch}{ccount}",
+            "dirty_template": "{branch}{ccount}",
+            "version_file": VERSION_FILE,
+        },
+    )
+
+.. code:: toml
+
+    [tool.setuptools-git-versioning]
+    version_file = "VERSION"
+    count_commits_from_version_file = true
+    dev_template = "{branch}{ccount}"
+    dirty_template = "{branch}{ccount}"
+
+Second commit to ``1.0-alpha`` branch
+will generate a version number like ``1.0a2``.
+
+Third commit to ``1.2.beta`` branch
+will generate a version number like ``1.2b3``.
+
+If branch name is not PEP-440 compliant, use :ref:`branch-formatter-option` option
+
+.. note::
+
+    Although ``VERSION`` file content is not user anymore, you still need to update it
+    after merging your branch to release one.
+
+    Otherwise this tool will not be able to properly calculate version number -
+    the commits history is used for this calcucation, so no file changes means no ``ccount`` reset.
+
+See also
+""""""""
+- :ref:`version-file-option`
+- :ref:`count-commits-option`
+- :ref:`dev-template-option`
+- :ref:`dirty-template-option`
+- :ref:`branch-formatter-option`

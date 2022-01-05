@@ -1,6 +1,6 @@
 .. _version-callback
-Callback/variable as current version
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Execute some callback function to get current version
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 For example, current repo state is:
 
@@ -26,7 +26,7 @@ initial value. But if you want to get synchronized version numbers in
 both on the branches?
 
 You can create a function in some file (for example, in the
-``__init__.py`` file of your module):
+``mypkg/version.py`` file):
 
 .. code:: python
 
@@ -37,11 +37,11 @@ Then place it in both the branches and update your ``setup.py`` or ``pyproject.t
 
 .. code:: python
 
-    from mypkg.mymodule import get_version
+    from mypkg.version import get_version
 
     setuptools.setup(
         ...,
-        version_config={
+        setuptools_git_versioning={
             "version_callback": get_version,
         },
     )
@@ -54,7 +54,7 @@ Then place it in both the branches and update your ``setup.py`` or ``pyproject.t
     build-backend = "setuptools.build_meta:__legacy__"
 
     [tool.setuptools-git-versioning]
-    version_callback = "mypkg.mymodule:get_version"
+    version_callback = "mypkg.version:get_version"
 
 When you'll try to get current version in non-master branch, the result
 of executing this function will be returned instead of latest tag
@@ -62,7 +62,7 @@ number.
 
 If a value of this option is not a function but just str, it also could be used:
 
--  ``__init__.py`` file:
+-  ``mypkg/__init__.py`` file:
 
     .. code:: python
 
@@ -72,12 +72,12 @@ If a value of this option is not a function but just str, it also could be used:
 
     .. code:: python
 
-        from mypkg.mymodule import __version__
+        import mypkg
 
         setuptools.setup(
             ...,
-            version_config={
-                "version_callback": __version__,
+            setuptools_git_versioning={
+                "version_callback": mypkg.__version__,
             },
         )
 
@@ -89,7 +89,12 @@ If a value of this option is not a function but just str, it also could be used:
         build-backend = "setuptools.build_meta:__legacy__"
 
         [tool.setuptools-git-versioning]
-        version_callback = "mypkg.mymodule:__version__"
+        version_callback = "mypkg:__version__"
 
-**Please take into account that ``version_callback`` is ignored if tag
+**Please take into account that version_callback is ignored if tag
 is present**
+
+
+See also
+""""""""
+- :ref:`version-callback-option`

@@ -126,36 +126,56 @@ def read_toml(file_name):  # type: (str) -> dict
         data = f.read()
     parsed_file = toml.loads(data)
 
-    return parsed_file.get("tool", {}).get("setuptools-git-versioning", {})
+    return parsed_file.get("tool", {}).get("setuptools-git-versioning", {"enabled": False})
 
 
-# this is declared only to add keyword with default value None
-def parse_config(_dist, _attr, _value):  # type: (Distribution, Any, Any) -> None
-    return
+# TODO: remove along with version_config
+def parse_config(dist, attr, value):  # type: (Distribution, Any, Any) -> None
+    if attr == "version_config" and value is not None:
+        log.warning(
+            "`version_config` option is deprecated "
+            "since setuptools-git-versioning 1.8.0.\n"
+            "Please rename it to `setuptools_git_versioning`"
+        )
+
+        if getattr(dist, "setuptools_git_versioning", None) is not None:
+            raise DistutilsSetupError(
+                "You can set either `version_config` or `setuptools_git_versioning` "
+                "but not both of them at the same time"
+            )
 
 
 # real version is generated here
 def infer_version(dist):  # type: (Distribution) -> None
-    value = getattr(dist, "version_config", None)
+    value = getattr(dist, "setuptools_git_versioning", None) or getattr(dist, "version_config", None)
+
+    if isinstance(value, bool):
+        log.warning(
+            "Passing boolean value to `version_config`/`setuptools_git_versioning` option is deprecated "
+            "since setuptools-git-versioning 1.8.0.\n"
+            "Please change value to `{'enabled': False/True}`"
+        )
+        value = {"enabled": value}
 
     toml_value = read_toml("pyproject.toml")
 
     if value is None:
         value = toml_value
     elif toml_value:
-        log.warning(
-            "Both setup.py and pyproject.toml have setuptools-git-versioning config. "
-            "setup.py priority is higher in such the case"
+        raise DistutilsSetupError(
+            "Both setup.py and pyproject.toml have setuptools-git-versioning config. " "Please remove one of them"
         )
 
-    if value is True:
-        value = {}
-
-    if value is False:
-        raise DistutilsSetupError("Can't be False")
+    if value is None:
+        # Nothing to do here
+        return
 
     if not isinstance(value, collections_abc.Mapping):
-        raise DistutilsSetupError("Config in the wrong format")
+        raise DistutilsSetupError("Wrong config format. Expected dict, got: {value}".format(value=value))
+
+    if not value or not value.get("enabled", True):
+        # Nothing to do here
+        return
 
     config = load_config_from_dict(value)
 
