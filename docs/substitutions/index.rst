@@ -5,8 +5,6 @@ Template substitutions
 
 .. toctree::
     :maxdepth: 1
-    :caption: Template substitutions
-    :name: template-substitutions
 
     tag
     ccount

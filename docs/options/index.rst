@@ -5,8 +5,6 @@ Config options
 
 .. toctree::
     :maxdepth: 1
-    :caption: Config options
-    :name: opts
 
     enabled
     starting_version

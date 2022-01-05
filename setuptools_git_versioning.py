@@ -4,6 +4,8 @@ import logging
 import os
 import re
 import subprocess
+import sys
+import warnings
 from datetime import datetime
 from distutils.errors import DistutilsSetupError
 from typing import Any, Callable, List, Optional, Union
@@ -132,10 +134,12 @@ def read_toml(file_name):  # type: (str) -> dict
 # TODO: remove along with version_config
 def parse_config(dist, attr, value):  # type: (Distribution, Any, Any) -> None
     if attr == "version_config" and value is not None:
-        log.warning(
+        warnings.warn(
             "`version_config` option is deprecated "
-            "since setuptools-git-versioning 1.8.0.\n"
-            "Please rename it to `setuptools_git_versioning`"
+            "since setuptools-git-versioning v1.8.0 "
+            "and will be dropped in v2.0.\n"
+            "Please rename it to `setuptools_git_versioning`",
+            category=DeprecationWarning,
         )
 
         if getattr(dist, "setuptools_git_versioning", None) is not None:
@@ -150,10 +154,12 @@ def infer_version(dist):  # type: (Distribution) -> None
     value = getattr(dist, "setuptools_git_versioning", None) or getattr(dist, "version_config", None)
 
     if isinstance(value, bool):
-        log.warning(
+        warnings.warn(
             "Passing boolean value to `version_config`/`setuptools_git_versioning` option is deprecated "
-            "since setuptools-git-versioning 1.8.0.\n"
-            "Please change value to `{'enabled': False/True}`"
+            "since setuptools-git-versioning 1.8.0"
+            "and will be dropped in v2.0.\n"
+            "Please change value to `{'enabled': False/True}`",
+            category=DeprecationWarning,
         )
         value = {"enabled": value}
 
@@ -306,6 +312,15 @@ def version_from_git(
     sort_by=None,  # type: Optional[str]
 ):
     # type: (...) -> str
+
+    if sys.version_info < (3, 7):
+        warnings.warn(
+            "Python 2.7 and 3.6 support is deprecated "
+            "since setuptools-git-versioning v1.8.0 "
+            "and will be dropped in v2.0.\n"
+            "Please upgrade your Python version to 3.7+",
+            category=DeprecationWarning,
+        )
 
     # Check if PKG-INFO file exists and Version is present in it
     if os.path.exists("PKG-INFO"):
