@@ -1,9 +1,11 @@
 :hide-toc:
 
+.. include:: ../README.rst
+    :end-before: documentation
+
 .. toctree::
     :hidden:
 
-    main
     differences
 
 .. toctree::
