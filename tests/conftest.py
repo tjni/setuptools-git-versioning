@@ -9,7 +9,7 @@ import textwrap
 import toml
 import uuid
 
-from typing import Any, Dict, Optional
+from typing import Any, Callable, Dict, Optional
 
 log = logging.getLogger(__name__)
 root = os.path.dirname(os.path.dirname(__file__))
@@ -163,16 +163,24 @@ def create_config(request):
     return request.param
 
 
-def typed_config(repo, config_creator, config_type, template=None, config=None):
+def typed_config(
+    repo,  # type: str
+    config_creator,  # type: Callable
+    config_type,  # type: str
+    template=None,  # type: Optional[str]
+    template_name=None,  # type: Optional[str]
+    config=None,  # type: Optional[dict]
+):
     if config_type == "tag":
         cfg = {}
     else:
         cfg = {"version_file": "VERSION.txt", "count_commits_from_version_file": True}
 
-    if config_type == "tag":
-        template_name = "template"
-    else:
-        template_name = "dev_template"
+    if template_name is None:
+        if config_type == "tag":
+            template_name = "template"
+        else:
+            template_name = "dev_template"
 
     if template:
         cfg[template_name] = template

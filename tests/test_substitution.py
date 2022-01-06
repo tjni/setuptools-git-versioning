@@ -1,10 +1,40 @@
 from datetime import datetime
 import pytest
 import re
+import subprocess
 
-from tests.conftest import execute, get_version
+from tests.conftest import execute, get_version_setup_py, create_file, create_setup_py
 
 pytestmark = pytest.mark.all
+
+
+@pytest.mark.parametrize(
+    "template",
+    [
+        "{tag}",
+        "{tag}+a{tag}",
+    ],
+)
+def test_substitution_tag(repo, template):
+    create_setup_py(repo, {"template": template})
+    execute(repo, "git tag 1.2.3")
+
+    assert get_version_setup_py(repo) == template.format(tag="1.2.3")
+
+
+@pytest.mark.parametrize(
+    "dev_template",
+    [
+        "{tag}.{ccount}",
+        "{tag}.{ccount}+a{ccount}",
+    ],
+)
+def test_substitution_ccount(repo, dev_template):
+    create_setup_py(repo, {"dev_template": dev_template})
+    execute(repo, "git tag 1.2.3")
+    create_file(repo)
+
+    assert get_version_setup_py(repo) == dev_template.format(tag="1.2.3", ccount=1)
 
 
 @pytest.mark.parametrize(
@@ -18,45 +48,103 @@ pytestmark = pytest.mark.all
         ("post", ".post"),
     ],
 )
-def test_substitution_branch(repo, template_config, create_config, branch, suffix):
+@pytest.mark.parametrize(
+    "template, real_template",
+    [
+        ("{tag}{branch}", "{tag}{suffix}0"),
+        ("{tag}{branch}+a{branch}", "{tag}{suffix}0+a{branch}"),
+    ],
+)
+def test_substitution_branch(repo, template, real_template, branch, suffix):
     execute(repo, "git checkout -b {branch}".format(branch=branch))
-    template_config(repo, create_config, template="{tag}{branch}0")
+    create_setup_py(repo, {"template": template})
+    execute(repo, "git tag 1.2.3")
 
-    assert get_version(repo) == "1.2.3{suffix}0".format(suffix=suffix)
+    assert get_version_setup_py(repo) == real_template.format(tag="1.2.3", branch=branch, suffix=suffix)
 
 
 @pytest.mark.parametrize(
-    "template, pipeline_id, suffix",
+    "dev_template, pipeline_id, suffix",
     [
         # leading zeros are removed by setuptools
-        ("{tag}.post{env:PIPELINE_ID:123}", "0234", "234"),
+        ("{tag}.post{env:PIPELINE_ID}", "234", "234"),
+        ("{tag}.post{env:PIPELINE_ID}", "0234", "234"),
+        ("{tag}.post{env:PIPELINE_ID}", None, "UNKNOWN"),
+        ("{tag}.post{env:PIPELINE_ID}+abc{env:ANOTHER_ENV}", "234", "234+abc3.4.5"),
+        ("{tag}.post{env:PIPELINE_ID}+abc{env:ANOTHER_ENV}", None, "UNKNOWN+abc3.4.5"),
+        ("{tag}.post{env:PIPELINE_ID}+abc{env:MISSING_ENV}", "234", "234+abcunknown"),
+        ("{tag}.post{env:PIPELINE_ID}+abc{env:MISSING_ENV}", None, "UNKNOWN+abcUNKNOWN"),
         ("{tag}.post{env:PIPELINE_ID:123}", "234", "234"),
         ("{tag}.post{env:PIPELINE_ID:123}", None, "123"),
-        ("{tag}.post{env:PIPELINE_ID:IGNORE}", "0234", "234"),
+        ("{tag}.post{env:PIPELINE_ID:123}+abc{env:ANOTHER_ENV}", "234", "234+abc3.4.5"),
+        ("{tag}.post{env:PIPELINE_ID:123}+abc{env:ANOTHER_ENV}", None, "123+abc3.4.5"),
+        ("{tag}.post{env:PIPELINE_ID:123}+abc{env:MISSING_ENV}", "234", "234+abcunknown"),
+        ("{tag}.post{env:PIPELINE_ID:123}+abc{env:MISSING_ENV}", None, "123+abcunknown"),
+        ("{tag}.post{env:PIPELINE_ID:123}+abc{env:MISSING_ENV:5.6.7}", "234", "234+abc5.6.7"),
+        ("{tag}.post{env:PIPELINE_ID:123}+abc{env:MISSING_ENV:5.6.7}", None, "123+abc5.6.7"),
+        ("{tag}.post{env:PIPELINE_ID:123}+abc{env:MISSING_ENV:B.C:D}", "234", "234+abcb.c.d"),  # allowed
+        ("{tag}.post{env:PIPELINE_ID:123}+abc{env:MISSING_ENV:B-C%D}", None, "123+abcb.c.d"),
         ("{tag}.post{env:PIPELINE_ID:IGNORE}", "234", "234"),
         ("{tag}.post{env:PIPELINE_ID:IGNORE}", None, "0"),
-        ("{tag}.post{env:PIPELINE_ID:{ccount}}", "0234", "234"),
+        ("{tag}.post{env:PIPELINE_ID:IGNORE}+abc{env:ANOTHER_ENV}", "234", "234+abc3.4.5"),
+        ("{tag}.post{env:PIPELINE_ID:IGNORE}+abc{env:ANOTHER_ENV}", None, "0+abc3.4.5"),
+        ("{tag}.post{env:PIPELINE_ID:IGNORE}+abc{env:MISSING_ENV:5.6.7}", "234", "234+abc5.6.7"),
+        ("{tag}.post{env:PIPELINE_ID:IGNORE}+abc{env:MISSING_ENV:5.6.7}", None, "0+abc5.6.7"),
+        ("{tag}.post{env:PIPELINE_ID:IGNORE}+abc{env:MISSING_ENV:IGNORE}", "234", "234+abc"),
+        ("{tag}.post{env:PIPELINE_ID:IGNORE}+abc{env:MISSING_ENV:IGNORE}", None, "0+abc"),
         ("{tag}.post{env:PIPELINE_ID:{ccount}}", "234", "234"),
-        ("{tag}.post{env:PIPELINE_ID:{ccount}}", None, "0"),
-        ("{tag}.post{env:PIPELINE_ID}", "0234", "234"),
-        ("{tag}.post{env:PIPELINE_ID}", "234", "234"),
-        ("{tag}.post{env:PIPELINE_ID}", None, "UNKNOWN"),
+        ("{tag}.post{env:PIPELINE_ID:{ccount}}", None, "1"),
+        ("{tag}.post{env:PIPELINE_ID:{timestamp:%Y}}", "234", "234"),
+        ("{tag}.post{env:PIPELINE_ID:{timestamp:%Y}}", None, datetime.now().year),
+        ("{tag}.post{env:PIPELINE_ID:{ccount}}+abc{env:ANOTHER_ENV}", "234", "234+abc3.4.5"),
+        ("{tag}.post{env:PIPELINE_ID:{ccount}}+abc{env:ANOTHER_ENV}", None, "1+abc3.4.5"),
+        ("{tag}.post{env:PIPELINE_ID:{ccount}}+abc{env:MISSING_ENV:5.6.7}", "234", "234+abc5.6.7"),
+        ("{tag}.post{env:PIPELINE_ID:{ccount}}+abc{env:MISSING_ENV:5.6.7}", None, "1+abc5.6.7"),
+        ("{tag}.post{env:PIPELINE_ID:{ccount}}+abc{env:MISSING_ENV:IGNORE}", "234", "234+abc"),
+        ("{tag}.post{env:PIPELINE_ID:{ccount}}+abc{env:MISSING_ENV:IGNORE}", None, "1+abc"),
+        ("{tag}.post{env:PIPELINE_ID:{ccount}}+abc{env:MISSING_ENV:{ccount}}", "234", "234+abc1"),
+        ("{tag}.post{env:PIPELINE_ID:{ccount}}+abc{env:MISSING_ENV:{ccount}}", None, "1+abc1"),
+        (
+            "{tag}.post{env:PIPELINE_ID:{ccount}}+abc{env:MISSING_ENV:{timestamp:%Y}}",
+            "234",
+            "234+abc" + str(datetime.now().year),
+        ),
+        (
+            "{tag}.post{env:PIPELINE_ID:{ccount}}+abc{env:MISSING_ENV:{timestamp:%Y}}",
+            None,
+            "1+abc" + str(datetime.now().year),
+        ),
+        ("{tag}.post{env:PIPELINE_ID:{env:ANOTHER_ENV}}", "234", "234"),
+        ("{tag}.post{env:PIPELINE_ID:{env:ANOTHER_ENV}}", None, "3.4.5"),
+        ("{tag}.post{env:PIPELINE_ID:{env:MISSING_ENV}}", "234", "234"),
+        ("{tag}.post{env:PIPELINE_ID:{env:MISSING_ENV}}", None, "UNKNOWN"),
+        ("{tag}.post{env:PIPELINE_ID:{env:MISSING_ENV:5.6.7}}", "234", "234"),
+        ("{tag}.post{env:PIPELINE_ID:{env:MISSING_ENV:5.6.7}}", None, "5.6.7"),
+        ("{tag}.post{env:PIPELINE_ID:{env:MISSING_ENV:{ccount}}}", "234", "234"),
+        ("{tag}.post{env:PIPELINE_ID:{env:MISSING_ENV:{ccount}}}", None, "1"),
+        ("{tag}.post{env:PIPELINE_ID:{env:MISSING_ENV:{timestamp:%Y}}}", "234", "234"),
+        ("{tag}.post{env:PIPELINE_ID:{env:MISSING_ENV:{timestamp:%Y}}}", None, datetime.now().year),
+        # empty env variable name
+        ("{tag}.post{env: }", "234", "UNKNOWN"),
     ],
 )
-def test_substitution_env(repo, template_config, create_config, template, pipeline_id, suffix):
-    template_config(repo, create_config, template=template)
+def test_substitution_env(repo, dev_template, pipeline_id, suffix):
+    create_setup_py(repo, {"dev_template": dev_template})
+    execute(repo, "git tag 1.2.3")
+    create_file(repo)
 
-    env = {}
+    env = {"ANOTHER_ENV": "3.4.5"}
     if pipeline_id is not None:
-        env = {"PIPELINE_ID": pipeline_id}
+        env["PIPELINE_ID"] = pipeline_id
 
-    assert get_version(repo, env=env) == "1.2.3.post{suffix}".format(suffix=suffix)
+    assert get_version_setup_py(repo, env=env) == "1.2.3.post{suffix}".format(suffix=suffix)
 
 
 @pytest.mark.parametrize(
     "template, fmt, callback",
     [
         ("{tag}.post{timestamp}", "{tag}.post{}", lambda dt: (int(dt.strftime("%s")) // 100,)),
+        ("{tag}.post{timestamp:}", "{tag}.post{}", lambda dt: (int(dt.strftime("%s")) // 100,)),
         ("{tag}.post{timestamp:%s}", "{tag}.post{}", lambda dt: (int(dt.strftime("%s")) // 100,)),
         (
             "{timestamp:%Y}.{timestamp:%m}.{timestamp:%d}+{timestamp:%H%M%S}",
@@ -68,10 +156,13 @@ def test_substitution_env(repo, template_config, create_config, template, pipeli
             "{tag}.post{ccount}+{}",
             lambda dt: (dt.strftime("%Y.%m.%dt%H.%M"),),
         ),
+        # unknown format
+        ("{tag}+git{timestamp:%i}", "{tag}+git.i", lambda x: []),
     ],
 )
-def test_substitution_timestamp(repo, template_config, create_config, template, fmt, callback):
-    template_config(repo, create_config, template=template)
+def test_substitution_timestamp(repo, template, fmt, callback):
+    create_setup_py(repo, {"template": template})
+    execute(repo, "git tag 1.2.3")
 
     value = fmt.format(tag="1.2.3", ccount=0, *callback(datetime.now()))
     pattern = re.compile(r"([^\d\w])0+(\d+[^\d\w]|\d+$)")
@@ -81,4 +172,25 @@ def test_substitution_timestamp(repo, template_config, create_config, template, 
         if new_value == value:
             break
         value = new_value
-    assert new_value in get_version(repo)
+    assert new_value in get_version_setup_py(repo)
+
+
+@pytest.mark.parametrize(
+    "template",
+    [
+        "{tag}+a{env}",
+        "{tag}+a{env:}",
+        "{tag}+a{env:MISSING_ENV:{}",
+        "{tag}+a{env:MISSING_ENV:{{}}",
+        "{tag}+a{env:MISSING_ENV:}}",
+        "{tag}+a{env:MISSING_ENV:{}}}",
+        "{tag}+a{timestamp:A:B}",
+        "{tag}+a{timestamp:{%Y}",
+    ],
+)
+def test_substitution_wrong_format(repo, template):
+    create_setup_py(repo, {"template": template})
+    execute(repo, "git tag 1.2.3")
+
+    with pytest.raises(subprocess.CalledProcessError):
+        get_version_setup_py(repo)

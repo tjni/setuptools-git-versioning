@@ -22,4 +22,5 @@ You can pass 2 positional options to this substitution:
   - no default value meaus that variable will be replaced with literal ``"UNKNOWN"``
   - ``some value`` - just plain text
   - ``{ccount}`` - any other substitution is supported (**without nesting**)
+  - ``{env:MISSINGVAR:{ccount}}`` - nested too
   - ``IGNORE`` - just substitute empty string

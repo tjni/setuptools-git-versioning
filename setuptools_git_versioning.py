@@ -15,12 +15,12 @@ from packaging.version import Version
 from setuptools.dist import Distribution
 from six.moves import collections_abc
 
-DEFAULT_TEMPLATE = "{tag}"  # type: str
-DEFAULT_DEV_TEMPLATE = "{tag}.post{ccount}+git.{sha}"  # type: str
-DEFAULT_DIRTY_TEMPLATE = "{tag}.post{ccount}+git.{sha}.dirty"  # type: str
+DEFAULT_TEMPLATE = "{tag}"
+DEFAULT_DEV_TEMPLATE = "{tag}.post{ccount}+git.{sha}"
+DEFAULT_DIRTY_TEMPLATE = "{tag}.post{ccount}+git.{sha}.dirty"
 DEFAULT_STARTING_VERSION = "0.0.1"
-ENV_VARS_REGEXP = re.compile(r"\{env:([^:}]+):?([^}]+}?)?\}", re.IGNORECASE | re.UNICODE)  # type: re.Pattern
-TIMESTAMP_REGEXP = re.compile(r"\{timestamp:?([^:}]+)?\}", re.IGNORECASE | re.UNICODE)  # type: re.Pattern
+ENV_VARS_REGEXP = re.compile(r"\{env:(?P<name>[^:}]+):?(?P<default>[^}]+\}*)?\}", re.IGNORECASE | re.UNICODE)
+TIMESTAMP_REGEXP = re.compile(r"\{timestamp:?(?P<fmt>[^:}]+)?\}", re.IGNORECASE | re.UNICODE)
 
 DEFAULT_CONFIG = {
     "template": DEFAULT_TEMPLATE,
@@ -195,28 +195,48 @@ def read_version_from_file(path):  # type: (Union[str, os.PathLike]) -> str
         return file.read().strip()
 
 
-def subst_env_variables(template):  # type: (str) -> str
-    if "{env" in template:
-        for var, default in ENV_VARS_REGEXP.findall(template):
-            if default.upper() == "IGNORE":
-                default = ""
-            elif not default:
-                default = "UNKNOWN"
+def substitute_env_variables(template):  # type: (str) -> str
+    for var, default in ENV_VARS_REGEXP.findall(template):
+        if default.upper() == "IGNORE":
+            default = ""
+        elif not default:
+            default = "UNKNOWN"
 
-            value = os.environ.get(var, default)
-            template, _ = ENV_VARS_REGEXP.subn(value, template, count=1)
+        log.warning(var)
+        log.warning(default)
+        value = os.environ.get(var, default)
+        log.warning(os.environ)
+        log.warning(value)
+        template, _ = ENV_VARS_REGEXP.subn(value, template, count=1)
+        log.warning(template)
 
     return template
 
 
-def subst_timestamp(template):  # type: (str) -> str
+def substitute_timestamp(template):  # type: (str) -> str
+    now = datetime.now()
+    for fmt in TIMESTAMP_REGEXP.findall(template):
+        result = now.strftime(fmt or "%s")
+        template, _ = TIMESTAMP_REGEXP.subn(result, template, count=1)
+
+    return template
+
+
+def resolve_substitutions(template, *args, **kwargs):  # type: (str, *Any, **Any) -> str
+    while True:
+        if "{env" in template:
+            new_template = substitute_env_variables(template)
+            if new_template == template:
+                break
+            else:
+                template = new_template
+        else:
+            break
+
     if "{timestamp" in template:
-        now = datetime.now()
-        for fmt in TIMESTAMP_REGEXP.findall(template):
-            result = now.strftime(fmt or "%s")
-            template, _ = TIMESTAMP_REGEXP.subn(result, template, count=1)
+        template = substitute_timestamp(template)
 
-    return template
+    return template.format(*args, **kwargs)
 
 
 def import_reference(
@@ -433,10 +453,7 @@ def version_from_git(
     else:
         t = template
 
-    t = subst_env_variables(t)
-    t = subst_timestamp(t)
-
-    version = t.format(sha=full_sha[:8], tag=tag, ccount=ccount, branch=branch, full_sha=full_sha)
+    version = resolve_substitutions(t, sha=full_sha[:8], tag=tag, ccount=ccount, branch=branch, full_sha=full_sha)
 
     # Ensure local version label only contains permitted characters
     public, sep, local = version.partition("+")

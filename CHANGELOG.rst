@@ -48,6 +48,11 @@ Changelog
       Add ``tag_formatter`` option
 
     .. change::
+      :tags: core, feature
+
+      Allow nested default values to be passed to ``env`` substitution
+
+    .. change::
       :tags: tests, feature
 
       Add integration tests
