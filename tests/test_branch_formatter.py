@@ -1,7 +1,6 @@
 import pickle
 import pytest
 import subprocess
-import sys
 import textwrap
 
 from tests.conftest import execute, create_file, get_version
@@ -75,9 +74,8 @@ def test_branch_formatter_missing(repo, template_config, create_config, create_u
         },
     )
 
-    if sys.version_info >= (3, 6):
-        with pytest.raises(subprocess.CalledProcessError):
-            get_version(repo)
+    with pytest.raises(subprocess.CalledProcessError):
+        get_version(repo)
 
 
 def test_branch_formatter_wrong_format(repo, template_config, create_config):
@@ -125,11 +123,7 @@ def test_branch_formatter_setup_py_direct_import(repo, template_config):
     execute(repo, "git checkout -b {branch}".format(branch=branch))
 
     def config_creator(root, cfg):
-        conf_pickled = pickle.dumps(cfg)
-        if sys.version_info < (3,):
-            conf = "b'''{conf}'''".format(conf=conf_pickled)
-        else:
-            conf = conf_pickled
+        conf = pickle.dumps(cfg)
 
         return create_file(
             root,
