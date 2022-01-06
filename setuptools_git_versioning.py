@@ -137,7 +137,7 @@ def parse_config(dist, attr, value):  # type: (Distribution, Any, Any) -> None
         warnings.warn(
             "`version_config` option is deprecated "
             "since setuptools-git-versioning v1.8.0 "
-            "and will be dropped in v2.0.\n"
+            "and will be dropped in v2.0.0\n"
             "Please rename it to `setuptools_git_versioning`",
             category=UserWarning,
         )
@@ -156,8 +156,8 @@ def infer_version(dist):  # type: (Distribution) -> None
     if isinstance(value, bool):
         warnings.warn(
             "Passing boolean value to `version_config`/`setuptools_git_versioning` option is deprecated "
-            "since setuptools-git-versioning 1.8.0"
-            "and will be dropped in v2.0.\n"
+            "since setuptools-git-versioning 1.8.0 "
+            "and will be dropped in v2.0.0\n"
             "Please change value to `{'enabled': False/True}`",
             category=UserWarning,
         )
@@ -317,7 +317,7 @@ def version_from_git(
         warnings.warn(
             "Python 2.7 and 3.6 support is deprecated "
             "since setuptools-git-versioning v1.8.0 "
-            "and will be dropped in v2.0.\n"
+            "and will be dropped in v2.0.0\n"
             "Please upgrade your Python version to 3.7+",
             category=UserWarning,
         )
