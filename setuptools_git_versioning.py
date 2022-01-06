@@ -139,7 +139,7 @@ def parse_config(dist, attr, value):  # type: (Distribution, Any, Any) -> None
             "since setuptools-git-versioning v1.8.0 "
             "and will be dropped in v2.0.\n"
             "Please rename it to `setuptools_git_versioning`",
-            category=DeprecationWarning,
+            category=UserWarning,
         )
 
         if getattr(dist, "setuptools_git_versioning", None) is not None:
@@ -159,7 +159,7 @@ def infer_version(dist):  # type: (Distribution) -> None
             "since setuptools-git-versioning 1.8.0"
             "and will be dropped in v2.0.\n"
             "Please change value to `{'enabled': False/True}`",
-            category=DeprecationWarning,
+            category=UserWarning,
         )
         value = {"enabled": value}
 
@@ -319,7 +319,7 @@ def version_from_git(
             "since setuptools-git-versioning v1.8.0 "
             "and will be dropped in v2.0.\n"
             "Please upgrade your Python version to 3.7+",
-            category=DeprecationWarning,
+            category=UserWarning,
         )
 
     # Check if PKG-INFO file exists and Version is present in it
