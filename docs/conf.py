@@ -15,7 +15,6 @@ import subprocess
 from pathlib import Path
 
 from packaging.version import Version
-from typing import List
 
 sys.path.insert(0, str(Path(__file__).parent.parent.absolute()))
 ver = Version(
@@ -87,7 +86,7 @@ changelog_sections = [
     "dev",
 ]
 
-changelog_section_classes = []  # type: List[str]
+changelog_caption_class = ""
 
 changelog_inner_tag_sort = ["breaking", "deprecated", "feature", "bug", "refactor"]
 changelog_hive_secgions_from_tags = True
