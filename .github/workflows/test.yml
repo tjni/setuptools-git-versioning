@@ -25,8 +25,8 @@ jobs:
         do_not_skip: '["pull_request"]'
 
   tests:
-    name: Run tests (${{ github.event_name }}, ${{ matrix.python-version }} on ${{ runner.os }})
-    runs-on: ${{ runner.os }}
+    name: Run tests (${{ github.event_name }}, ${{ matrix.python-version }} on ${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
     needs: [check_duplicate_runs]
     if: ${{ needs.check_duplicate_runs.outputs.should_skip != 'true' }}
     strategy:
