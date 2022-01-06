@@ -11,11 +11,6 @@ import uuid
 
 from typing import Any, Dict, Optional
 
-try:
-    from shlex import quote as cmd_quote
-except ImportError:
-    from pipes import quote as cmd_quote
-
 log = logging.getLogger(__name__)
 root = os.path.dirname(os.path.dirname(__file__))
 
@@ -49,12 +44,12 @@ def create_file(
         f.write(content)
 
     if add:
-        execute(cwd, "git add {name}".format(name=cmd_quote(name)))
+        execute(cwd, "git add {name}".format(name=name))
         log.info(execute(cwd, "git status"))
         log.info(execute(cwd, "git diff"))
 
         if commit:
-            execute(cwd, "git commit -m 'Add {name}'".format(name=name))
+            execute(cwd, 'git commit -m "Add {name}"'.format(name=name))
             result = get_short_commit(cwd)
 
     return result
