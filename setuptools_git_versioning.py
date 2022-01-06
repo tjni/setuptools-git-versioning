@@ -202,13 +202,8 @@ def substitute_env_variables(template):  # type: (str) -> str
         elif not default:
             default = "UNKNOWN"
 
-        log.warning(var)
-        log.warning(default)
         value = os.environ.get(var, default)
-        log.warning(os.environ)
-        log.warning(value)
         template, _ = ENV_VARS_REGEXP.subn(value, template, count=1)
-        log.warning(template)
 
     return template
 

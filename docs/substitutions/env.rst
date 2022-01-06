@@ -20,7 +20,7 @@ You can pass 2 positional options to this substitution:
 - Default value if env variable is not set (optional)
 
   - no default value meaus that variable will be replaced with literal ``"UNKNOWN"``
-  - ``some value`` - just plain text
-  - ``{ccount}`` - any other substitution is supported (**without nesting**)
+  - ``some value`` - any plain text
+  - ``{ccount}`` - any other substitution is supported
   - ``{env:MISSINGVAR:{ccount}}`` - nested too
-  - ``IGNORE`` - just substitute empty string
+  - ``IGNORE`` - same as empty string
