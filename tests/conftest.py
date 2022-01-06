@@ -231,10 +231,11 @@ def repo_dir(tmpdir):
 
     yield repo_dir
 
-    # move collect coverage data to reports directory
-    for root_path, _dirs, files in os.walk(os.path.join(repo_dir, "reports")):
-        for file in files:
-            shutil.move(os.path.join(root_path, file), os.path.join(root, "reports", file))
+    if os.environ.get("CI", "false").lower() in ["1", "true"]:
+        # move collect coverage data to reports directory
+        for root_path, _dirs, files in os.walk(os.path.join(repo_dir, "reports")):
+            for file in files:
+                shutil.move(os.path.join(root_path, file), os.path.join(root, "reports", file))
 
 
 @pytest.fixture
