@@ -7,7 +7,17 @@ import toml
 from tests.conftest import get_version, get_version_setup_py, create_file, create_pyproject_toml, create_setup_py
 
 
-def test_config_not_used(repo):
+def test_config_not_set(repo, create_config):
+    create_config(repo, NotImplemented)
+
+    assert get_version(repo) == "0.0.0"
+
+
+@pytest.mark.parametrize(
+    "option",
+    ["version_config", "setuptools_git_versioning"],
+)
+def test_config_not_used(repo, option):
     create_file(
         repo,
         "setup.py",
@@ -23,12 +33,13 @@ def test_config_not_used(repo):
 
                 setuptools.setup(
                     name="mypkg",
+                    {option}=None,
                 )
             finally:
                 coverage.stop()
                 coverage.save()
             """
-        ),
+        ).format(option=option),
     )
 
     cfg = {
@@ -51,16 +62,6 @@ def test_config_not_used(repo):
     assert get_version_setup_py(repo) == "0.0.0"
     assert get_version(repo, isolated=False) == "0.0.0"
     assert get_version(repo, isolated=True) == "0.0.0"
-
-
-@pytest.mark.parametrize(
-    "option",
-    ["version_config", "setuptools_git_versioning"],
-)
-def test_config_not_set(repo, create_config, option):
-    create_config(repo, NotImplemented, option=option)
-
-    assert get_version(repo) == "0.0.0"
 
 
 @pytest.mark.parametrize(
