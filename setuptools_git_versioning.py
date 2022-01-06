@@ -264,7 +264,20 @@ def load_branch_formatter(
 
     try:
         pattern = re.compile(branch_formatter)
-        return lambda branch: pattern.sub(r"\1", branch)
+
+        def formatter(branch):
+            match = pattern.match(branch)
+            if match:
+                return match.group("branch")
+
+            raise ValueError(
+                "Branch name {name} does not match regexp '{regexp}'".format(
+                    name=branch,
+                    regexp=branch_formatter,
+                )
+            )
+
+        return formatter
     except re.error as e:
         log.warning("branch_formatter is not valid regexp:\n\t{e}".format(e=e))
 

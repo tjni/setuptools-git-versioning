@@ -49,6 +49,8 @@ between ``setuptools-git-versioning`` and other tools.
 
 - Currently the only supported VCS supported is *Git*
 
+- Only git v2 is supported
+
 - Currently does not support exporting version to file for runtime use
 
 .. documentation

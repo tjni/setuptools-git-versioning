@@ -37,6 +37,11 @@ Changelog
       Thanks to :github-user:`Bloodmallet`
 
     .. change::
+      :tags: core, feature
+
+      Allow to pass regexp to ``branch_formatter`` option
+
+    .. change::
       :tags: tests, feature
 
       Add integration tests

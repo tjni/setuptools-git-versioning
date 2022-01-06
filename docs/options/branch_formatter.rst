@@ -45,18 +45,18 @@ name and return a properly formatted one:
 
         def format_branch_name(name):
             # If branch has name like "bugfix/issue-1234-bug-title", take only "1234" part
-            pattern = re.compile("~(bugfix|feature)\/issue-([0-9]+)-\S+")
+            pattern = re.compile("^(bugfix|feature)\/issue-(?P<branch>[0-9]+)-\S+")
 
             match = pattern.search(name)
-            if not match:
-                return match.group(2)
+            if match:
+                return match.group("branch")
 
             # function is called even if branch name is not used in a current template
             # just left properly named branches intact
-            if name == "master":
+            if name in ["master", "dev"]:
                 return name
 
-            # fail in case of wrong branch names like "bugfix/issue-title"
+            # fail in case of wrong branch names like "bugfix/issue-unknown"
             raise ValueError(f"Wrong branch name: {name}")
 
 - ``setup.py`` file:
@@ -112,10 +112,14 @@ Possible values
 
         Exception will be raised if module or function/lambda is missing or has invalid signature
 
-- regexp like ``".*(\d+).*"``
+- regexp like ``".*(?P<branch>\d+).*"``
 
-    Regexp should have one capture group which will be used as branch name
+    Regexp should have capture group named ``"branch"`` which should match the expected branch name
 
     .. warning::
 
-        Exception will be raised if regexp is invalid or does not have capture groups
+        Exception will be raised if regexp is invalid or does not have expected capture group
+
+    .. warning::
+
+        Exception will also be raised if branch name does not match regexp

@@ -13,16 +13,10 @@ pytestmark = pytest.mark.all
     [
         ("1234", "1234"),
         ("feature/issue-1234-add-a-great-feature", "1234"),
+        ("unknown", ""),
     ],
 )
-@pytest.mark.parametrize(
-    "branch_formatter",
-    [
-        "util:branch_formatter",
-        r".*?([\d]+).*",
-    ],
-)
-def test_branch_formatter(repo, template_config, create_config, branch_formatter, branch, suffix):
+def test_branch_formatter_external(repo, template_config, create_config, branch, suffix):
     execute(repo, "git checkout -b {branch}".format(branch=branch))
 
     create_file(
@@ -43,7 +37,7 @@ def test_branch_formatter(repo, template_config, create_config, branch_formatter
         create_config,
         template="{tag}{branch}{ccount}",
         config={
-            "branch_formatter": branch_formatter,
+            "branch_formatter": "util:branch_formatter",
         },
     )
 
@@ -51,7 +45,7 @@ def test_branch_formatter(repo, template_config, create_config, branch_formatter
 
 
 @pytest.mark.parametrize("create_util", [True, False])
-def test_branch_formatter_missing(repo, template_config, create_config, create_util):
+def test_branch_formatter_external_missing(repo, template_config, create_config, create_util):
     if create_util:
         create_file(
             repo,
@@ -78,20 +72,7 @@ def test_branch_formatter_missing(repo, template_config, create_config, create_u
         get_version(repo)
 
 
-def test_branch_formatter_wrong_format(repo, template_config, create_config):
-    template_config(
-        repo,
-        create_config,
-        config={
-            "branch_formatter": "(",
-        },
-    )
-
-    with pytest.raises(subprocess.CalledProcessError):
-        get_version(repo)
-
-
-def test_branch_formatter_not_callable(repo, template_config, create_config):
+def test_branch_formatter_external_not_callable(repo, template_config, create_config):
     create_file(
         repo,
         "util.py",
@@ -116,7 +97,7 @@ def test_branch_formatter_not_callable(repo, template_config, create_config):
         get_version(repo)
 
 
-def test_branch_formatter_setup_py_direct_import(repo, template_config):
+def test_branch_formatter_external_setup_py_direct_import(repo, template_config):
     branch = "feature/issue-1234-add-a-great-feature"
     suffix = ".1234"
 
@@ -148,7 +129,7 @@ def test_branch_formatter_setup_py_direct_import(repo, template_config):
 
                     setuptools.setup(
                         name="mypkg",
-                        version_config=version_config,
+                        setuptools_git_versioning=version_config,
                         setup_requires=[
                             "setuptools>=41",
                             "wheel",
@@ -165,3 +146,96 @@ def test_branch_formatter_setup_py_direct_import(repo, template_config):
     template_config(repo, config_creator, template="{tag}.{branch}{ccount}")
 
     assert get_version(repo) == "1.2.3{suffix}0".format(suffix=suffix)
+
+
+@pytest.mark.parametrize(
+    "branch, suffix",
+    [
+        ("1234", "1234"),
+        ("feature/issue-1234-add-a-great-feature", "1234"),
+    ],
+)
+def test_branch_formatter_regexp(repo, template_config, create_config, branch, suffix):
+    execute(repo, "git checkout -b {branch}".format(branch=branch))
+
+    template_config(
+        repo,
+        create_config,
+        template="{tag}{branch}{ccount}",
+        config={
+            "branch_formatter": r".*?(?P<branch>[\d]+).*",
+        },
+    )
+
+    assert get_version(repo) == "1.2.3{suffix}0".format(suffix=suffix)
+
+
+def test_branch_formatter_regexp_not_match(repo, template_config, create_config):
+    execute(repo, "git checkout -b unknown")
+
+    template_config(
+        repo,
+        create_config,
+        template="{tag}{branch}{ccount}",
+        config={
+            "branch_formatter": r".*?(?P<branch>[\d]+).*",
+        },
+    )
+
+    with pytest.raises(subprocess.CalledProcessError):
+        get_version(repo)
+
+
+@pytest.mark.parametrize("regexp", [r".*?([\d]+).*", r".*?(?P<unknown>[\d]+).*"])
+def test_branch_formatter_regexp_no_capture_group(repo, template_config, create_config, regexp):
+    template_config(
+        repo,
+        create_config,
+        config={
+            "branch_formatter": regexp,
+        },
+    )
+
+    with pytest.raises(subprocess.CalledProcessError):
+        get_version(repo)
+
+
+def test_branch_formatter_regexp_wrong_format(repo, template_config, create_config):
+    template_config(
+        repo,
+        create_config,
+        config={
+            "branch_formatter": "(",
+        },
+    )
+
+    with pytest.raises(subprocess.CalledProcessError):
+        get_version(repo)
+
+
+@pytest.mark.parametrize(
+    "version_callback",
+    ["version:get_version", "version:__version__"],
+)
+def test_branch_formatter_ignored_if_version_callback_set(repo, create_config, version_callback):
+    create_file(
+        repo,
+        "version.py",
+        textwrap.dedent(
+            """
+            def get_version():
+                return "1.0.0"
+
+            __version__ = "1.0.0"
+            """
+        ),
+    )
+    create_config(
+        repo,
+        {
+            "version_callback": version_callback,
+            "branch_formatter": "(",
+        },
+    )
+
+    assert get_version(repo) == "1.0.0"
