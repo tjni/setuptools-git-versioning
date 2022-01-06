@@ -68,9 +68,16 @@ You can change this template in the config file:
 
 In this case, for tag ``3.4`` version number will be ``2021.3.4``
 
+.. note::
+
+    If branch name is not :pep:`440` compliant, like ``"release/1.2.3"``,
+    use :ref:`tag-formatter-option` option
+
 
 See also
 """"""""
 - :ref:`template-option` option
 - :ref:`sort-by-option` option
+- :ref:`tag-formatter-option` option
 - :ref:`substitutions`
+- :ref:`wrong-tag-issue` issue

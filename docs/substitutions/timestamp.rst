@@ -26,7 +26,7 @@ You can pass 1 positional option to this substitution:
   .. note::
 
     ``setuptools`` is removing all leading zeros (e.g. ``00`` in ``1.001.002``)
-    to produce PEP-440 compliant version number.
+    to produce :pep:`440` compliant version number.
 
     If you're using datetime as your
     version number, you can get unexpected results like ``"2021.1.1"`` instead of

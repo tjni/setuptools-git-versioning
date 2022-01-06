@@ -42,6 +42,12 @@ Changelog
       Allow to pass regexp to ``branch_formatter`` option
 
     .. change::
+      :tags: core, feature
+      :tickets: 31
+
+      Add ``tag_formatter`` option
+
+    .. change::
       :tags: tests, feature
 
       Add integration tests

@@ -59,3 +59,4 @@ See also
 - :ref:`dirty-template-option` option
 - :ref:`sort-by-option` option
 - :ref:`substitutions`
+- :ref:`all-dirty-issue` issue

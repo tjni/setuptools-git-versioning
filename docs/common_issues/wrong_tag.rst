@@ -1,3 +1,5 @@
+.. _wrong-tag-issue:
+
 Wrong tag ordering/latest tag number detection
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

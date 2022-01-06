@@ -1,3 +1,5 @@
+.. _all-dirty-issue:
+
 Every version built by CI is ``dirty``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

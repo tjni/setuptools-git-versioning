@@ -168,7 +168,7 @@ will generate a version number like ``1.0a2``.
 Third commit to ``1.2.beta`` branch
 will generate a version number like ``1.2b3``.
 
-If branch name is not PEP-440 compliant, use :ref:`branch-formatter-option` option option
+If branch name is not :pep:`440` compliant, use :ref:`branch-formatter-option` option
 
 .. note::
 

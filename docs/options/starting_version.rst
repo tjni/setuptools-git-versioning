@@ -46,4 +46,4 @@ Default value
 Possible values
 ^^^^^^^^^^^^^^^
 
-Any PEP-440 compliant version number
+Any :pep:`440` compliant version number

@@ -52,7 +52,7 @@ Possible values
 
 .. warning::
 
-    If function return value or variable content is not PEP-440 compatible version, the exception will be raised
+    If function return value or variable content is not :pep:`440` compatible version, the exception will be raised
 
 .. warning::
 

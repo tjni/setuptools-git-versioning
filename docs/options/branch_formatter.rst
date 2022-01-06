@@ -20,7 +20,7 @@ Usage
 
 It is possible to use (see :ref:`dev-release-any-branch`) branch name in version number.
 
-But branches should have PEP-440 compatible name, like:
+But branches should have :pep:`440` compatible name, like:
 
 - ``alpha``
 - ``beta``

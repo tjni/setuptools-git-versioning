@@ -24,8 +24,7 @@ setuptools-git-versioning
     :target: https://results.pre-commit.ci/latest/github/dolfinus/setuptools-git-versioning/master
 
 Use git repo data (latest tag, current commit hash, etc) for building a
-version number according
-`PEP-440 <https://www.python.org/dev/peps/pep-0440/>`__.
+version number according :pep:`440`.
 
 **Features:**
 

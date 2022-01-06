@@ -33,12 +33,6 @@ Possible values
 ^^^^^^^^^^^^^^^^
 - ``"creatordate"`` (either commit date or tag creation date)
 
-    .. note::
-
-        See
-        `StackOverflow <https://stackoverflow.com/questions/67206124/what-is-the-difference-between-taggerdate-and-creatordate-for-git-tags>`__
-        for more info.
-
 - ``"version:refname"`` (alphanumeric sort by tag name)
 
     .. warning::
@@ -56,3 +50,9 @@ Possible values
     .. warning::
 
         This field is missing in case of commit tags, not recommended to use
+
+See also
+""""""""
+- `Git documentation <https://git-scm.com/docs/git-for-each-ref#Documentation/git-for-each-ref.txt-contentslinesN>`_
+
+- `StackOverflow <https://stackoverflow.com/questions/67206124/what-is-the-difference-between-taggerdate-and-creatordate-for-git-tags>`_

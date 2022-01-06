@@ -30,6 +30,7 @@ DEFAULT_CONFIG = {
     "version_callback": None,
     "version_file": None,
     "count_commits_from_version_file": False,
+    "tag_formatter": None,
     "branch_formatter": None,
     "sort_by": None,
 }
@@ -243,6 +244,47 @@ def load_callable(
     return ref
 
 
+def load_tag_formatter(
+    tag_formatter,  # type: Union[str, Callable[[str], str]]
+    package_name=None,  # Optional[str]
+):  # type: (...) -> Callable
+    log.warning(
+        "Parsing tag_formatter {tag_formatter} with type {type}".format(
+            tag_formatter=tag_formatter,
+            type=type(tag_formatter),
+        )
+    )
+
+    if callable(tag_formatter):
+        return tag_formatter
+
+    try:
+        return load_callable(tag_formatter, package_name)
+    except (ImportError, NameError) as e:
+        log.warning("tag_formatter is not a valid function reference:\n\t{e}".format(e=e))
+
+    try:
+        pattern = re.compile(tag_formatter)
+
+        def formatter(tag):
+            match = pattern.match(tag)
+            if match:
+                return match.group("tag")
+
+            raise ValueError(
+                "tag name {name} does not match regexp '{regexp}'".format(
+                    name=tag,
+                    regexp=tag_formatter,
+                )
+            )
+
+        return formatter
+    except re.error as e:
+        log.warning("tag_formatter is not valid regexp:\n\t{e}".format(e=e))
+
+    raise ValueError("Cannot parse tag_formatter")
+
+
 def load_branch_formatter(
     branch_formatter,  # type: Union[str, Callable[[str], str]]
     package_name=None,  # Optional[str]
@@ -321,6 +363,7 @@ def version_from_git(
     version_callback=None,  # type: Union[Any, Callable, None]
     version_file=None,  # type: Optional[str]
     count_commits_from_version_file=False,  # type: bool
+    tag_formatter=None,  # type: Optional[Callable[[str], str]]
     branch_formatter=None,  # type: Optional[Callable[[str], str]]
     sort_by=None,  # type: Optional[str]
 ):
@@ -345,6 +388,7 @@ def version_from_git(
 
     from_file = False
     tag = get_tag(sort_by) if sort_by else get_tag()
+
     if tag is None:
         # TODO: raise exception if both version_callback and version_file are set
         if version_callback is not None:
@@ -366,6 +410,10 @@ def version_from_git(
             tag_sha = get_latest_file_commit(version_file)
     else:
         tag_sha = get_sha(tag)
+
+        if tag_formatter is not None:
+            tag_fmt = load_tag_formatter(tag_formatter, package_name)
+            tag = tag_fmt(tag)
 
     dirty = is_dirty()
     head_sha = get_sha()

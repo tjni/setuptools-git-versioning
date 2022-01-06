@@ -28,4 +28,6 @@ Default value
 
 Possible values
 ^^^^^^^^^^^^^^^
+Any string which produces :pep:`440` compliant version number after substituting all necessary values.
+
 See :ref:`substitutions`
