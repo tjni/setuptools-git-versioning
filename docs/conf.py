@@ -89,7 +89,7 @@ changelog_sections = [
 
 changelog_section_classes = []  # type: List[str]
 
-changelog_inner_tag_sort = ["breaking", "deprecated", "feature", "bug", "fefactor"]
+changelog_inner_tag_sort = ["breaking", "deprecated", "feature", "bug", "refactor"]
 changelog_hive_secgions_from_tags = True
 
 changelog_render_ticket = "https://github.com/dolfinus/setuptools-git-versioning/issues/%s"
