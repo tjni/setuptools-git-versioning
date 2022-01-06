@@ -16,3 +16,4 @@ Config options
     version_callback
     sort_by
     branch_formatter
+    tag_formatter

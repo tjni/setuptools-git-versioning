@@ -114,12 +114,12 @@ Possible values
 
 - regexp like ``".*(?P<branch>\d+).*"``
 
-    Regexp should have capture group named ``"branch"`` which should match the expected branch name
+    Regexp should have capture group named ``"branch"`` matching the expected branch name
 
     .. warning::
 
         Exception will be raised if regexp is invalid or does not have expected capture group
 
     .. warning::
-
-        Exception will also be raised if branch name does not match regexp
+        Exception will also be raised if branch name does not match regexp.
+        So this regexp should be able to handle all possible branches in the repo

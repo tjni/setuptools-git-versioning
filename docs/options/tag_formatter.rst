@@ -36,7 +36,7 @@ But tags should have :pep:`440` compatible name, like:
 - ``1.2.3.post4``
 - ``1.2.3.dev4``
 
-In case of using tag names like ``release/1.2.3`` or ``rc-1.2```,
+In case of using tag names like ``release/1.2.3`` or ``rc-1.2``,
 you'll get version number which ``pip`` cannot understand.
 
 To fix that you can define a callback which will receive current tag
@@ -119,7 +119,7 @@ Possible values
 
 - regexp like ``".*(?P<tag>\d+).*"``
 
-    Regexp should have capture group named ``"tag"`` which should match the expected tag name
+    Regexp should have capture group named ``"tag"`` matching the expected tag name
 
     .. warning::
 
@@ -127,4 +127,5 @@ Possible values
 
     .. warning::
 
-        Exception will also be raised if tag name does not match regexp
+        Exception will also be raised if tag name does not match regexp.
+        So this regexp should be able to handle all possible tags in the repo
