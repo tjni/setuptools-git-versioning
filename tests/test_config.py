@@ -13,11 +13,7 @@ def test_config_not_set(repo, create_config):
     assert get_version(repo) == "0.0.0"
 
 
-@pytest.mark.parametrize(
-    "option",
-    ["version_config", "setuptools_git_versioning"],
-)
-def test_config_not_used(repo, option):
+def test_config_not_used(repo):
     create_file(
         repo,
         "setup.py",
@@ -33,14 +29,14 @@ def test_config_not_used(repo, option):
 
                 setuptools.setup(
                     name="mypkg",
-                    {option}=None,
                 )
             finally:
                 coverage.stop()
                 coverage.save()
             """
-        ).format(option=option),
+        ),
     )
+    assert get_version_setup_py(repo) == "0.0.0"
 
     cfg = {
         "build-system": {
@@ -59,7 +55,6 @@ def test_config_not_used(repo, option):
         toml.dumps(cfg),
     )
 
-    assert get_version_setup_py(repo) == "0.0.0"
     assert get_version(repo, isolated=False) == "0.0.0"
     assert get_version(repo, isolated=True) == "0.0.0"
 
