@@ -3,6 +3,8 @@ import pytest
 
 from tests.conftest import execute, create_file, get_version, get_version_setup_py
 
+pytestmark = pytest.mark.all
+
 
 VERSION_PY = """def get_version():
     return "{version}"

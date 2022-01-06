@@ -54,8 +54,7 @@ def create_file(
         log.info(execute(cwd, "git diff"))
 
         if commit:
-            msg = "Add {}".format(name)
-            execute(cwd, "git commit -m {msg}".format(msg=cmd_quote(msg)))
+            execute(cwd, "git commit -m 'Add {name}'".format(name=name))
             result = get_short_commit(cwd)
 
     return result

@@ -2,7 +2,10 @@ import pytest
 
 from tests.conftest import execute, create_file, get_commit, get_version, get_short_commit
 
+pytestmark = pytest.mark.all
 
+
+@pytest.mark.important
 @pytest.mark.parametrize(
     "template",
     [

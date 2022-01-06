@@ -6,6 +6,8 @@ import textwrap
 
 from tests.conftest import execute, create_file, get_version
 
+pytestmark = pytest.mark.all
+
 
 @pytest.mark.parametrize(
     "branch, suffix",

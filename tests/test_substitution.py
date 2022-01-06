@@ -4,6 +4,8 @@ import re
 
 from tests.conftest import execute, get_version
 
+pytestmark = pytest.mark.all
+
 
 @pytest.mark.parametrize(
     "branch, suffix",
