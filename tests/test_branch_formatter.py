@@ -89,9 +89,8 @@ def test_branch_formatter_wrong_format(repo, template_config, create_config):
         },
     )
 
-    if sys.version_info >= (3, 6):
-        with pytest.raises(subprocess.CalledProcessError):
-            get_version(repo)
+    with pytest.raises(subprocess.CalledProcessError):
+        get_version(repo)
 
 
 def test_branch_formatter_not_callable(repo, template_config, create_config):
