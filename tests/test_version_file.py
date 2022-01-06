@@ -31,7 +31,7 @@ def test_version_file(repo, create_config, template):
 
     create_file(repo, add=True, commit=False)
     assert get_version(repo) == "1.0.0"
-    execute(repo, "git commit -m 'add file'")
+    execute(repo, 'git commit -m "add file"')
 
     create_file(repo, add=False)
     assert get_version(repo) == "1.0.0"
@@ -100,7 +100,7 @@ def test_version_file_dirty(repo, create_config, add, template, subst):
     sha = get_short_commit(repo)
     assert get_version(repo) == subst.format(sha=sha, full_sha=full_sha, ccount=0)
 
-    execute(repo, "git commit -m 'add file'")
+    execute(repo, 'git commit -m "add file"')
     create_file(repo, add=False)
 
     full_sha = get_commit(repo)

@@ -168,7 +168,7 @@ def test_tag_sort_by_version(repo, create_config, tag_opts):
     for i, tag in enumerate(tags_to_commit):
         create_file(repo, commit=False)
         dt = datetime.now() - timedelta(days=len(tags_to_commit) - i)
-        execute(repo, "git commit -m 'Some commit' --date {dt}".format(dt=dt.isoformat()))
+        execute(repo, 'git commit -m "Some commit" --date {dt}'.format(dt=dt.isoformat()))
         commits[tag] = get_short_commit(repo)
 
     tags_to_create = [
@@ -202,7 +202,7 @@ def test_tag_sort_by_commit_date(repo, create_config, tag_opts):
     for i, tag in enumerate(tags_to_commit):
         create_file(repo, commit=False)
         dt = datetime.now() - timedelta(days=len(tags_to_commit) - i)
-        execute(repo, "git commit -m 'Some commit' --date {dt}".format(dt=dt.isoformat()))
+        execute(repo, 'git commit -m "Some commit" --date {dt}'.format(dt=dt.isoformat()))
         commits[tag] = get_short_commit(repo)
         time.sleep(1)
 
@@ -238,7 +238,7 @@ def test_tag_sort_by_tag_date(repo, create_config, tag_opts):
     for i, tag in enumerate(tags_to_commit):
         create_file(repo, commit=False)
         dt = datetime.now() - timedelta(days=len(tags_to_commit) - i)
-        execute(repo, "git commit -m 'Some commit' --date {dt}".format(dt=dt.isoformat()))
+        execute(repo, 'git commit -m "Some commit" --date {dt}'.format(dt=dt.isoformat()))
         commits[tag] = get_short_commit(repo)
 
     tags_to_create = [
@@ -279,7 +279,7 @@ def test_tag_sort_by_create_date(repo, create_config, tag_opts, sort_by):
     for i, tag in enumerate(tags_to_commit):
         create_file(repo, commit=False)
         dt = datetime.now() - timedelta(days=len(tags_to_commit) - i)
-        execute(repo, "git commit -m 'Some commit' --date {dt}".format(dt=dt.isoformat()))
+        execute(repo, 'git commit -m "Some commit" --date {dt}'.format(dt=dt.isoformat()))
         commits[tag] = get_short_commit(repo)
         time.sleep(1)
 
