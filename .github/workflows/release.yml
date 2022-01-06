@@ -30,7 +30,7 @@ jobs:
     needs: [wait]
     strategy:
       matrix:
-        python-version: ['2.7', '3.6']
+        python-version: ['2.7', '3.10']
 
     steps:
     - name: Checkout code

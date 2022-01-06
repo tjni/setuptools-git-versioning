@@ -23,7 +23,7 @@ Changelog
     .. change::
       :tags: general, deprecated
 
-      Python 2.7 and 3.6 support is deprecated due to their end of life.
+      Python 2.7, 3.5 and 3.6 support is deprecated due to their end of life.
 
       It will be completely removed in ``2.0`` version. A warning message is added
 

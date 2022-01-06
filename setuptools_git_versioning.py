@@ -315,7 +315,7 @@ def version_from_git(
 
     if sys.version_info < (3, 7):
         warnings.warn(
-            "Python 2.7 and 3.6 support is deprecated "
+            "Python 2.7, 3.5 and 3.6 support is deprecated "
             "since setuptools-git-versioning v1.8.0 "
             "and will be dropped in v2.0.0\n"
             "Please upgrade your Python version to 3.7+",
