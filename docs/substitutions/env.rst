@@ -17,10 +17,12 @@ Options
 You can pass 2 positional options to this substitution:
 
 - Env variable name (case sensitive)
-- Default value if env variable is not set (optional)
+- Default value (optional)
 
-  - no default value meaus that variable will be replaced with literal ``"UNKNOWN"``
+  Used if environment variable is not set.
+
+  - no value or empty string means that variable will be replaced with string value ``UNKNOWN``
   - ``some value`` - any plain text
   - ``{ccount}`` - any other substitution is supported
-  - ``{env:MISSINGVAR:{ccount}}`` - nested too
-  - ``IGNORE`` - same as empty string
+  - ``{env:MISSINGVAR:{ccount}}`` - nested substitutions are allowed too
+  - ``IGNORE`` - return empty string

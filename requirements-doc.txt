@@ -1,5 +1,5 @@
+changelog
 furo
-git+https://github.com/dolfinus/changelog.git@custom_section_classes
 numpydoc
 sphinx
 sphinx-autodoc-typehints
