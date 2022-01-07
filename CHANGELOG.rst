@@ -14,18 +14,33 @@ Changelog
       Drop Python 3.3 and 3.4 support
 
     .. change::
-      :tags: config, deprecated
-
-      ``version_config`` keyword in ``setup.py`` is renamed to ``setuptools_git_versioning``.
-
-      It will be removed in ``2.0`` version. A warning message is added
-
-    .. change::
       :tags: general, deprecated
 
       Python 2.7, 3.5 and 3.6 support is deprecated due to their end of life.
 
-      It will be completely removed in ``2.0`` version. A warning message is added
+      It will be completely removed in ``2.0.0`` release. A warning message is added
+
+    .. change::
+      :tags: core, deprecated
+
+      ``get_branch_tags`` function is renamed to ``get_tags``.
+
+      It will be removed in ``2.0.0`` release. A warning message is added
+
+    .. change::
+      :tags: config, deprecated
+
+      ``version_config`` keyword in ``setup.py`` is renamed to ``setuptools_git_versioning``.
+
+      It will be removed in ``2.0.0`` release. A warning message is added
+
+    .. change::
+      :tags: config, deprecated
+
+      Prefer using ``"enabled": True`` / ``"enabled": False`` option
+      instead of pure boolean values (``True``, ``False``) for config.
+
+      Old behavior is deprecated and will be removed in ``2.0`` version. A warning message is added
 
     .. change::
       :tags: core, feature
@@ -76,15 +91,6 @@ Changelog
       :tags: docs, feature
 
       Added CHANGELOG.rst
-
-    .. change::
-      :tags: config, deprecated
-
-      Prefer using ``"enabled": True`` / ``"enabled": False`` option
-      instead of pure boolean values (``True``, ``False``) for config.
-
-
-      Old behavior is deprecated and will be removed in ``2.0`` version. A warning message is added
 
     .. change::
       :tags: docs

@@ -69,15 +69,23 @@ def get_all_tags(sort_by=DEFAULT_SORT_BY):  # type: (str) -> List[str]
     return []
 
 
-def get_branch_tags(sort_by=DEFAULT_SORT_BY):  # type: (str) -> List[str]
+def get_branch_tags(*args, **kwargs):  # type: (*str, **str) -> List[str]
+    warnings.warn(
+        "`get_tags` function is deprecated "
+        "since setuptools-git-versioning v1.8.0 "
+        "and will be dropped in v2.0.0\n"
+        "Please use `get_tags` instead",
+        category=UserWarning,
+    )
+
+    return get_tags(*args, **kwargs)
+
+
+def get_tags(sort_by=DEFAULT_SORT_BY):  # type: (str) -> List[str]
     tags = _exec("git tag --sort=-{} --merged".format(sort_by))
     if tags:
         return tags
     return []
-
-
-def get_tags(*args, **kwargs):  # type: (*str, **str) -> List[str]
-    return get_branch_tags(*args, **kwargs)
 
 
 def get_tag(*args, **kwargs):  # type: (*str, **str) -> Optional[str]
