@@ -71,7 +71,7 @@ def get_all_tags(sort_by=DEFAULT_SORT_BY):  # type: (str) -> List[str]
 
 def get_branch_tags(*args, **kwargs):  # type: (*str, **str) -> List[str]
     warnings.warn(
-        "`get_tags` function is deprecated "
+        "`get_branch_tags` function is deprecated "
         "since setuptools-git-versioning v1.8.0 "
         "and will be dropped in v2.0.0\n"
         "Please use `get_tags` instead",
@@ -89,7 +89,7 @@ def get_tags(sort_by=DEFAULT_SORT_BY):  # type: (str) -> List[str]
 
 
 def get_tag(*args, **kwargs):  # type: (*str, **str) -> Optional[str]
-    tags = get_branch_tags(*args, **kwargs)
+    tags = get_tags(*args, **kwargs)
     if tags:
         return tags[0]
     return None
