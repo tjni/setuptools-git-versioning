@@ -6,6 +6,7 @@ Changelog
 
 .. changelog::
     :version: 1.8.0
+    :released: 07.01.2022
 
     .. change::
       :tags: general, breaking

@@ -57,7 +57,7 @@ between ``setuptools-git-versioning`` and other tools.
 Documentation
 --------------
 
-See https://setuptools-git-versioning.readthedocs.io
+See https://setuptools-git-versioning.readthedocs.io/en/stable/
 
 .. contribution
 
