@@ -1,7 +1,7 @@
 import subprocess
 import pytest
 
-from tests.conftest import execute, create_file, get_version, get_version_setup_py
+from tests.lib.util import create_file, get_version, get_version_setup_py, create_tag
 
 pytestmark = pytest.mark.all
 
@@ -154,7 +154,7 @@ def test_version_callback_tag_is_preferred(repo, create_config):
     create_file(repo, "version.py", VERSION_PY.format(version="1.0.0"), commit=False)
     create_config(repo, {"version_callback": "version:get_version"})
 
-    execute(repo, "git tag 1.2.3")
+    create_tag(repo, "1.2.3")
     assert get_version(repo) == "1.2.3"
 
 

@@ -19,6 +19,7 @@ DEFAULT_TEMPLATE = "{tag}"
 DEFAULT_DEV_TEMPLATE = "{tag}.post{ccount}+git.{sha}"
 DEFAULT_DIRTY_TEMPLATE = "{tag}.post{ccount}+git.{sha}.dirty"
 DEFAULT_STARTING_VERSION = "0.0.1"
+DEFAULT_SORT_BY = "creatordate"
 ENV_VARS_REGEXP = re.compile(r"\{env:(?P<name>[^:}]+):?(?P<default>[^}]+\}*)?\}", re.IGNORECASE | re.UNICODE)
 TIMESTAMP_REGEXP = re.compile(r"\{timestamp:?(?P<fmt>[^:}]+)?\}", re.IGNORECASE | re.UNICODE)
 
@@ -32,7 +33,7 @@ DEFAULT_CONFIG = {
     "count_commits_from_version_file": False,
     "tag_formatter": None,
     "branch_formatter": None,
-    "sort_by": None,
+    "sort_by": DEFAULT_SORT_BY,
 }
 
 log = logging.getLogger(__name__)
@@ -61,14 +62,14 @@ def get_branch():  # type: () -> Optional[str]
     return None
 
 
-def get_all_tags(sort_by="creatordate"):  # type: (str) -> List[str]
+def get_all_tags(sort_by=DEFAULT_SORT_BY):  # type: (str) -> List[str]
     tags = _exec("git tag --sort=-{}".format(sort_by))
     if tags:
         return tags
     return []
 
 
-def get_branch_tags(sort_by="creatordate"):  # type: (str) -> List[str]
+def get_branch_tags(sort_by=DEFAULT_SORT_BY):  # type: (str) -> List[str]
     tags = _exec("git tag --sort=-{} --merged".format(sort_by))
     if tags:
         return tags
@@ -380,7 +381,7 @@ def version_from_git(
     count_commits_from_version_file=False,  # type: bool
     tag_formatter=None,  # type: Optional[Callable[[str], str]]
     branch_formatter=None,  # type: Optional[Callable[[str], str]]
-    sort_by=None,  # type: Optional[str]
+    sort_by=DEFAULT_SORT_BY,  # type: str
 ):
     # type: (...) -> str
 
@@ -402,7 +403,7 @@ def version_from_git(
                 return line[8:].strip()
 
     from_file = False
-    tag = get_tag(sort_by) if sort_by else get_tag()
+    tag = get_tag(sort_by=sort_by)
 
     if tag is None:
         # TODO: raise exception if both version_callback and version_file are set

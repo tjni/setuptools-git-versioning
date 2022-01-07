@@ -3,7 +3,7 @@ import pytest
 import subprocess
 import textwrap
 
-from tests.conftest import execute, create_file, get_version
+from tests.lib.util import checkout_branch, create_file, get_version
 
 pytestmark = pytest.mark.all
 
@@ -17,7 +17,7 @@ pytestmark = pytest.mark.all
     ],
 )
 def test_branch_formatter_external(repo, template_config, create_config, branch, suffix):
-    execute(repo, "git checkout -b {branch}".format(branch=branch))
+    checkout_branch(repo, branch)
 
     create_file(
         repo,
@@ -101,7 +101,7 @@ def test_branch_formatter_external_setup_py_direct_import(repo, template_config)
     branch = "feature/issue-1234-add-a-great-feature"
     suffix = ".1234"
 
-    execute(repo, "git checkout -b {branch}".format(branch=branch))
+    checkout_branch(repo, branch)
 
     def config_creator(root, cfg):
         conf = pickle.dumps(cfg)
@@ -156,7 +156,7 @@ def test_branch_formatter_external_setup_py_direct_import(repo, template_config)
     ],
 )
 def test_branch_formatter_regexp(repo, template_config, create_config, branch, suffix):
-    execute(repo, "git checkout -b {branch}".format(branch=branch))
+    checkout_branch(repo, branch)
 
     template_config(
         repo,
@@ -171,7 +171,7 @@ def test_branch_formatter_regexp(repo, template_config, create_config, branch, s
 
 
 def test_branch_formatter_regexp_not_match(repo, template_config, create_config):
-    execute(repo, "git checkout -b unknown")
+    checkout_branch(repo, "unknown")
 
     template_config(
         repo,

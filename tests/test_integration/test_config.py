@@ -4,7 +4,7 @@ import subprocess
 import textwrap
 import toml
 
-from tests.conftest import get_version, get_version_setup_py, create_file, create_pyproject_toml, create_setup_py
+from tests.lib.util import get_version, get_version_setup_py, create_file, create_pyproject_toml, create_setup_py
 
 pytestmark = [pytest.mark.all, pytest.mark.important]
 

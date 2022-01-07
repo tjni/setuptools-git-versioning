@@ -1,3 +1,5 @@
+.. _versioning-schemas:
+
 Versioning schemas
 ------------------
 

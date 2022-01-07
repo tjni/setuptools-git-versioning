@@ -1,6 +1,6 @@
 import pytest
 
-from tests.conftest import execute, create_file, get_commit, get_version, get_short_commit
+from tests.lib.util import create_commit, create_file, get_full_sha, get_version, get_sha, create_tag
 
 pytestmark = pytest.mark.all
 
@@ -31,7 +31,7 @@ def test_version_file(repo, create_config, template):
 
     create_file(repo, add=True, commit=False)
     assert get_version(repo) == "1.0.0"
-    execute(repo, 'git commit -m "add file"')
+    create_commit(repo, "add file")
 
     create_file(repo, add=False)
     assert get_version(repo) == "1.0.0"
@@ -60,14 +60,14 @@ def test_version_file_count_commits(repo, create_config, template, subst):
 
     create_file(repo, "VERSION.txt", "1.0.0")
 
-    full_sha = get_commit(repo)
-    sha = get_short_commit(repo)
+    full_sha = get_full_sha(repo)
+    sha = get_sha(repo)
     assert get_version(repo) == subst.format(sha=sha, full_sha=full_sha, ccount=0)
 
     create_file(repo)
 
-    full_sha = get_commit(repo)
-    sha = get_short_commit(repo)
+    full_sha = get_full_sha(repo)
+    sha = get_sha(repo)
     assert get_version(repo) == subst.format(sha=sha, full_sha=full_sha, ccount=1)
 
 
@@ -96,15 +96,15 @@ def test_version_file_dirty(repo, create_config, add, template, subst):
     create_file(repo, "VERSION.txt", "1.0.0")
     create_file(repo, commit=False)
 
-    full_sha = get_commit(repo)
-    sha = get_short_commit(repo)
+    full_sha = get_full_sha(repo)
+    sha = get_sha(repo)
     assert get_version(repo) == subst.format(sha=sha, full_sha=full_sha, ccount=0)
 
-    execute(repo, 'git commit -m "add file"')
+    create_commit(repo, "add file")
     create_file(repo, add=False)
 
-    full_sha = get_commit(repo)
-    sha = get_short_commit(repo)
+    full_sha = get_full_sha(repo)
+    sha = get_sha(repo)
     assert get_version(repo) == subst.format(sha=sha, full_sha=full_sha, ccount=1)
 
 
@@ -130,7 +130,7 @@ def test_version_file_drop_leading_v(repo, create_config, version, real_version)
 
 
 def test_version_file_tag_is_preferred(repo, create_config):
-    execute(repo, "git tag 1.2.3")
+    create_tag(repo, "1.2.3")
 
     create_file(repo, "VERSION.txt", "1.0.0")
     create_config(
@@ -141,7 +141,7 @@ def test_version_file_tag_is_preferred(repo, create_config):
         },
     )
 
-    sha = get_short_commit(repo)
+    sha = get_sha(repo)
     assert get_version(repo) == "1.2.3.post2+git.{sha}".format(sha=sha)
 
 

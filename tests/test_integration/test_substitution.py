@@ -3,7 +3,7 @@ import pytest
 import re
 import subprocess
 
-from tests.conftest import execute, get_version_setup_py, create_file, create_setup_py
+from tests.lib.util import checkout_branch, get_version_setup_py, create_file, create_setup_py, create_tag
 
 pytestmark = pytest.mark.all
 
@@ -17,7 +17,7 @@ pytestmark = pytest.mark.all
 )
 def test_substitution_tag(repo, template):
     create_setup_py(repo, {"template": template})
-    execute(repo, "git tag 1.2.3")
+    create_tag(repo, "1.2.3")
 
     assert get_version_setup_py(repo) == template.format(tag="1.2.3")
 
@@ -31,7 +31,7 @@ def test_substitution_tag(repo, template):
 )
 def test_substitution_ccount(repo, dev_template):
     create_setup_py(repo, {"dev_template": dev_template})
-    execute(repo, "git tag 1.2.3")
+    create_tag(repo, "1.2.3")
     create_file(repo)
 
     assert get_version_setup_py(repo) == dev_template.format(tag="1.2.3", ccount=1)
@@ -56,9 +56,9 @@ def test_substitution_ccount(repo, dev_template):
     ],
 )
 def test_substitution_branch(repo, template, real_template, branch, suffix):
-    execute(repo, "git checkout -b {branch}".format(branch=branch))
+    checkout_branch(repo, branch)
     create_setup_py(repo, {"template": template})
-    execute(repo, "git tag 1.2.3")
+    create_tag(repo, "1.2.3")
 
     assert get_version_setup_py(repo) == real_template.format(tag="1.2.3", branch=branch, suffix=suffix)
 
@@ -113,7 +113,7 @@ def test_substitution_branch(repo, template, real_template, branch, suffix):
 )
 def test_substitution_env(repo, dev_template, pipeline_id, suffix):
     create_setup_py(repo, {"dev_template": dev_template})
-    execute(repo, "git tag 1.2.3")
+    create_tag(repo, "1.2.3")
     create_file(repo)
 
     env = {"ANOTHER_ENV": "3.4.5"}
@@ -145,7 +145,7 @@ def test_substitution_env(repo, dev_template, pipeline_id, suffix):
 )
 def test_substitution_timestamp(repo, template, fmt, callback):
     create_setup_py(repo, {"template": template})
-    execute(repo, "git tag 1.2.3")
+    create_tag(repo, "1.2.3")
 
     value = fmt.format(tag="1.2.3", ccount=0, *callback(datetime.now()))
     pattern = re.compile(r"([^\d\w])0+(\d+[^\d\w]|\d+$)")
@@ -174,7 +174,7 @@ def test_substitution_timestamp(repo, template, fmt, callback):
 )
 def test_substitution_wrong_format(repo, template):
     create_setup_py(repo, {"template": template})
-    execute(repo, "git tag 1.2.3")
+    create_tag(repo, "1.2.3")
 
     with pytest.raises(subprocess.CalledProcessError):
         get_version_setup_py(repo)

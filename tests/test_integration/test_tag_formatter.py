@@ -2,7 +2,7 @@ import pytest
 import subprocess
 import textwrap
 
-from tests.conftest import execute, create_file, get_version
+from tests.lib.util import create_file, get_version, create_tag
 
 pytestmark = pytest.mark.all
 
@@ -35,7 +35,7 @@ def test_tag_formatter_external(repo, create_config, tag, version):
             "tag_formatter": "util:tag_formatter",
         },
     )
-    execute(repo, "git tag {tag}".format(tag=tag))
+    create_tag(repo, tag)
 
     assert get_version(repo) == version
 
@@ -62,7 +62,7 @@ def test_tag_formatter_external_missing(repo, create_config, create_util):
             "tag_formatter": "util:wtf",
         },
     )
-    execute(repo, "git tag 1.0.0")
+    create_tag(repo, "1.0.0")
 
     with pytest.raises(subprocess.CalledProcessError):
         get_version(repo)
@@ -87,7 +87,7 @@ def test_tag_formatter_external_not_callable(repo, create_config):
             "tag_formatter": "util:tag_formatter",
         },
     )
-    execute(repo, "git tag 1.0.0")
+    create_tag(repo, "1.0.0")
 
     with pytest.raises(subprocess.CalledProcessError):
         get_version(repo)
@@ -129,8 +129,7 @@ def test_tag_formatter_external_setup_py_direct_import(repo):
         ),
     )
 
-    execute(repo, "git tag release/1.0.0")
-
+    create_tag(repo, "release/1.0.0")
     assert get_version(repo) == "1.0.0"
 
 
@@ -148,7 +147,7 @@ def test_tag_formatter_regexp(repo, create_config, tag, version):
             "tag_formatter": r".*?(?P<tag>[\d.]+).*",
         },
     )
-    execute(repo, "git tag {tag}".format(tag=tag))
+    create_tag(repo, tag)
 
     assert get_version(repo) == version
 
@@ -161,7 +160,7 @@ def test_tag_formatter_regexp_not_match(repo, create_config):
         },
     )
 
-    execute(repo, "git tag unknown")
+    create_tag(repo, "unknown")
 
     with pytest.raises(subprocess.CalledProcessError):
         get_version(repo)
@@ -176,7 +175,7 @@ def test_tag_formatter_regexp_no_capture_group(repo, create_config, regexp):
         },
     )
 
-    execute(repo, "git tag 1.0.0")
+    create_tag(repo, "1.0.0")
 
     with pytest.raises(subprocess.CalledProcessError):
         get_version(repo)
@@ -190,7 +189,7 @@ def test_tag_formatter_regexp_wrong_format(repo, create_config):
         },
     )
 
-    execute(repo, "git tag 1.0.0")
+    create_tag(repo, "1.0.0")
 
     with pytest.raises(subprocess.CalledProcessError):
         get_version(repo)
