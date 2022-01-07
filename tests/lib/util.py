@@ -1,6 +1,5 @@
 import logging
 import os
-import secrets
 import subprocess
 import sys
 import textwrap
@@ -9,20 +8,32 @@ import toml
 from datetime import datetime
 from typing import Any, Callable, Dict, Optional
 
+try:
+    from secrets import token_hex
+except ImportError:
+    # TODO: remove after dropping Python 2.7 and 3.5 support
+    import string
+    import random
+
+    def token_hex(nbytes=None):  # type: (Optional[int]) -> str
+        size = nbytes * 2 if nbytes is not None else 64
+        return "".join(random.choices(string.hexdigits, k=size)).lower()
+
+
 log = logging.getLogger(__name__)
 root = os.path.dirname(os.path.dirname(__file__))
 
 
 def rand_str():  # type: () -> str
-    return secrets.token_hex()
+    return token_hex()
 
 
 def rand_full_sha():  # type: () -> str
-    return secrets.token_hex(40)
+    return token_hex(40)
 
 
 def rand_sha():  # type: () -> str
-    return secrets.token_hex(8)
+    return token_hex(8)
 
 
 def execute(cwd, cmd, **kwargs):  # type: (str, str, **Any) -> str

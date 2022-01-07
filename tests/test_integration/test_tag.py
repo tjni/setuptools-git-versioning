@@ -176,7 +176,7 @@ def test_tag_sort_by_version(repo, create_config, message):
     for i, tag in enumerate(tags_to_commit):
         create_file(repo, commit=False)
         dt = datetime.now() - timedelta(days=len(tags_to_commit) - i)
-        create_commit(repo, "Some commit", df=dt)
+        create_commit(repo, "Some commit", dt=dt)
         commits[tag] = get_sha(repo)
 
     tags_to_create = [
@@ -210,7 +210,7 @@ def test_tag_sort_by_commit_date(repo, create_config, message):
     for i, tag in enumerate(tags_to_commit):
         create_file(repo, commit=False)
         dt = datetime.now() - timedelta(days=len(tags_to_commit) - i)
-        create_commit(repo, "Some commit", df=dt)
+        create_commit(repo, "Some commit", dt=dt)
         commits[tag] = get_sha(repo)
         time.sleep(1)
 
@@ -246,7 +246,7 @@ def test_tag_sort_by_tag_date(repo, create_config, message):
     for i, tag in enumerate(tags_to_commit):
         create_file(repo, commit=False)
         dt = datetime.now() - timedelta(days=len(tags_to_commit) - i)
-        create_commit(repo, "Some commit", df=dt)
+        create_commit(repo, "Some commit", dt=dt)
         commits[tag] = get_sha(repo)
 
     tags_to_create = [
@@ -287,7 +287,7 @@ def test_tag_sort_by_create_date(repo, create_config, message, sort_by):
     for i, tag in enumerate(tags_to_commit):
         create_file(repo, commit=False)
         dt = datetime.now() - timedelta(days=len(tags_to_commit) - i)
-        create_commit(repo, "Some commit", df=dt)
+        create_commit(repo, "Some commit", dt=dt)
         commits[tag] = get_sha(repo)
         time.sleep(1)
 
