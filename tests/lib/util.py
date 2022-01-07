@@ -17,7 +17,7 @@ except ImportError:
 
     def token_hex(nbytes=None):  # type: (Optional[int]) -> str
         size = nbytes * 2 if nbytes is not None else 64
-        return "".join(random.choices(string.hexdigits, k=size)).lower()
+        return "".join(random.choice(string.hexdigits) for i in range(size)).lower()
 
 
 log = logging.getLogger(__name__)
