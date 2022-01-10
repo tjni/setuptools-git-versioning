@@ -138,7 +138,7 @@ def read_toml(file_name):  # type: (str) -> dict
         data = f.read()
     parsed_file = toml.loads(data)
 
-    return parsed_file.get("tool", {}).get("setuptools-git-versioning", {"enabled": False})
+    return parsed_file.get("tool", {}).get("setuptools-git-versioning", None)
 
 
 # TODO: remove along with version_config

@@ -146,6 +146,35 @@ def test_config_pyproject_toml_is_used_then_setup_py_is_empty(repo, option):
     assert get_version(repo) == "2.3.4"
 
 
+def test_config_pyproject_toml_is_used_then_setup_py_does_not_exist(repo):
+    create_pyproject_toml(repo, {"starting_version": "2.3.4"}, add=False, commit=False)
+    create_file(
+        repo,
+        "setup.cfg",
+        textwrap.dedent(
+            """
+            [metadata]
+            name = mypkg
+            """
+        ),
+    )
+
+    assert get_version(repo) == "2.3.4"
+
+
+def test_config_setup_py_is_used_then_pyproject_toml_is_empty(repo):
+    create_pyproject_toml(repo, NotImplemented, add=False, commit=False)
+    create_setup_py(repo, {"starting_version": "2.3.4"}, add=False, commit=False)
+
+    assert get_version(repo) == "2.3.4"
+
+
+def test_config_setup_py_is_used_then_pyproject_toml_does_not_exist(repo):
+    create_setup_py(repo, {"starting_version": "2.3.4"}, add=False, commit=False)
+
+    assert get_version_setup_py(repo) == "2.3.4"
+
+
 @pytest.mark.parametrize(
     "version_config, setuptools_git_versioning",
     itertools.combinations(
