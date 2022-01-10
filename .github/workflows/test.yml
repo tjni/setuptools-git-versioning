@@ -69,9 +69,6 @@ jobs:
       with:
         fetch-depth: 0
 
-    - name: Inject slug/short variables
-      uses: rlespinasse/github-slug-action@v3.x
-
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
       with:

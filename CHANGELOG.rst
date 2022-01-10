@@ -5,7 +5,16 @@ Changelog
 ----
 
 .. changelog::
+    :version: 1.8.2
+
+    .. change::
+        :tags: ci, bug
+
+        Fix creating multiple releases for the same tag
+
+.. changelog::
     :version: 1.8.1
+    :released: 10.01.2022
 
     .. change::
         :tags: core, bug
