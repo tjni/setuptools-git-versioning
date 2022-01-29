@@ -46,7 +46,7 @@ between ``setuptools-git-versioning`` and other tools.
 
 **Limitations:**
 
-- Currently the only supported VCS supported is *Git*
+- Currently the only supported VCS is *Git*
 
 - Only git v2 is supported
 
