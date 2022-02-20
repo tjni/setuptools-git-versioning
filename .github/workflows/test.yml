@@ -27,7 +27,7 @@ jobs:
         do_not_skip: '["push"]'
 
   tests:
-    name: Run ${{ matrix.mark}} tests (${{ github.event_name }}, ${{ matrix.python-version }} on ${{ matrix.os }})
+    name: Run ${{ matrix.mark}} tests (${{ matrix.python-version }} on ${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     needs: [check_duplicate_runs]
     if: ${{ needs.check_duplicate_runs.outputs.should_skip != 'true' }}
@@ -119,7 +119,7 @@ jobs:
         path: reports/coverage-${{ matrix.python-version }}.xml
 
   all_done:
-    name: Tests done (${{ github.event_name }})
+    name: Tests done
     runs-on: ubuntu-latest
     needs: [tests]
 
