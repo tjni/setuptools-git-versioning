@@ -24,7 +24,7 @@ jobs:
         cancel_others: true
         skip_after_successful_duplicate: false
         paths_ignore: '["**/README.md", "**/LICENSE"]'
-        do_not_skip: '["pull_request"]'
+        do_not_skip: '["push"]'
 
   tests:
     name: Run ${{ matrix.mark}} tests (${{ github.event_name }}, ${{ matrix.python-version }} on ${{ matrix.os }})
