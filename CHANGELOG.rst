@@ -6,6 +6,7 @@ Changelog
 
 .. changelog::
     :version: 1.9.0
+    :released: 21.03.2022
 
     .. change::
         :tags: general, breaking
