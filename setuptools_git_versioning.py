@@ -15,7 +15,7 @@ from setuptools.dist import Distribution
 try:
     from collections.abc import Mapping
 except ImportError:
-    from collections import Mapping
+    from collections import Mapping  # type: ignore[attr-defined, no-redef]
 
 
 DEFAULT_TEMPLATE = "{tag}"
@@ -139,7 +139,7 @@ def read_toml(file_name):  # type: (str) -> dict
 
     with io.open(file_name, encoding="UTF-8", mode="r") as f:
         data = f.read()
-        
+
     import toml
     parsed_file = toml.loads(data)
 
@@ -191,7 +191,7 @@ def infer_version(dist):  # type: (Distribution) -> None
         # Nothing to do here
         return
 
-    if not isinstance(value, collections_abc.Mapping):
+    if not isinstance(value, Mapping):
         raise DistutilsSetupError("Wrong config format. Expected dict, got: {value}".format(value=value))
 
     if not value or not value.get("enabled", True):
