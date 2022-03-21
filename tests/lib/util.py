@@ -53,12 +53,12 @@ def create_commit(
     cwd,  # type: str
     message,  # type: str
     dt=None,  # type: Optional[datetime]
-    **kwargs  # type: Any
+    **kwargs,  # type: Any
 ):  # type: (...) -> str
     options = ""
     if dt is not None:
-        options += "--date {timestamp}".format(timestamp=dt.isoformat())
-    return execute(cwd, 'git commit -m "{message}" {options}'.format(message=message, options=options), **kwargs)
+        options += f"--date {dt.isoformat()}"
+    return execute(cwd, f'git commit -m "{message}" {options}', **kwargs)
 
 
 def create_tag(
@@ -66,23 +66,23 @@ def create_tag(
     tag,  # type: str
     message=None,  # type: Optional[str]
     commit=None,  # type: Optional[str]
-    **kwargs  # type: Any
+    **kwargs,  # type: Any
 ):  # type: (...) -> str
     options = ""
     if message:
-        options += ' -a -m "{message}"'.format(message=message)
+        options += f' -a -m "{message}"'
 
     if not commit:
         commit = ""
 
-    return execute(cwd, "git tag {options} {tag} {commit}".format(options=options, tag=tag, commit=commit), **kwargs)
+    return execute(cwd, f"git tag {options} {tag} {commit}", **kwargs)
 
 
 def checkout_branch(cwd, branch, new=True, **kwargs):  # type: (str, str, bool, **Any) -> str
     options = ""
     if new:
         options += " -b"
-    return execute(cwd, "git checkout {options} {branch}".format(options=options, branch=branch), **kwargs)
+    return execute(cwd, f"git checkout {options} {branch}", **kwargs)
 
 
 def create_file(
@@ -91,7 +91,7 @@ def create_file(
     content=None,  # type: Optional[str]
     add=True,  # type: bool
     commit=True,  # type: bool
-    **kwargs  # type: Any
+    **kwargs,  # type: Any
 ):  # type: (...) -> Optional[str]
     result = None
 
@@ -105,12 +105,12 @@ def create_file(
         f.write(content)
 
     if add:
-        execute(cwd, "git add {name}".format(name=name))
+        execute(cwd, f"git add {name}")
         log.info(execute(cwd, "git status"))
         log.info(execute(cwd, "git diff"))
 
         if commit:
-            create_commit(cwd, "Add {name}".format(name=name))
+            create_commit(cwd, f"Add {name}")
             result = get_sha(cwd)
 
     return result
@@ -120,7 +120,7 @@ def create_pyproject_toml(
     cwd,  # type: str
     config=None,  # type: Optional[dict]
     commit=True,  # type: bool
-    **kwargs  # type: Any
+    **kwargs,  # type: Any
 ):  # type: (...) -> Optional[str]
     # well, using pyproject.toml+setup.cfg is more classic
     # but it is not easy to check code coverage in such a case
@@ -147,7 +147,7 @@ def create_pyproject_toml(
             """
         ),
         commit=False,
-        **kwargs
+        **kwargs,
     )
 
     cfg = {}  # type: Dict[str, Any]
@@ -177,7 +177,7 @@ def create_setup_py(
     cwd,  # type: str
     config=None,  # type: Optional[dict]
     option="setuptools_git_versioning",  # # type: str
-    **kwargs  # type: Any
+    **kwargs,  # type: Any
 ):  # type: (...) -> Optional[str]
 
     if config is None:
@@ -186,7 +186,7 @@ def create_setup_py(
     if config == NotImplemented:
         cfg = ""
     else:
-        cfg = "{option}={config},".format(option=option, config=config)
+        cfg = f"{option}={config},"
 
     return create_file(
         cwd,
@@ -215,7 +215,7 @@ def create_setup_py(
                 coverage.save()
             """
         ).format(cfg=cfg),
-        **kwargs
+        **kwargs,
     )
 
 
@@ -253,11 +253,11 @@ def typed_config(
 
 
 def get_version_setup_py(cwd, **kwargs):  # type: (str, **Any) -> str
-    return execute(cwd, "{python} setup.py --version".format(python=sys.executable), **kwargs).strip()
+    return execute(cwd, f"{sys.executable} setup.py --version", **kwargs).strip()
 
 
 def get_version(cwd, isolated=False, **kwargs):  # type: (str, bool, **Any) -> str
-    cmd = "{python} -m build -s".format(python=sys.executable)
+    cmd = f"{sys.executable} -m build -s"
     if not isolated:
         cmd += " --no-isolation"
     execute(cwd, cmd, **kwargs)

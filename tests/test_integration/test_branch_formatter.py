@@ -41,7 +41,7 @@ def test_branch_formatter_external(repo, template_config, create_config, branch,
         },
     )
 
-    assert get_version(repo) == "1.2.3{suffix}0".format(suffix=suffix)
+    assert get_version(repo) == f"1.2.3{suffix}0"
 
 
 @pytest.mark.parametrize("create_util", [True, False])
@@ -145,7 +145,7 @@ def test_branch_formatter_external_setup_py_direct_import(repo, template_config)
 
     template_config(repo, config_creator, template="{tag}.{branch}{ccount}")
 
-    assert get_version(repo) == "1.2.3{suffix}0".format(suffix=suffix)
+    assert get_version(repo) == f"1.2.3{suffix}0"
 
 
 @pytest.mark.parametrize(
@@ -167,7 +167,7 @@ def test_branch_formatter_regexp(repo, template_config, create_config, branch, s
         },
     )
 
-    assert get_version(repo) == "1.2.3{suffix}0".format(suffix=suffix)
+    assert get_version(repo) == f"1.2.3{suffix}0"
 
 
 def test_branch_formatter_regexp_not_match(repo, template_config, create_config):

@@ -120,7 +120,7 @@ def test_substitution_env(repo, dev_template, pipeline_id, suffix):
     if pipeline_id is not None:
         env["PIPELINE_ID"] = pipeline_id
 
-    assert get_version_setup_py(repo, env=env) == "1.2.3.post{suffix}".format(suffix=suffix)
+    assert get_version_setup_py(repo, env=env) == f"1.2.3.post{suffix}"
 
 
 @pytest.mark.parametrize(

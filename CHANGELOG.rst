@@ -1,16 +1,29 @@
 Changelog
 ==========
 
-1.8
+2.0
 ----
 
 .. changelog::
-    :version: 1.8.2
+    :version: 2.0.0
+
+    .. change::
+        :tags: general, breaking
+
+        Drop Python 2.7, 3.5 and 3.6 support. Minimal supported Python version is now 3.7
+
+    .. change::
+        :tags: core, feature
+
+        Do not fail on ``toml`` and ``packaging`` modules import while installing ``setuptools-git-versioning`` from ``tag.gz`` file
 
     .. change::
         :tags: ci, bug
 
         Fix creating multiple releases for the same tag
+
+1.8
+----
 
 .. changelog::
     :version: 1.8.1

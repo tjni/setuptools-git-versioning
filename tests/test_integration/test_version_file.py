@@ -142,7 +142,7 @@ def test_version_file_tag_is_preferred(repo, create_config):
     )
 
     sha = get_sha(repo)
-    assert get_version(repo) == "1.2.3.post2+git.{sha}".format(sha=sha)
+    assert get_version(repo) == f"1.2.3.post2+git.{sha}"
 
 
 @pytest.mark.parametrize("starting_version, version", [(None, "0.0.1"), ("1.2.3", "1.2.3")])

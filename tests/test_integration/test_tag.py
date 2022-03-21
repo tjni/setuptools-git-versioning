@@ -144,7 +144,7 @@ def test_tag_linear_history(repo, create_config):
     create_config(repo)
 
     sha = get_sha(repo)
-    assert get_version(repo) == "1.0.0.post1+git.{sha}".format(sha=sha)
+    assert get_version(repo) == f"1.0.0.post1+git.{sha}"
 
 
 @pytest.mark.parametrize(

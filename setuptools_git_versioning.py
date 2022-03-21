@@ -1,22 +1,18 @@
+from __future__ import annotations
+
 import importlib
-import io
 import logging
 import os
 import re
 import subprocess
-import sys
 import warnings
+from collections.abc import Mapping
 from datetime import datetime
 from distutils.errors import DistutilsSetupError
-from typing import Any, Callable, List, Optional, Union
+from pathlib import Path
+from typing import Any, Callable
 
 from setuptools.dist import Distribution
-
-try:
-    from collections.abc import Mapping
-except ImportError:
-    from collections import Mapping  # type: ignore[attr-defined, no-redef]
-
 
 DEFAULT_TEMPLATE = "{tag}"
 DEFAULT_DEV_TEMPLATE = "{tag}.post{ccount}+git.{sha}"
@@ -42,7 +38,7 @@ DEFAULT_CONFIG = {
 log = logging.getLogger(__name__)
 
 
-def _exec(cmd):  # type: (str) -> List[str]
+def _exec(cmd: str) -> list[str]:
     try:
         stdout = subprocess.check_output(cmd, shell=True, universal_newlines=True)  # nosec
     except subprocess.CalledProcessError as e:
@@ -51,28 +47,28 @@ def _exec(cmd):  # type: (str) -> List[str]
     return [line.rstrip() for line in lines if line.rstrip()]
 
 
-def get_branches():  # type: () -> List[str]
+def get_branches() -> list[str]:
     branches = _exec("git branch -l --format '%(refname:short)'")
     if branches:
         return branches
     return []
 
 
-def get_branch():  # type: () -> Optional[str]
+def get_branch() -> str | None:
     branches = _exec("git rev-parse --abbrev-ref HEAD")
     if branches:
         return branches[0]
     return None
 
 
-def get_all_tags(sort_by=DEFAULT_SORT_BY):  # type: (str) -> List[str]
-    tags = _exec("git tag --sort=-{}".format(sort_by))
+def get_all_tags(sort_by: str = DEFAULT_SORT_BY) -> list[str]:
+    tags = _exec(f"git tag --sort=-{sort_by}")
     if tags:
         return tags
     return []
 
 
-def get_branch_tags(*args, **kwargs):  # type: (*str, **str) -> List[str]
+def get_branch_tags(*args, **kwargs) -> list[str]:
     warnings.warn(
         "`get_branch_tags` function is deprecated "
         "since setuptools-git-versioning v1.8.0 "
@@ -84,70 +80,70 @@ def get_branch_tags(*args, **kwargs):  # type: (*str, **str) -> List[str]
     return get_tags(*args, **kwargs)
 
 
-def get_tags(sort_by=DEFAULT_SORT_BY):  # type: (str) -> List[str]
-    tags = _exec("git tag --sort=-{} --merged".format(sort_by))
+def get_tags(sort_by: str = DEFAULT_SORT_BY) -> list[str]:
+    tags = _exec(f"git tag --sort=-{sort_by} --merged")
     if tags:
         return tags
     return []
 
 
-def get_tag(*args, **kwargs):  # type: (*str, **str) -> Optional[str]
+def get_tag(*args, **kwargs) -> str | None:
     tags = get_tags(*args, **kwargs)
     if tags:
         return tags[0]
     return None
 
 
-def get_sha(name="HEAD"):  # type: (str) -> Optional[str]
-    sha = _exec('git rev-list -n 1 "{}"'.format(name))
+def get_sha(name: str = "HEAD") -> str | None:
+    sha = _exec(f'git rev-list -n 1 "{name}"')
     if sha:
         return sha[0]
     return None
 
 
-def get_latest_file_commit(path):  # type: (str) -> Optional[str]
-    sha = _exec('git log -n 1 --pretty=format:%H -- "{}"'.format(path))
+def get_latest_file_commit(path: str | os.PathLike) -> str | None:
+    file_path = Path(path)
+    sha = _exec(f'git log -n 1 --pretty=format:%H -- "{file_path}"')
     if sha:
         return sha[0]
     return None
 
 
-def is_dirty():  # type: () -> bool
+def is_dirty() -> bool:
     res = _exec("git status --short")
     if res:
         return True
     return False
 
 
-def count_since(name):  # type: (str) -> Optional[int]
-    res = _exec('git rev-list --count HEAD "^{}"'.format(name))
+def count_since(name: str) -> int | None:
+    res = _exec(f'git rev-list --count HEAD "^{name}"')
     if res:
         return int(res[0])
     return None
 
 
-def load_config_from_dict(dictionary):  # type: (Mapping) -> dict
+def load_config_from_dict(dictionary: Mapping) -> dict:
     config = {}
     for key, value in DEFAULT_CONFIG.items():
         config[key] = dictionary.get(key, value)
     return config
 
 
-def read_toml(file_name):  # type: (str) -> dict
-    if not os.path.exists(file_name) or not os.path.isfile(file_name):
+def read_toml(file_name: str | os.PathLike) -> dict:
+    file_path = Path(file_name)
+    if not file_path.exists() or not file_path.is_file():
         return {}
 
-    with io.open(file_name, encoding="UTF-8", mode="r") as f:
-        data = f.read()
-
     import toml
-    parsed_file = toml.loads(data)
+
+    parsed_file = toml.load(file_path)
 
     return parsed_file.get("tool", {}).get("setuptools-git-versioning", None)
 
 
 # TODO: remove along with version_config
-def parse_config(dist, attr, value):  # type: (Distribution, Any, Any) -> None
+def parse_config(dist: Distribution, attr: Any, value: Any) -> None:
     if attr == "version_config" and value is not None:
         warnings.warn(
             "`version_config` option is deprecated "
@@ -165,7 +161,7 @@ def parse_config(dist, attr, value):  # type: (Distribution, Any, Any) -> None
 
 
 # real version is generated here
-def infer_version(dist):  # type: (Distribution) -> None
+def infer_version(dist: Distribution) -> None:
     value = getattr(dist, "setuptools_git_versioning", None) or getattr(dist, "version_config", None)
 
     if isinstance(value, bool):
@@ -184,7 +180,7 @@ def infer_version(dist):  # type: (Distribution) -> None
         value = toml_value
     elif toml_value:
         raise DistutilsSetupError(
-            "Both setup.py and pyproject.toml have setuptools-git-versioning config. " "Please remove one of them"
+            "Both setup.py and pyproject.toml have setuptools-git-versioning config. Please remove one of them"
         )
 
     if value is None:
@@ -192,7 +188,7 @@ def infer_version(dist):  # type: (Distribution) -> None
         return
 
     if not isinstance(value, Mapping):
-        raise DistutilsSetupError("Wrong config format. Expected dict, got: {value}".format(value=value))
+        raise DistutilsSetupError(f"Wrong config format. Expected dict, got: {value}")
 
     if not value or not value.get("enabled", True):
         # Nothing to do here
@@ -204,12 +200,11 @@ def infer_version(dist):  # type: (Distribution) -> None
     dist.metadata.version = version
 
 
-def read_version_from_file(path):  # type: (Union[str, os.PathLike]) -> str
-    with open(path) as file:
-        return file.read().strip()
+def read_version_from_file(path: str | os.PathLike) -> str:
+    return Path(path).read_text().strip()
 
 
-def substitute_env_variables(template):  # type: (str) -> str
+def substitute_env_variables(template: str) -> str:
     for var, default in ENV_VARS_REGEXP.findall(template):
         if default.upper() == "IGNORE":
             default = ""
@@ -222,7 +217,7 @@ def substitute_env_variables(template):  # type: (str) -> str
     return template
 
 
-def substitute_timestamp(template):  # type: (str) -> str
+def substitute_timestamp(template: str) -> str:
     now = datetime.now()
     for fmt in TIMESTAMP_REGEXP.findall(template):
         result = now.strftime(fmt or "%s")
@@ -231,7 +226,7 @@ def substitute_timestamp(template):  # type: (str) -> str
     return template
 
 
-def resolve_substitutions(template, *args, **kwargs):  # type: (str, *Any, **Any) -> str
+def resolve_substitutions(template: str, *args, **kwargs) -> str:
     while True:
         if "{env" in template:
             new_template = substitute_env_variables(template)
@@ -249,11 +244,11 @@ def resolve_substitutions(template, *args, **kwargs):  # type: (str, *Any, **Any
 
 
 def import_reference(
-    ref,  # type: str
-    package_name=None,  # Optional[str]
-):  # type: (...) -> Any
+    ref: str,
+    package_name: str | None = None,
+) -> Any:
     if ":" not in ref:
-        raise NameError("Wrong reference name: {ref}".format(ref=ref))
+        raise NameError(f"Wrong reference name: {ref}")
 
     module_name, attr = ref.split(":")
     module = importlib.import_module(module_name, package_name)
@@ -262,21 +257,21 @@ def import_reference(
 
 
 def load_callable(
-    inp,  # type: str
-    package_name=None,  # Optional[str]
-):  # type: (...) -> Callable
+    inp: str,
+    package_name: str | None = None,
+) -> Callable:
 
     ref = import_reference(inp, package_name)
     if not callable(ref):
-        raise ValueError("{ref} of type {type} is not callable".format(ref=ref, type=type(ref)))
+        raise ValueError(f"{ref} of type {type(ref)} is not callable")
 
     return ref
 
 
 def load_tag_formatter(
-    tag_formatter,  # type: Union[str, Callable[[str], str]]
-    package_name=None,  # Optional[str]
-):  # type: (...) -> Callable
+    tag_formatter: str | Callable[[str], str],
+    package_name: str | None = None,
+) -> Callable:
     log.warning(
         "Parsing tag_formatter {tag_formatter} with type {type}".format(
             tag_formatter=tag_formatter,
@@ -290,7 +285,7 @@ def load_tag_formatter(
     try:
         return load_callable(tag_formatter, package_name)
     except (ImportError, NameError) as e:
-        log.warning("tag_formatter is not a valid function reference:\n\t{e}".format(e=e))
+        log.warning(f"tag_formatter is not a valid function reference:\n\t{e}")
 
     try:
         pattern = re.compile(tag_formatter)
@@ -309,15 +304,15 @@ def load_tag_formatter(
 
         return formatter
     except re.error as e:
-        log.warning("tag_formatter is not valid regexp:\n\t{e}".format(e=e))
+        log.warning(f"tag_formatter is not valid regexp:\n\t{e}")
 
     raise ValueError("Cannot parse tag_formatter")
 
 
 def load_branch_formatter(
-    branch_formatter,  # type: Union[str, Callable[[str], str]]
-    package_name=None,  # Optional[str]
-):  # type: (...) -> Callable
+    branch_formatter: str | Callable[[str], str],
+    package_name: str | None = None,
+) -> Callable:
     log.warning(
         "Parsing branch_formatter {branch_formatter} with type {type}".format(
             branch_formatter=branch_formatter,
@@ -331,7 +326,7 @@ def load_branch_formatter(
     try:
         return load_callable(branch_formatter, package_name)
     except (ImportError, NameError) as e:
-        log.warning("branch_formatter is not a valid function reference:\n\t{e}".format(e=e))
+        log.warning(f"branch_formatter is not a valid function reference:\n\t{e}")
 
     try:
         pattern = re.compile(branch_formatter)
@@ -350,16 +345,16 @@ def load_branch_formatter(
 
         return formatter
     except re.error as e:
-        log.warning("branch_formatter is not valid regexp:\n\t{e}".format(e=e))
+        log.warning(f"branch_formatter is not valid regexp:\n\t{e}")
 
     raise ValueError("Cannot parse branch_formatter")
 
 
 # TODO: return Version object instead of str
 def get_version_from_callback(
-    version_callback,  # type: Union[str, Callable[[], str]]
-    package_name=None,  # Optional[str]
-):  # type: (...) -> str
+    version_callback: str | Callable[[], str],
+    package_name: str | None = None,
+) -> str:
     log.warning(
         "Parsing version_callback {version_callback} with type {type}".format(
             version_callback=version_callback,
@@ -377,37 +372,27 @@ def get_version_from_callback(
     except ValueError:
         result = import_reference(version_callback, package_name)
     except (ImportError, NameError) as e:
-        log.warning("version_callback is not a valid reference:\n\t{e}".format(e=e))
+        log.warning(f"version_callback is not a valid reference:\n\t{e}")
 
     from packaging.version import Version
+
     return Version(result).public
 
 
 # TODO: return Version object instead of str
 def version_from_git(
-    package_name=None,  # type: Optional[str]
-    template=DEFAULT_TEMPLATE,  # type: str
-    dev_template=DEFAULT_DEV_TEMPLATE,  # type: str
-    dirty_template=DEFAULT_DIRTY_TEMPLATE,  # type: str
-    starting_version=DEFAULT_STARTING_VERSION,  # type: str
-    version_callback=None,  # type: Union[Any, Callable, None]
-    version_file=None,  # type: Optional[str]
-    count_commits_from_version_file=False,  # type: bool
-    tag_formatter=None,  # type: Optional[Callable[[str], str]]
-    branch_formatter=None,  # type: Optional[Callable[[str], str]]
-    sort_by=DEFAULT_SORT_BY,  # type: str
-):
-    # type: (...) -> str
-
-    if sys.version_info < (3, 7):
-        warnings.warn(
-            "Python 2.7, 3.5 and 3.6 support is deprecated "
-            "since setuptools-git-versioning v1.8.0 "
-            "and will be dropped in v2.0.0\n"
-            "Please upgrade your Python version to 3.7+",
-            category=UserWarning,
-        )
-
+    package_name: str | None = None,
+    template: str = DEFAULT_TEMPLATE,
+    dev_template: str = DEFAULT_DEV_TEMPLATE,
+    dirty_template: str = DEFAULT_DIRTY_TEMPLATE,
+    starting_version: str = DEFAULT_STARTING_VERSION,
+    version_callback: str | Callable[[], str] | None = None,
+    version_file: str | os.PathLike | None = None,
+    count_commits_from_version_file: bool = False,
+    tag_formatter: Callable[[str], str] | None = None,
+    branch_formatter: Callable[[str], str] | None = None,
+    sort_by: str = DEFAULT_SORT_BY,
+) -> str:
     # Check if PKG-INFO file exists and Version is present in it
     if os.path.exists("PKG-INFO"):
         with open("PKG-INFO") as f:

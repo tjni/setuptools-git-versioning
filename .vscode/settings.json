@@ -1,4 +1,4 @@
 {
   "restructuredtext.confPath": "${workspaceFolder}/docs",
-  "esbonio.sphinx.confDir": "${workspaceFolder}/docs"
+  "esbonio.sphinx.confDir": "/home/maxim/Repo/setuptools-git-versioning/docs"
 }
