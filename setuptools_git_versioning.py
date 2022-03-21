@@ -10,10 +10,14 @@ from datetime import datetime
 from distutils.errors import DistutilsSetupError
 from typing import Any, Callable, List, Optional, Union
 
-import toml
 from packaging.version import Version
 from setuptools.dist import Distribution
-from six.moves import collections_abc
+
+try:
+    from collections.abc import Mapping
+except ImportError:
+    from collections import Mapping
+
 
 DEFAULT_TEMPLATE = "{tag}"
 DEFAULT_DEV_TEMPLATE = "{tag}.post{ccount}+git.{sha}"
@@ -123,7 +127,7 @@ def count_since(name):  # type: (str) -> Optional[int]
     return None
 
 
-def load_config_from_dict(dictionary):  # type: (Union[dict, collections_abc.Mapping]) -> dict
+def load_config_from_dict(dictionary):  # type: (Mapping) -> dict
     config = {}
     for key, value in DEFAULT_CONFIG.items():
         config[key] = dictionary.get(key, value)
@@ -136,6 +140,8 @@ def read_toml(file_name):  # type: (str) -> dict
 
     with io.open(file_name, encoding="UTF-8", mode="r") as f:
         data = f.read()
+        
+    import toml
     parsed_file = toml.loads(data)
 
     return parsed_file.get("tool", {}).get("setuptools-git-versioning", None)
