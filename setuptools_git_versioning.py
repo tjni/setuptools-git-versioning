@@ -272,12 +272,7 @@ def load_tag_formatter(
     tag_formatter: str | Callable[[str], str],
     package_name: str | None = None,
 ) -> Callable:
-    log.warning(
-        "Parsing tag_formatter {tag_formatter} with type {type}".format(
-            tag_formatter=tag_formatter,
-            type=type(tag_formatter),
-        )
-    )
+    log.warning(f"Parsing tag_formatter {tag_formatter} with type {type(tag_formatter)}")
 
     if callable(tag_formatter):
         return tag_formatter
@@ -295,12 +290,7 @@ def load_tag_formatter(
             if match:
                 return match.group("tag")
 
-            raise ValueError(
-                "tag name {name} does not match regexp '{regexp}'".format(
-                    name=tag,
-                    regexp=tag_formatter,
-                )
-            )
+            raise ValueError(f"Tag name {tag} does not match regexp '{tag_formatter}'")
 
         return formatter
     except re.error as e:
@@ -336,12 +326,7 @@ def load_branch_formatter(
             if match:
                 return match.group("branch")
 
-            raise ValueError(
-                "Branch name {name} does not match regexp '{regexp}'".format(
-                    name=branch,
-                    regexp=branch_formatter,
-                )
-            )
+            raise ValueError(f"Branch name {branch} does not match regexp '{branch_formatter}'")
 
         return formatter
     except re.error as e:
@@ -355,12 +340,7 @@ def get_version_from_callback(
     version_callback: str | Callable[[], str],
     package_name: str | None = None,
 ) -> str:
-    log.warning(
-        "Parsing version_callback {version_callback} with type {type}".format(
-            version_callback=version_callback,
-            type=type(version_callback),
-        )
-    )
+    log.warning(f"Parsing version_callback {version_callback} with type {type(version_callback)}")
 
     if callable(version_callback):
         return version_callback()
