@@ -49,6 +49,7 @@ setup(
     python_requires=">=3.7",
     py_modules=["setuptools_git_versioning"],
     install_requires=requirements,
+    setup_requires=requirements,
     entry_points={
         "distutils.setup_keywords": [
             "version_config = setuptools_git_versioning:parse_config",

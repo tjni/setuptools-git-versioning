@@ -5,6 +5,24 @@ Changelog
 ----
 
 .. changelog::
+    :version: 1.9.2
+    :released: 21.03.2022
+
+    .. change::
+        :tags: general
+
+        Add ``setup_requires`` item to ``setup.py``
+
+.. changelog::
+    :version: 1.9.1
+    :released: 21.03.2022
+
+    .. change::
+        :tags: general
+
+        Remove ``pyproject.toml`` file from ``.tag.gz`` package
+
+.. changelog::
     :version: 1.9.0
     :released: 21.03.2022
 
