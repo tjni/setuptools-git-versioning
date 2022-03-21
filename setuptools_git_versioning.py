@@ -10,7 +10,6 @@ from datetime import datetime
 from distutils.errors import DistutilsSetupError
 from typing import Any, Callable, List, Optional, Union
 
-from packaging.version import Version
 from setuptools.dist import Distribution
 
 try:
@@ -380,6 +379,7 @@ def get_version_from_callback(
     except (ImportError, NameError) as e:
         log.warning("version_callback is not a valid reference:\n\t{e}".format(e=e))
 
+    from packaging.version import Version
     return Version(result).public
 
 
