@@ -9,7 +9,7 @@ For example, current repo state is:
 
     commit 233f6d72 Dev branch commit (HEAD, dev)
     |
-    |    commit 86269212 Current commit (v1.0.0, master)
+    |    commit 86269212 Release commit (v1.0.0, master)
     |    |
     |   commit e7bdbe51 Another commit
     |    /
@@ -19,14 +19,14 @@ For example, current repo state is:
     |
     ...
 
-And there are just no tags in the current branch (``dev``) because all
-of them are placed in the ``master`` branch only.
+**And there are no tags in the current branch (``dev``) because all
+of them are placed in the ``master`` branch.**
 
 By default, when you try to get current version, you'll receive some
 initial value (see :ref:`starting-version-option` option).
-But if you want to get synchronized version numbers in both on the branches?
 
-You can create a function in some file (for example, in the
+If you want to get synchronized version numbers in both on the branches,
+you can create a function in some file (for example, in the
 ``mypkg/version.py`` file):
 
 .. code:: python
