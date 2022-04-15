@@ -9,7 +9,7 @@ For example, current repo state is:
 
     commit 233f6d72 Dev branch commit (HEAD, dev)
     |
-    |    commit 86269212 Current commit (v1.0.0, master)
+    |    commit 86269212 Release commit (v1.0.0, master)
     |    |
     |   commit e7bdbe51 Another commit
     |    /
@@ -19,14 +19,14 @@ For example, current repo state is:
     |
     ...
 
-And there are just no tags in the current branch (``dev``) because all
-of them are placed in the ``master`` branch only.
+**And there are no tags in the current branch (``dev``) because all
+of them are placed in the ``master`` branch.**
 
-But you want to create development releases (prereleases) for your next planned version ``1.1.0``.
-And every commit to ``dev`` branch should produce version number like ``1.1.0.dev123`` (just plain increment)
+If you want to create development releases (prereleases) for the next planned version ``1.1.0``,
+so every commit to ``dev`` branch should produce version number like ``1.1.0.dev123`` (just plain increment)
 or even ``1.1.0.dev123+git.sha`` (to describe which commit was used for this exact version).
 
-You need to create a text file (for example, ``VERSION`` or ``VERSION.txt``)
+In such a case you need to create a text file (for example, ``VERSION`` or ``VERSION.txt``)
 with your **next release number** (e.g. ``1.1.0``):
 
 .. code:: txt
@@ -135,7 +135,7 @@ will generate a version number like ``1.2.3b5``.
 
 .. _dev-release-ignore-file:
 
-Development releases using just branch name
+Development releases using only branch name
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 It is also possible to use branch names like ``1.0-alpha`` or ``1.1.beta``:
