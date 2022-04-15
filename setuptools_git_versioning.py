@@ -40,7 +40,7 @@ log = logging.getLogger(__name__)
 
 def _exec(cmd: str) -> list[str]:
     try:
-        stdout = subprocess.check_output(cmd, shell=True, universal_newlines=True)  # nosec
+        stdout = subprocess.check_output(cmd, shell=True, text=True)  # nosec
     except subprocess.CalledProcessError as e:
         stdout = e.output
     lines = stdout.splitlines()
