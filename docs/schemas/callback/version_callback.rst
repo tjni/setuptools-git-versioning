@@ -19,8 +19,8 @@ For example, current repo state is:
     |
     ...
 
-**And there are no tags in the current branch (``dev``) because all
-of them are placed in the ``master`` branch.**
+**And there are no tags in the current branch** (``dev``), **all
+of them are placed in the** ``master`` **branch.**
 
 By default, when you try to get current version, you'll receive some
 initial value (see :ref:`starting-version-option` option).
