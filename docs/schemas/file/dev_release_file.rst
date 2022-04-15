@@ -19,8 +19,8 @@ For example, current repo state is:
     |
     ...
 
-**And there are no tags in the current branch (``dev``) because all
-of them are placed in the ``master`` branch.**
+**And there are no tags in the current branch** (``dev``), **all
+of them are placed in the** ``master`` **branch.**
 
 If you want to create development releases (prereleases) for the next planned version ``1.1.0``,
 so every commit to ``dev`` branch should produce version number like ``1.1.0.dev123`` (just plain increment)
