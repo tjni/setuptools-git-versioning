@@ -150,12 +150,14 @@ def test_version_callback_not_a_repo(repo_dir, create_config):
     assert get_version(repo_dir) == version
 
 
-def test_version_callback_tag_is_preferred(repo, create_config):
-    create_file(repo, "version.py", VERSION_PY.format(version="1.0.0"), commit=False)
+def test_version_callback_has_more_priority_than_tag(repo, create_config):
+    version = "1.0.0"
+
+    create_file(repo, "version.py", VERSION_PY.format(version=version), commit=False)
     create_config(repo, {"version_callback": "version:get_version"})
 
     create_tag(repo, "1.2.3")
-    assert get_version(repo) == "1.2.3"
+    assert get_version(repo) == version
 
 
 def test_version_callback_has_more_priority_than_version_file(repo, create_config):

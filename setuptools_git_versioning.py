@@ -384,11 +384,11 @@ def version_from_git(
     from_file = False
     tag = get_tag(sort_by=sort_by)
 
-    if tag is None:
+    if version_callback is not None:
         # TODO: raise exception if both version_callback and version_file are set
-        if version_callback is not None:
-            return get_version_from_callback(version_callback, package_name)
+        return get_version_from_callback(version_callback, package_name)
 
+    if tag is None:
         if version_file is None or not os.path.exists(version_file):
             return starting_version
         else:
