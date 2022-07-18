@@ -103,9 +103,11 @@ def test_tag_no_tag(repo, create_config, starting_version, version):
     [
         ("1.0.0", "1.0.0"),
         ("v1.2.3", "1.2.3"),
+        ("beta1.2.3", "1.2.3"),
+        ("alpha1.2.3", "1.2.3"),
     ],
 )
-def test_tag_drop_leading_v(repo, create_config, tag, version):
+def test_tag_drop_leading_non_numbers(repo, create_config, tag, version):
     create_config(repo)
 
     create_tag(repo, tag)

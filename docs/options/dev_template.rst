@@ -5,7 +5,7 @@
 
 Version number template for :ref:`tag-release` or :ref:`version-file` versioning schemas.
 
-Used if no untracked files and current commit is not tagged.
+Used if there are no untracked files, and current commit is not tagged.
 
 .. note::
 

@@ -100,7 +100,7 @@ def create_file(
     if content is None:
         content = rand_str()
 
-    log.warning(content)
+    log.info(content)
     with open(os.path.join(cwd, name), "w") as f:
         f.write(content)
 

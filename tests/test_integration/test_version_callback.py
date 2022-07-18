@@ -137,6 +137,14 @@ def test_version_callback_drop_leading_v(repo, version, real_version, create_con
     assert get_version(repo) == real_version
 
 
+def test_version_callback_wrong_version_number(repo, create_config):
+    create_file(repo, "version.py", VERSION_PY.format(version="alpha1.2.3"), commit=False)
+    create_config(repo, {"version_callback": "version:get_version"})
+
+    with pytest.raises(subprocess.CalledProcessError):
+        get_version(repo)
+
+
 def test_version_callback_not_a_repo(repo_dir, create_config):
     version = "1.0.0"
     create_file(repo_dir, "version.py", VERSION_PY.format(version=version), add=False, commit=False)

@@ -21,6 +21,8 @@ DEFAULT_STARTING_VERSION = "0.0.1"
 DEFAULT_SORT_BY = "creatordate"
 ENV_VARS_REGEXP = re.compile(r"\{env:(?P<name>[^:}]+):?(?P<default>[^}]+\}*)?\}", re.IGNORECASE | re.UNICODE)
 TIMESTAMP_REGEXP = re.compile(r"\{timestamp:?(?P<fmt>[^:}]+)?\}", re.IGNORECASE | re.UNICODE)
+LOCAL_REGEXP = re.compile(r"[^a-z\d.]+", re.IGNORECASE)
+VERSION_PREFIX_REGEXP = re.compile(r"^[^\d]+", re.IGNORECASE | re.UNICODE)
 
 DEFAULT_CONFIG = {
     "template": DEFAULT_TEMPLATE,
@@ -343,16 +345,16 @@ def get_version_from_callback(
     log.warning(f"Parsing version_callback {version_callback} with type {type(version_callback)}")
 
     if callable(version_callback):
-        return version_callback()
+        result = version_callback()
+    else:
+        result = version_callback
 
-    result = version_callback
-
-    try:
-        return load_callable(version_callback, package_name)()
-    except ValueError:
-        result = import_reference(version_callback, package_name)
-    except (ImportError, NameError) as e:
-        log.warning(f"version_callback is not a valid reference:\n\t{e}")
+        try:
+            result = load_callable(version_callback, package_name)()
+        except ValueError:
+            result = import_reference(version_callback, package_name)
+        except (ImportError, NameError) as e:
+            log.warning(f"version_callback is not a valid reference:\n\t{e}")
 
     from packaging.version import Version
 
@@ -402,8 +404,7 @@ def version_from_git(
                 return starting_version
 
             if not count_commits_from_version_file:
-                # TODO: drop all leading non-numeric symbols
-                return tag.lstrip("v")  # for tag "v1.0.0" drop leading "v" symbol
+                return VERSION_PREFIX_REGEXP.sub("", tag)  # for tag "v1.0.0" drop leading "v" symbol
 
             tag_sha = get_latest_file_commit(version_file)
     else:
@@ -435,7 +436,6 @@ def version_from_git(
 
     # Ensure local version label only contains permitted characters
     public, sep, local = version.partition("+")
-    local_sanitized = re.sub(r"[^a-zA-Z0-9.]", ".", local)
-    # TODO: drop all leading non-numeric symbols
-    public_sanitized = public.lstrip("v")  # for version "v1.0.0" drop leading "v" symbol
+    local_sanitized = LOCAL_REGEXP.sub(".", local)
+    public_sanitized = VERSION_PREFIX_REGEXP.sub("", public)  # for version "v1.0.0" drop leading "v" symbol
     return public_sanitized + sep + local_sanitized

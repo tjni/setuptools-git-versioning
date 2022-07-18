@@ -98,6 +98,9 @@ If a value of this option is not a function but just str, it also could be used:
 is set**.
 You should explicitly call ``setuptools_git_versioning.version_from_git`` function in the callback.
 
+.. note::
+
+    Callback result is returned *as is*, so it should be a :pep:`440` compatible version number
 
 See also
 """"""""

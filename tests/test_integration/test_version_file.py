@@ -113,9 +113,11 @@ def test_version_file_dirty(repo, create_config, add, template, subst):
     [
         ("1.0.0", "1.0.0"),
         ("v1.2.3", "1.2.3"),
+        ("beta1.2.3", "1.2.3"),
+        ("alpha1.2.3", "1.2.3"),
     ],
 )
-def test_version_file_drop_leading_v(repo, create_config, version, real_version):
+def test_version_file_drop_leading_non_numbers(repo, create_config, version, real_version):
     create_config(
         repo,
         {

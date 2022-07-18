@@ -10,12 +10,17 @@ Changelog
     .. change::
         :tags: core, breaking
 
-        ``version_callback`` option is used even if there are some tags in the current branch
+        :ref:`version-callback-option` option is used even if there are some tags in the current branch
+
+    .. change::
+        :tags: config, feature
+
+        Raise exception if both :ref:`version-callback-option` and :ref:`version-file-option` options are set
 
     .. change::
         :tags: core, feature
 
-        Raise exception if both ``version_file`` and ``version_callback`` options are set
+        Remove all non-numeric symbols from version prefix, not just ``v``
 
 1.9
 ----
