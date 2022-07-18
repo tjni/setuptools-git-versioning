@@ -9,7 +9,7 @@ Enables feature of tracking commits history for file passed to :ref:`version-fil
 
 .. note::
 
-    This option used only if :ref:`version-file-option` option is set.
+    This option used only with :ref:`version-file-option`
 
 Type
 ^^^^^

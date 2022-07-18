@@ -31,6 +31,10 @@ You can change this version by setting up ``starting_version`` option in your co
         [tool.setuptools-git-versioning]
         starting_version = "1.0.0"
 
+.. note::
+
+    This option is completely ignored if :ref:`version-callback` schema is used.
+
 Type
 ^^^^^^^^^^^^^^
 

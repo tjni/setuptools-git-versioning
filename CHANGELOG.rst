@@ -1,6 +1,17 @@
 Changelog
 ==========
 
+1.10
+----
+
+.. changelog::
+    :version: 1.10.0
+
+    .. change::
+        :tags: core, breaking
+
+        ``version_callback`` option is used even if there are some tags in the current branch
+
 1.9
 ----
 

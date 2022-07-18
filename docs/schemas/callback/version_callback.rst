@@ -19,13 +19,11 @@ For example, current repo state is:
     |
     ...
 
-**And there are no tags in the current branch** (``dev``), **all
-of them are placed in the** ``master`` **branch.**
-
 By default, when you try to get current version, you'll receive some
-initial value (see :ref:`starting-version-option` option).
+initial value (see :ref:`starting-version-option` option),
+because there are no tags in the ``dev`` branch.
 
-If you want to get synchronized version numbers in both on the branches,
+If you want to get synchronized version numbers in both ``master`` and ``dev`` branches,
 you can create a function in some file (for example, in the
 ``mypkg/version.py`` file):
 
@@ -59,7 +57,7 @@ Then place it in both the branches and update your ``setup.py`` or ``pyproject.t
     enabled = true
     version_callback = "mypkg.version:get_version"
 
-When you'll try to get current version in non-master branch, the result
+When you'll try to get current version in **any** branch, the result
 of executing this function will be returned instead of latest tag
 number.
 
@@ -96,8 +94,9 @@ If a value of this option is not a function but just str, it also could be used:
         enabled = true
         version_callback = "mypkg:__version__"
 
-**Please take into account that version_callback is ignored if tag
-is present**
+**Please take into account that any tag in the branch is completely ignored if version_callback
+is set**.
+You should explicitly call ``setuptools_git_versioning.version_from_git`` function in the callback.
 
 
 See also
