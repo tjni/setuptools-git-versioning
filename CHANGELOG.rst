@@ -22,6 +22,11 @@ Changelog
 
         Remove all non-numeric symbols from version prefix, not just ``v``
 
+    .. change::
+        :tags: core, feature
+
+        Check :ref:`version-callback-option` option before checking a tag presence
+
 1.9
 ----
 

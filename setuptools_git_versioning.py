@@ -383,15 +383,15 @@ def version_from_git(
             if line.startswith("Version:"):
                 return line[8:].strip()
 
-    from_file = False
-    tag = get_tag(sort_by=sort_by)
-
     if version_callback is not None:
         if version_file is not None:
             raise ValueError(
                 "Either `version_file` or `version_callback` can be passed, but not both at the same time",
             )
         return get_version_from_callback(version_callback, package_name)
+
+    from_file = False
+    tag = get_tag(sort_by=sort_by)
 
     if tag is None:
         if version_file is None or not os.path.exists(version_file):
