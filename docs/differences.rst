@@ -6,8 +6,8 @@ Alternatives
 ----------------------
 - `setuptools-scm <https://github.com/pypa/setuptools_scm>`_
 - `versioneer <https://github.com/python-versioneer/python-versioneer>`_
-- `miniver <https://github.com/jbweston/miniver>`_
 - `versioningit <https://github.com/jwodder/versioningit>`_
+- `miniver <https://github.com/jbweston/miniver>`_
 - `setuptools-git-ver <https://github.com/camas/setuptools-git-ver>`_ (Base package)
 - `another-setuptools-git-version <https://github.com/ZdenekM/another-setuptools-git-version>`_
 - `bad-setuptools-git-version <https://github.com/st7105/bad-setuptools-git-version>`_
