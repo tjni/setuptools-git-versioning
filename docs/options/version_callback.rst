@@ -7,6 +7,10 @@ Callback to be used for getting a version number.
 
 Used by :ref:`version-callback` versioning schema.
 
+.. note::
+
+    This option conflicts with :ref:`version-file-option`, only one of them can be set.
+
 Type
 ^^^^^^^^^^^^^^
 

@@ -385,7 +385,10 @@ def version_from_git(
     tag = get_tag(sort_by=sort_by)
 
     if version_callback is not None:
-        # TODO: raise exception if both version_callback and version_file are set
+        if version_file is not None:
+            raise ValueError(
+                "Either `version_file` or `version_callback` can be passed, but not both at the same time",
+            )
         return get_version_from_callback(version_callback, package_name)
 
     if tag is None:

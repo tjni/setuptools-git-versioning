@@ -12,6 +12,11 @@ Changelog
 
         ``version_callback`` option is used even if there are some tags in the current branch
 
+    .. change::
+        :tags: core, feature
+
+        Raise exception if both ``version_file`` and ``version_callback`` options are set
+
 1.9
 ----
 

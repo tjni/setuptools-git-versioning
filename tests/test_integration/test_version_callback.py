@@ -160,11 +160,7 @@ def test_version_callback_has_more_priority_than_tag(repo, create_config):
     assert get_version(repo) == version
 
 
-def test_version_callback_has_more_priority_than_version_file(repo, create_config):
-    create_file(repo, "VERSION.txt", "1.2.3")
-    version = "1.0.0"
-
-    create_file(repo, "version.py", VERSION_PY.format(version=version), commit=False)
+def test_version_callback_conflicts_with_version_file(repo, create_config):
     create_config(
         repo,
         {
@@ -173,7 +169,8 @@ def test_version_callback_has_more_priority_than_version_file(repo, create_confi
         },
     )
 
-    assert get_version(repo) == version
+    with pytest.raises(subprocess.CalledProcessError):
+        get_version(repo)
 
 
 @pytest.mark.parametrize(
