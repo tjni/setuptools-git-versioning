@@ -85,6 +85,17 @@ Just add ``setuptools-git-versioning`` to ``build-sytem`` part of your ``pyproje
     [tool.setuptools-git-versioning]
     enabled = true
 
+And check the package version generated:
+
+.. code:: bash
+    $ python -m setuptools_git_versioning
+    0.0.1
+
+    # or
+
+    $ setuptools-git-versioning
+    0.0.1
+
 ``setup.py``
 ~~~~~~~~~~~~~~
 
@@ -101,3 +112,9 @@ Just add ``setuptools-git-versioning`` to ``setup_requires`` part of your ``setu
         },
         setup_requires=["setuptools-git-versioning"],
     )
+
+And check the package version generated:
+
+.. code:: bash
+    $ python setup.py --version
+    0.0.1

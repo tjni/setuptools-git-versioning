@@ -58,6 +58,7 @@ setup(
         "setuptools.finalize_distribution_options": [
             "setuptools_git_versioning = setuptools_git_versioning:infer_version",
         ],
+        "console_scripts": ["setuptools-git-versioning=setuptools_git_versioning:__main__"],
     },
     include_package_data=True,
     zip_safe=False,

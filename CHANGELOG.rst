@@ -5,6 +5,14 @@ Changelog
 ----
 
 .. changelog::
+    :version: 1.10.1
+
+    .. change::
+        :tags: core, feature
+
+        Add ``setuptools-git-versioning`` script to infer version from ``pyproject.toml`` config
+
+.. changelog::
     :version: 1.10.0
     :released: 18.07.2022
 

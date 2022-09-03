@@ -256,6 +256,14 @@ def get_version_setup_py(cwd, **kwargs):  # type: (str, **Any) -> str
     return execute(cwd, f"{sys.executable} setup.py --version", **kwargs).strip()
 
 
+def get_version_module(cwd, **kwargs):  # type: (str, **Any) -> str
+    return execute(cwd, f"{sys.executable} -m setuptools_git_versioning", **kwargs).strip()
+
+
+def get_version_script(cwd, **kwargs):  # type: (str, **Any) -> str
+    return execute(cwd, "setuptools-git-versioning", **kwargs).strip()
+
+
 def get_version(cwd, isolated=False, **kwargs):  # type: (str, bool, **Any) -> str
     cmd = f"{sys.executable} -m build -s"
     if not isolated:

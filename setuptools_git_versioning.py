@@ -5,14 +5,17 @@ import logging
 import os
 import re
 import subprocess
+import textwrap
 import warnings
 from collections.abc import Mapping
 from datetime import datetime
-from distutils.errors import DistutilsSetupError
 from pathlib import Path
-from typing import Any, Callable
+from typing import TYPE_CHECKING, Any, Callable
 
 from setuptools.dist import Distribution
+
+if TYPE_CHECKING:
+    from packaging.version import Version
 
 DEFAULT_TEMPLATE = "{tag}"
 DEFAULT_DEV_TEMPLATE = "{tag}.post{ccount}+git.{sha}"
@@ -146,6 +149,8 @@ def read_toml(file_name: str | os.PathLike) -> dict:
 
 # TODO: remove along with version_config
 def parse_config(dist: Distribution, attr: Any, value: Any) -> None:
+    from distutils.errors import DistutilsOptionError
+
     if attr == "version_config" and value is not None:
         warnings.warn(
             "`version_config` option is deprecated "
@@ -156,7 +161,7 @@ def parse_config(dist: Distribution, attr: Any, value: Any) -> None:
         )
 
         if getattr(dist, "setuptools_git_versioning", None) is not None:
-            raise DistutilsSetupError(
+            raise DistutilsOptionError(
                 "You can set either `version_config` or `setuptools_git_versioning` "
                 "but not both of them at the same time"
             )
@@ -164,6 +169,8 @@ def parse_config(dist: Distribution, attr: Any, value: Any) -> None:
 
 # real version is generated here
 def infer_version(dist: Distribution) -> None:
+    from distutils.errors import DistutilsOptionError, DistutilsSetupError
+
     value = getattr(dist, "setuptools_git_versioning", None) or getattr(dist, "version_config", None)
 
     if isinstance(value, bool):
@@ -190,7 +197,7 @@ def infer_version(dist: Distribution) -> None:
         return
 
     if not isinstance(value, Mapping):
-        raise DistutilsSetupError(f"Wrong config format. Expected dict, got: {value}")
+        raise DistutilsOptionError(f"Wrong config format. Expected dict, got: {value}")
 
     if not value or not value.get("enabled", True):
         # Nothing to do here
@@ -439,3 +446,35 @@ def version_from_git(
     local_sanitized = LOCAL_REGEXP.sub(".", local)
     public_sanitized = VERSION_PREFIX_REGEXP.sub("", public)  # for version "v1.0.0" drop leading "v" symbol
     return public_sanitized + sep + local_sanitized
+
+
+def main(config: dict | None = None) -> Version:
+    value = config or read_toml("pyproject.toml")
+
+    if not value or not value.get("enabled", True):
+        raise RuntimeError(
+            textwrap.dedent(
+                """
+                'setuptools-git-versioning' command can be used only with 'pyproject.toml'
+                file setup (see https://setuptools-git-versioning.readthedocs.io/en/stable/install.html)
+                """,
+            ),
+        )
+
+    if not isinstance(value, Mapping):
+        raise RuntimeError(f"Wrong config format. Expected dict, got: {value}")
+
+    config = load_config_from_dict(value)
+    result = version_from_git(**config)
+
+    from packaging.version import Version
+
+    return Version(result)
+
+
+def __main__():
+    print(main().public)
+
+
+if __name__ == "__main__":
+    __main__()
