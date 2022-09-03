@@ -4,7 +4,15 @@ import subprocess
 import textwrap
 import toml
 
-from tests.lib.util import get_version, get_version_setup_py, create_file, create_pyproject_toml, create_setup_py
+from tests.lib.util import (
+    get_version,
+    get_version_setup_py,
+    get_version_script,
+    get_version_module,
+    create_file,
+    create_pyproject_toml,
+    create_setup_py,
+)
 
 pytestmark = [pytest.mark.all, pytest.mark.important]
 
@@ -62,16 +70,6 @@ def test_config_not_used(repo):
 
 
 @pytest.mark.parametrize(
-    "option",
-    ["version_config", "setuptools_git_versioning"],
-)
-def test_config_enabled_false(repo, create_config, option):
-    create_config(repo, {"enabled": False}, option=option)
-
-    assert get_version(repo) == "0.0.0"
-
-
-@pytest.mark.parametrize(
     "value",
     [True, False],
 )
@@ -80,6 +78,12 @@ def test_config_bool_pyproject_toml(repo, value):
 
     with pytest.raises(subprocess.CalledProcessError):
         get_version(repo)
+
+    with pytest.raises(subprocess.CalledProcessError):
+        get_version_module(repo)
+
+    with pytest.raises(subprocess.CalledProcessError):
+        get_version_script(repo)
 
 
 @pytest.mark.parametrize(
@@ -97,9 +101,9 @@ def test_config_false_setup_py(repo, option):
     ["version_config", "setuptools_git_versioning"],
 )
 def test_config_true_setup_py(repo, option):
-    create_setup_py(repo, False, option=option)
+    create_setup_py(repo, True, option=option)
 
-    assert get_version_setup_py(repo) == "0.0.0"
+    assert get_version_setup_py(repo) == "0.0.1"
 
 
 @pytest.mark.parametrize(
@@ -134,6 +138,13 @@ def test_config_both_setup_py_and_pyproject_toml(repo, option):
     with pytest.raises(subprocess.CalledProcessError):
         get_version(repo)
 
+    # python -m setuptools_git_versioning
+    # and
+    # setuptools_git_versioning
+    # are not using setup.py, so they are not raising any errors
+    assert get_version_script(repo) == "0.0.1"
+    assert get_version_module(repo) == "0.0.1"
+
 
 @pytest.mark.parametrize(
     "option",
@@ -144,6 +155,8 @@ def test_config_pyproject_toml_is_used_then_setup_py_is_empty(repo, option):
     create_setup_py(repo, NotImplemented, option=option, add=False, commit=False)
 
     assert get_version(repo) == "2.3.4"
+    assert get_version_script(repo) == "2.3.4"
+    assert get_version_module(repo) == "2.3.4"
 
 
 def test_config_pyproject_toml_is_used_then_setup_py_does_not_exist(repo):
@@ -160,6 +173,8 @@ def test_config_pyproject_toml_is_used_then_setup_py_does_not_exist(repo):
     )
 
     assert get_version(repo) == "2.3.4"
+    assert get_version_script(repo) == "2.3.4"
+    assert get_version_module(repo) == "2.3.4"
 
 
 def test_config_setup_py_is_used_then_pyproject_toml_is_empty(repo):
@@ -168,11 +183,23 @@ def test_config_setup_py_is_used_then_pyproject_toml_is_empty(repo):
 
     assert get_version(repo) == "2.3.4"
 
+    with pytest.raises(subprocess.CalledProcessError):
+        get_version_module(repo)
+
+    with pytest.raises(subprocess.CalledProcessError):
+        get_version_script(repo)
+
 
 def test_config_setup_py_is_used_then_pyproject_toml_does_not_exist(repo):
     create_setup_py(repo, {"starting_version": "2.3.4"}, add=False, commit=False)
 
     assert get_version_setup_py(repo) == "2.3.4"
+
+    with pytest.raises(subprocess.CalledProcessError):
+        get_version_module(repo)
+
+    with pytest.raises(subprocess.CalledProcessError):
+        get_version_script(repo)
 
 
 @pytest.mark.parametrize(
@@ -221,3 +248,9 @@ def test_config_both_old_and_new_config_are_set(repo, version_config, setuptools
 
     with pytest.raises(subprocess.CalledProcessError):
         get_version(repo)
+
+    with pytest.raises(subprocess.CalledProcessError):
+        get_version_module(repo)
+
+    with pytest.raises(subprocess.CalledProcessError):
+        get_version_script(repo)
