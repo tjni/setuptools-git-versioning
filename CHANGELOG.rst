@@ -12,6 +12,11 @@ Changelog
 
         Add ``setuptools-git-versioning`` script to infer version from ``pyproject.toml`` config
 
+    .. change::
+        :tags: core, feature
+
+        Check Python 3.11 support
+
 .. changelog::
     :version: 1.10.0
     :released: 18.07.2022

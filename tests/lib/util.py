@@ -257,7 +257,7 @@ def get_version_setup_py(cwd, **kwargs):  # type: (str, **Any) -> str
 
 
 def get_version_module(cwd, **kwargs):  # type: (str, **Any) -> str
-    return execute(cwd, f"{sys.executable} -m setuptools_git_versioning", **kwargs).strip()
+    return execute(cwd, f"{sys.executable} -m coverage run -m setuptools_git_versioning", **kwargs).strip()
 
 
 def get_version_script(cwd, **kwargs):  # type: (str, **Any) -> str
