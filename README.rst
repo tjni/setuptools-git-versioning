@@ -74,8 +74,8 @@ Install
 ``pyproject.toml``
 ~~~~~~~~~~~~~~~~~~
 
-Just add ``setuptools-git-versioning`` to ``build-sytem`` part of your ``pyproject.toml``,
-and add config options to ``tool.setuptools-git-versioning`` part the same file
+Just add ``setuptools-git-versioning`` to ``build-sytem`` section of your ``pyproject.toml``,
+and a section ``tool.setuptools-git-versioning`` with config options:
 
 .. code:: toml
 
@@ -101,8 +101,8 @@ And check the package version generated:
 ``setup.py``
 ~~~~~~~~~~~~~~
 
-Just add ``setuptools-git-versioning`` to ``setup_requires`` part of your ``setup.py``,
-and pass configuration to ``setuptools_git_versioning`` option in the same file:
+Just add ``setuptools-git-versioning`` to ``setup_requires`` argument of ``setuptools.setup`` function call,
+and then add new argument ``setuptools_git_versioning`` with config options:
 
 .. code:: python
 
