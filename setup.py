@@ -26,7 +26,7 @@ setup(
     long_description=long_description,
     long_description_content_type="text/x-rst",
     url="https://setuptools-git-versioning.readthedocs.io",
-    keywords="setuptools git version-control",
+    keywords=["setuptools", "git", "versioning", "pep-440"],
     packages=find_packages(exclude=["docs", "tests", "docs.*", "tests.*"]),
     classifiers=[
         "Framework :: Setuptools Plugin",
