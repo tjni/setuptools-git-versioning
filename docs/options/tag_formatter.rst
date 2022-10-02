@@ -57,7 +57,7 @@ name and return a properly formatted one:
             if match:
                 return match.group("tag")
 
-            # just left properly named tages intact
+            # just left properly named tags intact
             if name.startswith("v"):
                 return name
 
