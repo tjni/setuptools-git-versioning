@@ -37,6 +37,7 @@ def test_version_file(repo, create_config, template):
     assert get_version(repo) == "1.0.0"
 
 
+@pytest.mark.flaky(reruns=3)  # sha and full_sha can start with 0 which are removed, just try again
 @pytest.mark.parametrize(
     "template, subst",
     [
@@ -71,6 +72,7 @@ def test_version_file_count_commits(repo, create_config, template, subst):
     assert get_version(repo) == subst.format(sha=sha, full_sha=full_sha, ccount=1)
 
 
+@pytest.mark.flaky(reruns=3)  # sha and full_sha can start with 0 which are removed, just try again
 @pytest.mark.parametrize(
     "template, subst",
     [

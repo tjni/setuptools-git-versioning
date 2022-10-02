@@ -1,9 +1,10 @@
+import os
 import pickle
 import pytest
 import subprocess
 import textwrap
 
-from tests.lib.util import checkout_branch, create_file, get_version
+from tests.lib.util import checkout_branch, create_file, get_version, get_version_script, get_version_module
 
 pytestmark = pytest.mark.all
 
@@ -42,6 +43,12 @@ def test_branch_formatter_external(repo, template_config, create_config, branch,
     )
 
     assert get_version(repo) == f"1.2.3{suffix}0"
+    assert get_version_script(repo) == f"1.2.3{suffix}0"
+    assert get_version_module(repo) == f"1.2.3{suffix}0"
+
+    # path to the repo can be passed as positional argument
+    assert get_version_script(os.getcwd(), args=[repo]) == f"1.2.3{suffix}0"
+    assert get_version_module(os.getcwd(), args=[repo]) == f"1.2.3{suffix}0"
 
 
 @pytest.mark.parametrize("create_util", [True, False])
@@ -146,6 +153,12 @@ def test_branch_formatter_external_setup_py_direct_import(repo, template_config)
     template_config(repo, config_creator, template="{tag}.{branch}{ccount}")
 
     assert get_version(repo) == f"1.2.3{suffix}0"
+    assert get_version_script(repo) == f"1.2.3{suffix}0"
+    assert get_version_module(repo) == f"1.2.3{suffix}0"
+
+    # path to the repo can be passed as positional argument
+    assert get_version_script(os.getcwd(), args=[repo]) == f"1.2.3{suffix}0"
+    assert get_version_module(os.getcwd(), args=[repo]) == f"1.2.3{suffix}0"
 
 
 @pytest.mark.parametrize(

@@ -1,7 +1,15 @@
+import os
 import subprocess
 import pytest
 
-from tests.lib.util import create_file, get_version, get_version_setup_py, create_tag
+from tests.lib.util import (
+    create_file,
+    get_version,
+    get_version_setup_py,
+    create_tag,
+    get_version_script,
+    get_version_module,
+)
 
 pytestmark = pytest.mark.all
 
@@ -78,7 +86,14 @@ def test_version_callback(repo, version_callback, create_config):
     create_config(repo, {"version_callback": version_callback})
 
     assert get_version(repo) == "1.0.0"
+    assert get_version_script(repo) == "1.0.0"
+    assert get_version_module(repo) == "1.0.0"
 
+    # path to the repo can be passed as positional argument
+    assert get_version_script(os.getcwd(), args=[repo]) == "1.0.0"
+    assert get_version_module(os.getcwd(), args=[repo]) == "1.0.0"
+
+    # git status does not influence callback result
     create_file(repo)
     assert get_version(repo) == "1.0.0"
 
@@ -103,7 +118,14 @@ def test_version_callback_setup_py_direct_import(repo, setup_py):
     )
 
     assert get_version_setup_py(repo) == "1.0.0"
+    assert get_version_script(repo) == "1.0.0"
+    assert get_version_module(repo) == "1.0.0"
 
+    # path to the repo can be passed as positional argument
+    assert get_version_script(os.getcwd(), args=[repo]) == "1.0.0"
+    assert get_version_module(os.getcwd(), args=[repo]) == "1.0.0"
+
+    # git status does not influence callback result
     create_file(repo)
     assert get_version_setup_py(repo) == "1.0.0"
 
@@ -156,6 +178,12 @@ def test_version_callback_not_a_repo(repo_dir, create_config):
     )
 
     assert get_version(repo_dir) == version
+    assert get_version_script(repo_dir) == version
+    assert get_version_module(repo_dir) == version
+
+    # path to the repo can be passed as positional argument
+    assert get_version_script(os.getcwd(), args=[repo_dir]) == version
+    assert get_version_module(os.getcwd(), args=[repo_dir]) == version
 
 
 def test_version_callback_has_more_priority_than_tag(repo, create_config):
@@ -181,6 +209,7 @@ def test_version_callback_conflicts_with_version_file(repo, create_config):
         get_version(repo)
 
 
+@pytest.mark.flaky(reruns=3)  # sha and full_sha can start with 0 which are removed, just try again
 @pytest.mark.parametrize(
     "version_callback",
     [

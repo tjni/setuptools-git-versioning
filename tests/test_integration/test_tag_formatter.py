@@ -1,8 +1,9 @@
+import os
 import pytest
 import subprocess
 import textwrap
 
-from tests.lib.util import create_file, get_version, create_tag
+from tests.lib.util import create_file, get_version, create_tag, get_version_script, get_version_module
 
 pytestmark = pytest.mark.all
 
@@ -38,6 +39,12 @@ def test_tag_formatter_external(repo, create_config, tag, version):
     create_tag(repo, tag)
 
     assert get_version(repo) == version
+    assert get_version_script(repo) == version
+    assert get_version_module(repo) == version
+
+    # path to the repo can be passed as positional argument
+    assert get_version_script(os.getcwd(), args=[repo]) == version
+    assert get_version_module(os.getcwd(), args=[repo]) == version
 
 
 @pytest.mark.parametrize("create_util", [True, False])
@@ -130,7 +137,15 @@ def test_tag_formatter_external_setup_py_direct_import(repo):
     )
 
     create_tag(repo, "release/1.0.0")
+
     assert get_version(repo) == "1.0.0"
+    assert get_version(repo) == "1.0.0"
+    assert get_version_script(repo) == "1.0.0"
+    assert get_version_module(repo) == "1.0.0"
+
+    # path to the repo can be passed as positional argument
+    assert get_version_script(os.getcwd(), args=[repo]) == "1.0.0"
+    assert get_version_module(os.getcwd(), args=[repo]) == "1.0.0"
 
 
 @pytest.mark.parametrize(

@@ -1,4 +1,5 @@
 import itertools
+import os
 import pytest
 import subprocess
 import textwrap
@@ -19,12 +20,14 @@ pytestmark = [pytest.mark.all, pytest.mark.important]
 
 
 def test_config_not_set(repo, create_config):
+    # legacy builder for pyproject.toml
     create_config(repo, NotImplemented)
 
     assert get_version(repo) == "0.0.0"
 
 
 def test_config_not_used(repo):
+    # modern builder for pyproject.toml
     create_file(
         repo,
         "setup.py",
@@ -72,7 +75,7 @@ def test_config_not_used(repo):
     # python -m setuptools_git_versioning
     # and
     # setuptools-git-versioning
-    # requires pyproject.toml or setup.py to exist
+    # requires pyproject.toml or setup.py to exist with `enabled: True`` option
     with pytest.raises(subprocess.CalledProcessError):
         get_version_module(repo)
 
@@ -125,6 +128,12 @@ def test_config_enabled_true(repo, create_config, option):
     create_config(repo, {"enabled": True}, option=option)
 
     assert get_version(repo) == "0.0.1"
+    assert get_version_script(repo) == "0.0.1"
+    assert get_version_module(repo) == "0.0.1"
+
+    # path to the repo can be passed as positional argument
+    assert get_version_script(os.getcwd(), args=[repo]) == "0.0.1"
+    assert get_version_module(os.getcwd(), args=[repo]) == "0.0.1"
 
 
 @pytest.mark.parametrize(
@@ -136,49 +145,6 @@ def test_config_wrong_format(repo, create_config, option):
 
     with pytest.raises(subprocess.CalledProcessError):
         get_version(repo)
-
-
-def test_config_both_setup_py_and_pyproject_toml_are_present(repo):
-    create_pyproject_toml(repo)
-    create_setup_py(repo)
-
-    with pytest.raises(subprocess.CalledProcessError):
-        get_version(repo)
-
-    with pytest.raises(subprocess.CalledProcessError):
-        get_version_setup_py(repo)
-
-    with pytest.raises(subprocess.CalledProcessError):
-        get_version_script(repo)
-
-    with pytest.raises(subprocess.CalledProcessError):
-        get_version_module(repo)
-
-
-def test_config_setup_py_is_folder(repo):
-    create_folder(repo, "setup.py")
-
-    with pytest.raises(subprocess.CalledProcessError):
-        get_version(repo)
-
-    with pytest.raises(subprocess.CalledProcessError):
-        get_version_module(repo)
-
-    with pytest.raises(subprocess.CalledProcessError):
-        get_version_script(repo)
-
-
-def test_config_pyproject_toml_is_folder(repo):
-    create_folder(repo, "pyproject.toml")
-
-    with pytest.raises(subprocess.CalledProcessError):
-        get_version(repo)
-
-    with pytest.raises(subprocess.CalledProcessError):
-        get_version_module(repo)
-
-    with pytest.raises(subprocess.CalledProcessError):
-        get_version_script(repo)
 
 
 @pytest.mark.parametrize(
@@ -229,6 +195,49 @@ def test_config_setup_py_is_used_then_pyproject_toml_does_not_exist(repo):
     assert get_version_setup_py(repo) == "2.3.4"
     assert get_version_module(repo) == "2.3.4"
     assert get_version_script(repo) == "2.3.4"
+
+
+def test_config_both_setup_py_and_pyproject_toml_are_present(repo):
+    create_pyproject_toml(repo)
+    create_setup_py(repo)
+
+    with pytest.raises(subprocess.CalledProcessError):
+        get_version(repo)
+
+    with pytest.raises(subprocess.CalledProcessError):
+        get_version_setup_py(repo)
+
+    with pytest.raises(subprocess.CalledProcessError):
+        get_version_script(repo)
+
+    with pytest.raises(subprocess.CalledProcessError):
+        get_version_module(repo)
+
+
+def test_config_setup_py_is_folder(repo):
+    create_folder(repo, "setup.py")
+
+    with pytest.raises(subprocess.CalledProcessError):
+        get_version(repo)
+
+    with pytest.raises(subprocess.CalledProcessError):
+        get_version_module(repo)
+
+    with pytest.raises(subprocess.CalledProcessError):
+        get_version_script(repo)
+
+
+def test_config_pyproject_toml_is_folder(repo):
+    create_folder(repo, "pyproject.toml")
+
+    with pytest.raises(subprocess.CalledProcessError):
+        get_version(repo)
+
+    with pytest.raises(subprocess.CalledProcessError):
+        get_version_module(repo)
+
+    with pytest.raises(subprocess.CalledProcessError):
+        get_version_script(repo)
 
 
 @pytest.mark.parametrize(

@@ -27,7 +27,7 @@ def rand_sha() -> str:
 
 
 def execute(cwd: str | os.PathLike, cmd: str, **kwargs) -> str:
-    log.info(cwd)
+    log.info(f"Executing '{cmd}' at '{cwd}'")
     return subprocess.check_output(cmd, cwd=cwd, shell=True, universal_newlines=True, **kwargs)  # nosec
 
 
@@ -174,6 +174,7 @@ def create_pyproject_toml(
             "setuptools>=41",
             "wheel",
             "setuptools-git-versioning",
+            "coverage",
         ],
         # with default "setuptools.build_meta" it is not possible to build package
         # which uses its own source code to get version number,
@@ -225,6 +226,7 @@ def create_setup_py(
                     setup_requires=[
                         "setuptools>=41",
                         "wheel",
+                        "coverage",
                         "setuptools-git-versioning",
                     ]
                 )
@@ -274,12 +276,19 @@ def get_version_setup_py(cwd: str | os.PathLike, **kwargs) -> str:
     return execute(cwd, f"{sys.executable} setup.py --version", **kwargs).strip()
 
 
-def get_version_module(cwd: str | os.PathLike, **kwargs) -> str:
-    return execute(cwd, f"{sys.executable} -m coverage run -m setuptools_git_versioning", **kwargs).strip()
+def get_version_module(cwd: str | os.PathLike, args: list[str] | None = None, **kwargs) -> str:
+    args_str = " ".join(args or [])
+
+    return execute(
+        cwd,
+        f"{sys.executable} -m coverage run -m setuptools_git_versioning {args_str} -vv",
+        **kwargs,
+    ).strip()
 
 
-def get_version_script(cwd: str | os.PathLike, **kwargs) -> str:
-    return execute(cwd, "setuptools-git-versioning", **kwargs).strip()
+def get_version_script(cwd: str | os.PathLike, args: list[str] | None = None, **kwargs) -> str:
+    args_str = " ".join(args or [])
+    return execute(cwd, f"setuptools-git-versioning {args_str} -vv", **kwargs).strip()
 
 
 def get_version(cwd: str | os.PathLike, isolated: bool = False, **kwargs) -> str:

@@ -40,7 +40,6 @@ version number according :pep:`440`.
 
 - Well-documented
 
-
 See `difference <https://setuptools-git-versioning.readthedocs.io/en/latest/differences.html>`_
 between ``setuptools-git-versioning`` and other tools.
 
@@ -86,7 +85,7 @@ and a section ``tool.setuptools-git-versioning`` with config options:
     [tool.setuptools-git-versioning]
     enabled = true
 
-And check the package version generated:
+And check the package version generated (see :ref:`command` help):
 
 .. code:: bash
 
@@ -116,7 +115,7 @@ and then add new argument ``setuptools_git_versioning`` with config options:
         setup_requires=["setuptools-git-versioning<2"],
     )
 
-And check the package version generated:
+And check the package version generated (see :ref:`command` help):
 
 .. code:: bash
 

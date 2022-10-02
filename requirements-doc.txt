@@ -2,4 +2,5 @@ changelog
 furo
 numpydoc
 sphinx
+sphinx-argparse
 sphinx-autodoc-typehints

@@ -15,6 +15,7 @@
     :hidden:
 
     install
+    command
     schemas/index
     options/index
     substitutions/index

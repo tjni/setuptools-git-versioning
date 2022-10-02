@@ -16,6 +16,7 @@ pytestmark = pytest.mark.all
 
 
 @pytest.mark.important
+@pytest.mark.flaky(reruns=3)  # sha and full_sha can start with 0 which are removed, just try again
 @pytest.mark.parametrize(
     "template, subst",
     [
@@ -39,6 +40,7 @@ def test_tag(repo, create_config, template, subst):
     assert get_version(repo) == subst.format(sha=sha, full_sha=full_sha)
 
 
+@pytest.mark.flaky(reruns=3)  # sha and full_sha can start with 0 which are removed, just try again
 @pytest.mark.parametrize(
     "template, subst",
     [
@@ -63,6 +65,7 @@ def test_tag_dev(repo, create_config, template, subst):
     assert get_version(repo) == subst.format(sha=sha, full_sha=full_sha)
 
 
+@pytest.mark.flaky(reruns=3)  # sha and full_sha can start with 0 which are removed, just try again
 @pytest.mark.parametrize(
     "template, subst",
     [

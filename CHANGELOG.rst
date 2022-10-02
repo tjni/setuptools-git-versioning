@@ -20,7 +20,17 @@ Changelog
     .. change::
         :tags: core, feature
 
-        Add ``cwd`` argument to most of functions, allowing to get versions a specific repo folder
+        Add ``cwd`` argument to most of functions, allowing to get versions of a specific repo without changing current directory
+
+    .. change::
+        :tags: dev, feature
+
+        Add info and debug messages to the module
+
+    .. change::
+        :tags: docs, feature
+
+        Add documentation for ``setuptools-git-versioning`` script
 
 1.10
 ----
