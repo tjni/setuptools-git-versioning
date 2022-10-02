@@ -17,7 +17,7 @@ jobs:
       should_skip: ${{ steps.skip_check.outputs.should_skip }}
     steps:
     - id: skip_check
-      uses: fkirc/skip-duplicate-actions@master
+      uses: fkirc/skip-duplicate-actions@v5
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         concurrent_skipping: same_content_newer
@@ -57,7 +57,7 @@ jobs:
         fetch-depth: 0
 
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
 
@@ -123,7 +123,7 @@ jobs:
       run: find reports -type f -exec mv '{}' reports \;
 
     - name: Check coverage
-      uses: codecov/codecov-action@v2
+      uses: codecov/codecov-action@v3
       with:
         directory: ./reports
         fail_ci_if_error: true
