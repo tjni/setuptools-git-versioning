@@ -8,29 +8,14 @@ on:
     branches:
     - master
 
-jobs:
-  check_duplicate_runs:
-    name: Check for duplicate runs
-    continue-on-error: true
-    runs-on: ubuntu-latest
-    outputs:
-      should_skip: ${{ steps.skip_check.outputs.should_skip }}
-    steps:
-    - id: skip_check
-      uses: fkirc/skip-duplicate-actions@v5
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        concurrent_skipping: same_content_newer
-        cancel_others: true
-        skip_after_successful_duplicate: false
-        paths_ignore: '["**/README.md", "**/LICENSE"]'
-        do_not_skip: '["push"]'
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
+jobs:
   tests:
     name: Run ${{ matrix.mark}} tests (${{ matrix.python-version }} on ${{ matrix.os }})
     runs-on: ${{ matrix.os }}
-    needs: [check_duplicate_runs]
-    if: ${{ needs.check_duplicate_runs.outputs.should_skip != 'true' }}
     strategy:
       fail-fast: false
       matrix:
@@ -69,8 +54,10 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-python-${{ matrix.python-version }}-tests-${{ hashFiles('requirements*.txt') }}
           ${{ runner.os }}-python-${{ matrix.python-version }}-codeql-${{ hashFiles('requirements*.txt') }}
+          ${{ runner.os }}-python-${{ matrix.python-version }}-release-${{ hashFiles('requirements*.txt') }}
           ${{ runner.os }}-python-${{ matrix.python-version }}-tests-
           ${{ runner.os }}-python-${{ matrix.python-version }}-codeql-
+          ${{ runner.os }}-python-${{ matrix.python-version }}-release-
           ${{ runner.os }}-python
           ${{ runner.os }}-
 
