@@ -62,7 +62,7 @@ log = logging.getLogger(__name__)
 
 
 def _exec(cmd: str, root: str | os.PathLike | None = None) -> list[str]:
-    log.debug("Executing '%s' at '%s'", cmd, root or os.getcwd())
+    log.log(DEBUG, "Executing '%s' at '%s'", cmd, root or os.getcwd())
     try:
         stdout = subprocess.check_output(cmd, shell=True, text=True, cwd=root)  # nosec
     except subprocess.CalledProcessError as e:
@@ -159,7 +159,7 @@ def read_toml(name_or_path: str | os.PathLike = "pyproject.toml", root: str | os
     parsed_file = toml.load(file_path)
     result = parsed_file.get("tool", {}).get("setuptools-git-versioning", None)
     if result:
-        log.debug("'tool.setuptools-git-versioning' section content:\n%s", pformat(result))
+        log.log(DEBUG, "'tool.setuptools-git-versioning' section content:\n%s", pformat(result))
     return result
 
 
@@ -262,45 +262,45 @@ def read_version_from_file(name_or_path: str | os.PathLike, root: str | os.PathL
 
 
 def substitute_env_variables(template: str) -> str:
-    log.debug("Substitute environment variables in template '%s'", template)
+    log.log(DEBUG, "Substitute environment variables in template '%s'", template)
     for var, default in ENV_VARS_REGEXP.findall(template):
-        log.debug("Variable: '%s'", var)
+        log.log(DEBUG, "Variable: '%s'", var)
 
         if default.upper() == "IGNORE":
             default = ""
         elif not default:
             default = "UNKNOWN"
-        log.debug("Default: '%s'", default)
+        log.log(DEBUG, "Default: '%s'", default)
 
         value = os.environ.get(var, default)
-        log.debug("Value: '%s'", value)
+        log.log(DEBUG, "Value: '%s'", value)
 
         template, _ = ENV_VARS_REGEXP.subn(value, template, count=1)
 
-    log.debug("Result: '%s'", template)
+    log.log(DEBUG, "Result: '%s'", template)
     return template
 
 
 def substitute_timestamp(template: str) -> str:
-    log.debug("Substitute timestampts in template '%s'", template)
+    log.log(DEBUG, "Substitute timestampts in template '%s'", template)
 
     now = datetime.now()
     for fmt in TIMESTAMP_REGEXP.findall(template):
         format_string = fmt or "%s"
-        log.debug("Format: '%s'", format_string)
+        log.log(DEBUG, "Format: '%s'", format_string)
 
         result = now.strftime(fmt or "%s")
-        log.debug("Value: '%s'", result)
+        log.log(DEBUG, "Value: '%s'", result)
 
         template, _ = TIMESTAMP_REGEXP.subn(result, template, count=1)
 
-    log.debug("Result: '%s'", template)
+    log.log(DEBUG, "Result: '%s'", template)
     return template
 
 
 def resolve_substitutions(template: str, *args, **kwargs) -> str:
-    log.debug("Template: '%s'", template)
-    log.debug("Args:%s", pformat(args))
+    log.log(DEBUG, "Template: '%s'", template)
+    log.log(DEBUG, "Args:%s", pformat(args))
 
     while True:
         if "{env" in template:
@@ -321,7 +321,7 @@ def resolve_substitutions(template: str, *args, **kwargs) -> str:
 def add_to_sys_path(root: str | os.PathLike | None) -> None:
     root_path = os.fspath(Path(root or os.getcwd()))
     if root_path not in sys.path:
-        log.debug("Adding '%s' folder to sys.path", root_path)
+        log.log(DEBUG, "Adding '%s' folder to sys.path", root_path)
         sys.path.insert(0, root_path)
 
 
@@ -336,7 +336,7 @@ def import_reference(
     add_to_sys_path(root)
 
     module_name, attr = ref.split(":")
-    log.debug("Executing 'from %s.%s import %s'", package_name or "", module_name, attr)
+    log.log(DEBUG, "Executing 'from %s.%s import %s'", package_name or "", module_name, attr)
     module = importlib.import_module(module_name, package_name)
 
     return getattr(module, attr)
@@ -362,7 +362,7 @@ def load_tag_formatter(
     log.log(INFO, "Parsing tag_formatter '%s' of type '%s'", tag_formatter, type(tag_formatter).__name__)
 
     if callable(tag_formatter):
-        log.debug("Value is callable with signature %s", inspect.Signature.from_callable(tag_formatter))
+        log.log(DEBUG, "Value is callable with signature %s", inspect.Signature.from_callable(tag_formatter))
         return tag_formatter
 
     try:
@@ -395,7 +395,7 @@ def load_branch_formatter(
     log.log(INFO, "Parsing branch_formatter '%s' of type '%s'", branch_formatter, type(branch_formatter).__name__)
 
     if callable(branch_formatter):
-        log.debug("Value is callable with signature %s", inspect.Signature.from_callable(branch_formatter))
+        log.log(DEBUG, "Value is callable with signature %s", inspect.Signature.from_callable(branch_formatter))
         return branch_formatter
 
     try:
@@ -429,7 +429,7 @@ def get_version_from_callback(
     log.log(INFO, "Parsing version_callback %s of type %s", version_callback, type(version_callback))
 
     if callable(version_callback):
-        log.debug("Value is callable with signature %s", inspect.Signature.from_callable(version_callback))
+        log.log(DEBUG, "Value is callable with signature %s", inspect.Signature.from_callable(version_callback))
         result = version_callback()
     else:
 
@@ -441,7 +441,7 @@ def get_version_from_callback(
             result = callback()
         except ValueError as e:
             log.log(INFO, "Is not a callable")
-            log.debug(str(e))
+            log.log(DEBUG, str(e))
             log.log(INFO, "Assuming it is a string attribute")
             result = import_reference(version_callback, package_name, root=root)
         except (ImportError, NameError) as e:
@@ -488,7 +488,7 @@ def version_from_git(
 
     from_file = False
     log.log(INFO, "Getting latest tag")
-    log.debug("Sorting tags by '%s'", sort_by)
+    log.log(DEBUG, "Sorting tags by '%s'", sort_by)
     tag = get_tag(sort_by=sort_by, root=root)
 
     if tag is None:
@@ -514,14 +514,14 @@ def version_from_git(
             log.log(INFO, "File is empty, return starting_version '%s'", version_file, starting_version)
             return starting_version
 
-        log.debug("File content: '%s'", tag)
+        log.log(DEBUG, "File content: '%s'", tag)
         if not count_commits_from_version_file:
             result = VERSION_PREFIX_REGEXP.sub("", tag)  # for tag "v1.0.0" drop leading "v" symbol
             log.log(INFO, "Return '%s'", result)
             return result
 
         tag_sha = get_latest_file_commit(version_file, root=root)
-        log.debug("File content: '%s'", tag)
+        log.log(DEBUG, "File content: '%s'", tag)
     else:
         log.log(INFO, "Latest tag: '%s'", tag)
         tag_sha = get_sha(tag, root=root)
@@ -530,7 +530,7 @@ def version_from_git(
         if tag_formatter is not None:
             tag_fmt = load_tag_formatter(tag_formatter, package_name, root=root)
             tag = tag_fmt(tag)
-            log.debug("Tag after formatting: '%s'", tag)
+            log.log(DEBUG, "Tag after formatting: '%s'", tag)
 
     dirty = is_dirty(root=root)
     log.log(INFO, "Is dirty: %s", dirty)
