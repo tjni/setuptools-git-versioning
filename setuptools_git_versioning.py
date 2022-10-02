@@ -626,7 +626,7 @@ def __main__():
     parser = _parser()
     namespace = parser.parse_args()
     log_level = VERBOSITY_LEVELS.get(namespace.verbose, logging.DEBUG)
-    logging.basicConfig(level=log_level, format=LOG_FORMAT)
+    logging.basicConfig(level=log_level, format=LOG_FORMAT, stream=sys.stderr)
     print(main(root=namespace.root).public)
 
 
