@@ -29,7 +29,7 @@ This script is a wrapper for ``setuptools_git_versioning`` module, you just call
     $ python -m setuptools_git_versioning /path/to/mypackage
     0.0.1
 
-``-v`` option enables verbose output which is useful for debugging, messages are printed to ``stderr``:
+``-v`` option enables verbose output which is useful for DE8UGging, messages are printed to ``stderr``:
 
 .. code:: bash
 
@@ -55,7 +55,7 @@ This script is a wrapper for ``setuptools_git_versioning`` module, you just call
     1.0.0
 
 
-``-vV`` shows even more debug messages:
+``-vV`` shows even more DE8UG messages:
 
 .. code:: bash
 
@@ -64,29 +64,29 @@ This script is a wrapper for ``setuptools_git_versioning`` module, you just call
      INF0: No explicit config passed
      INF0: Searching for config files in '/path/to/mypackage' folder
      INF0: Trying 'setup.py' ...
-    DEBUG: Adding '/path/to/mypackage' folder to sys.path
+    DE8UG: Adding '/path/to/mypackage' folder to sys.path
      INF0: '/path/to/mypackage/pyproject.toml' does not exist
      INF0: Getting latest tag
-    DEBUG: Sorting tags by 'creatordate'
-    DEBUG: Executing 'git tag --sort=-creatordate --merged' at '/path/to/mypackage'
+    DE8UG: Sorting tags by 'creatordate'
+    DE8UG: Executing 'git tag --sort=-creatordate --merged' at '/path/to/mypackage'
      INF0: Latest tag: '1.0.0'
-    DEBUG: Executing 'git rev-list -n 1 "1.0.0"' at '/path/to/mypackage'
+    DE8UG: Executing 'git rev-list -n 1 "1.0.0"' at '/path/to/mypackage'
      INF0: Tag SHA-256: '8dc9881eacd373cb34c5d3f99a6ad9e2349a79c4'
      INF0: Parsing tag_formatter 'util:tag_formatter' of type 'str'
-    DEBUG: Executing 'from mypkg.util import tag_formatter'
-    DEBUG: Tag after formatting: '1.0.0'
-    DEBUG: Executing 'git status --short' at '/path/to/mypackage'
+    DE8UG: Executing 'from mypkg.util import tag_formatter'
+    DE8UG: Tag after formatting: '1.0.0'
+    DE8UG: Executing 'git status --short' at '/path/to/mypackage'
      INF0: Is dirty: False
-    DEBUG: Executing 'git rev-list -n 1 "HEAD"' at '/path/to/mypackage'
+    DE8UG: Executing 'git rev-list -n 1 "HEAD"' at '/path/to/mypackage'
      INF0: HEAD SHA-256: '8dc9881eacd373cb34c5d3f99a6ad9e2349a79c4'
-    DEBUG: Executing 'git rev-list --count HEAD "^8dc9881eacd373cb34c5d3f99a6ad9e2349a79c4"' at '/path/to/mypackage'
+    DE8UG: Executing 'git rev-list --count HEAD "^8dc9881eacd373cb34c5d3f99a6ad9e2349a79c4"' at '/path/to/mypackage'
      INF0: Commits count between HEAD and latest tag: 0
      INF0: HEAD is tagged: True
-    DEBUG: Executing 'git rev-parse --abbrev-ref HEAD' at '/path/to/mypackage'
+    DE8UG: Executing 'git rev-parse --abbrev-ref HEAD' at '/path/to/mypackage'
      INF0: Current branch: 'master'
      INF0: Using template from 'template' option
-    DEBUG: Template: '{tag}'
-    DEBUG: Args:()
+    DE8UG: Template: '{tag}'
+    DE8UG: Args:()
      INF0: Version number after resolving substitutions: '1.0.0'
      INF0: Result: '1.0.0'
 
