@@ -3,58 +3,48 @@ import os
 import subprocess
 import sys
 import textwrap
+from datetime import datetime
+from pathlib import Path
+from secrets import token_hex
+from typing import Any, Callable, Dict
+
 import toml
 
-from datetime import datetime
-from typing import Any, Callable, Dict, Optional
-
-try:
-    from secrets import token_hex
-except ImportError:
-    # TODO: remove after dropping Python 2.7 and 3.5 support
-    import string
-    import random
-
-    def token_hex(nbytes=None):  # type: (Optional[int]) -> str
-        size = nbytes * 2 if nbytes is not None else 64
-        return "".join(random.choice(string.hexdigits) for i in range(size)).lower()
-
-
 log = logging.getLogger(__name__)
-root = os.path.dirname(os.path.dirname(__file__))
+root = Path(__file__).parent.parent
 
 
-def rand_str():  # type: () -> str
+def rand_str() -> str:
     return token_hex()
 
 
-def rand_full_sha():  # type: () -> str
+def rand_full_sha() -> str:
     return token_hex(40)
 
 
-def rand_sha():  # type: () -> str
+def rand_sha() -> str:
     return token_hex(8)
 
 
-def execute(cwd, cmd, **kwargs):  # type: (str, str, **Any) -> str
+def execute(cwd: str | os.PathLike, cmd: str, **kwargs) -> str:
     log.info(cwd)
     return subprocess.check_output(cmd, cwd=cwd, shell=True, universal_newlines=True, **kwargs)  # nosec
 
 
-def get_full_sha(cwd, **kwargs):  # type: (str, **Any) -> str
+def get_full_sha(cwd: str | os.PathLike, **kwargs) -> str:
     return execute(cwd, "git rev-list -n 1 HEAD", **kwargs).strip()
 
 
-def get_sha(cwd, **kwargs):  # type: (str, **Any) -> str
+def get_sha(cwd: str | os.PathLike, **kwargs) -> str:
     return get_full_sha(cwd, **kwargs)[:8]
 
 
 def create_commit(
-    cwd,  # type: str
-    message,  # type: str
-    dt=None,  # type: Optional[datetime]
-    **kwargs,  # type: Any
-):  # type: (...) -> str
+    cwd: str | os.PathLike,
+    message: str,
+    dt: datetime | None = None,
+    **kwargs,
+) -> str:
     options = ""
     if dt is not None:
         options += f"--date {dt.isoformat()}"
@@ -62,12 +52,12 @@ def create_commit(
 
 
 def create_tag(
-    cwd,  # type: str
-    tag,  # type: str
-    message=None,  # type: Optional[str]
-    commit=None,  # type: Optional[str]
-    **kwargs,  # type: Any
-):  # type: (...) -> str
+    cwd: str | os.PathLike,
+    tag: str,
+    message: str | None = None,
+    commit: str | None = None,
+    **kwargs,
+) -> str:
     options = ""
     if message:
         options += f' -a -m "{message}"'
@@ -78,21 +68,50 @@ def create_tag(
     return execute(cwd, f"git tag {options} {tag} {commit}", **kwargs)
 
 
-def checkout_branch(cwd, branch, new=True, **kwargs):  # type: (str, str, bool, **Any) -> str
+def checkout_branch(cwd: str | os.PathLike, branch: str, new: bool = True, **kwargs) -> str:
     options = ""
     if new:
         options += " -b"
     return execute(cwd, f"git checkout {options} {branch}", **kwargs)
 
 
+def create_folder(
+    cwd: str | os.PathLike,
+    name: str | None = None,
+    add: bool = True,
+    commit: bool = True,
+    **kwargs,
+) -> str | None:
+    result = None
+    if not name:
+        name = rand_str()
+
+    path = Path(cwd).joinpath(name)
+
+    # create dir with some random file
+    path.mkdir(parents=True, exist_ok=True)
+    path.joinpath(rand_str()).touch()
+
+    if add:
+        execute(cwd, f"git add {name}")
+        log.info(execute(cwd, "git status"))
+        log.info(execute(cwd, "git diff"))
+
+        if commit:
+            create_commit(cwd, f"Add {name}")
+            result = get_sha(cwd)
+
+    return result
+
+
 def create_file(
-    cwd,  # type: str
-    name=None,  # type: Optional[str]
-    content=None,  # type: Optional[str]
-    add=True,  # type: bool
-    commit=True,  # type: bool
-    **kwargs,  # type: Any
-):  # type: (...) -> Optional[str]
+    cwd: str | os.PathLike,
+    name: str | None = None,
+    content: str | None = None,
+    add: bool = True,
+    commit: bool = True,
+    **kwargs,
+) -> str | None:
     result = None
 
     if not name:
@@ -101,8 +120,7 @@ def create_file(
         content = rand_str()
 
     log.info(content)
-    with open(os.path.join(cwd, name), "w") as f:
-        f.write(content)
+    Path(cwd).joinpath(name).write_text(content)
 
     if add:
         execute(cwd, f"git add {name}")
@@ -117,11 +135,11 @@ def create_file(
 
 
 def create_pyproject_toml(
-    cwd,  # type: str
-    config=None,  # type: Optional[dict]
-    commit=True,  # type: bool
-    **kwargs,  # type: Any
-):  # type: (...) -> Optional[str]
+    cwd: str | os.PathLike,
+    config: dict | None = None,
+    commit: bool = True,
+    **kwargs,
+) -> str | None:
     # well, using pyproject.toml+setup.cfg is more classic
     # but it is not easy to check code coverage in such a case
     # so we're using pyproject.toml+setup.py
@@ -150,7 +168,7 @@ def create_pyproject_toml(
         **kwargs,
     )
 
-    cfg = {}  # type: Dict[str, Any]
+    cfg: Dict[str, Any] = {}
     cfg["build-system"] = {
         "requires": [
             "setuptools>=41",
@@ -174,11 +192,11 @@ def create_pyproject_toml(
 
 
 def create_setup_py(
-    cwd,  # type: str
-    config=None,  # type: Optional[dict]
-    option="setuptools_git_versioning",  # # type: str
-    **kwargs,  # type: Any
-):  # type: (...) -> Optional[str]
+    cwd: str | os.PathLike,
+    config: dict | None = None,
+    option: str = "setuptools_git_versioning",
+    **kwargs,
+) -> str | None:
 
     if config is None:
         config = {"enabled": True}
@@ -220,13 +238,13 @@ def create_setup_py(
 
 
 def typed_config(
-    repo,  # type: str
-    config_creator,  # type: Callable
-    config_type,  # type: str
-    template=None,  # type: Optional[str]
-    template_name=None,  # type: Optional[str]
-    config=None,  # type: Optional[dict]
-):
+    repo: str | os.PathLike,
+    config_creator: Callable,
+    config_type: str,
+    template: str | None = None,
+    template_name: str | None = None,
+    config: dict | None = None,
+) -> None:
     if config_type == "tag":
         cfg = {}
     else:
@@ -252,26 +270,25 @@ def typed_config(
         create_file(repo, "VERSION.txt", "1.2.3")
 
 
-def get_version_setup_py(cwd, **kwargs):  # type: (str, **Any) -> str
+def get_version_setup_py(cwd: str | os.PathLike, **kwargs) -> str:
     return execute(cwd, f"{sys.executable} setup.py --version", **kwargs).strip()
 
 
-def get_version_module(cwd, **kwargs):  # type: (str, **Any) -> str
+def get_version_module(cwd: str | os.PathLike, **kwargs) -> str:
     return execute(cwd, f"{sys.executable} -m coverage run -m setuptools_git_versioning", **kwargs).strip()
 
 
-def get_version_script(cwd, **kwargs):  # type: (str, **Any) -> str
+def get_version_script(cwd: str | os.PathLike, **kwargs) -> str:
     return execute(cwd, "setuptools-git-versioning", **kwargs).strip()
 
 
-def get_version(cwd, isolated=False, **kwargs):  # type: (str, bool, **Any) -> str
+def get_version(cwd: str | os.PathLike, isolated: bool = False, **kwargs) -> str:
     cmd = f"{sys.executable} -m build -s"
     if not isolated:
         cmd += " --no-isolation"
     execute(cwd, cmd, **kwargs)
 
-    with open(os.path.join(cwd, "mypkg.egg-info/PKG-INFO")) as f:
-        content = f.read().splitlines()
+    content = Path(cwd).joinpath("mypkg.egg-info/PKG-INFO").read_text().splitlines()
 
     for line in content:
         if line.startswith("Version: "):

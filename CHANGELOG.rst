@@ -1,6 +1,27 @@
 Changelog
 ==========
 
+1.11
+----
+
+.. changelog::
+    :version: 1.11.0
+
+    .. change::
+        :tags: core, feature
+
+        Allow ``setuptools-git-versioning`` script to infer version from ``setup.py`` if ``pyproject.toml`` is missing
+
+    .. change::
+        :tags: core, breaking
+
+        Raise error if ``pyproject.toml`` exists, but is not a file
+
+    .. change::
+        :tags: core, feature
+
+        Add ``cwd`` argument to most of functions, allowing to get versions a specific repo folder
+
 1.10
 ----
 

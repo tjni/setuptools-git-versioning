@@ -80,7 +80,7 @@ and a section ``tool.setuptools-git-versioning`` with config options:
 .. code:: toml
 
     [build-system]
-    requires = [ "setuptools>=41", "wheel", "setuptools-git-versioning", ]
+    requires = [ "setuptools>=41", "wheel", "setuptools-git-versioning<2", ]
     build-backend = "setuptools.build_meta"
 
     [tool.setuptools-git-versioning]
@@ -113,7 +113,7 @@ and then add new argument ``setuptools_git_versioning`` with config options:
         setuptools_git_versioning={
             "enabled": True,
         },
-        setup_requires=["setuptools-git-versioning"],
+        setup_requires=["setuptools-git-versioning<2"],
     )
 
 And check the package version generated:
@@ -121,4 +121,14 @@ And check the package version generated:
 .. code:: bash
 
     $ python setup.py --version
+    0.0.1
+
+    # or
+
+    $ python -m setuptools_git_versioning
+    0.0.1
+
+    # or
+
+    $ setuptools-git-versioning
     0.0.1

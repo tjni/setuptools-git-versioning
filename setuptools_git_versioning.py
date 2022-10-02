@@ -1,10 +1,12 @@
 from __future__ import annotations
 
+import argparse
 import importlib
 import logging
 import os
 import re
 import subprocess
+import sys
 import textwrap
 import warnings
 from collections.abc import Mapping
@@ -43,31 +45,31 @@ DEFAULT_CONFIG = {
 log = logging.getLogger(__name__)
 
 
-def _exec(cmd: str) -> list[str]:
+def _exec(cmd: str, cwd: str | os.PathLike = os.getcwd()) -> list[str]:
     try:
-        stdout = subprocess.check_output(cmd, shell=True, text=True)  # nosec
+        stdout = subprocess.check_output(cmd, shell=True, text=True, cwd=cwd)  # nosec
     except subprocess.CalledProcessError as e:
         stdout = e.output
     lines = stdout.splitlines()
     return [line.rstrip() for line in lines if line.rstrip()]
 
 
-def get_branches() -> list[str]:
-    branches = _exec("git branch -l --format '%(refname:short)'")
+def get_branches(cwd: str | os.PathLike = os.getcwd()) -> list[str]:
+    branches = _exec("git branch -l --format '%(refname:short)'", cwd=cwd)
     if branches:
         return branches
     return []
 
 
-def get_branch() -> str | None:
-    branches = _exec("git rev-parse --abbrev-ref HEAD")
+def get_branch(cwd: str | os.PathLike = os.getcwd()) -> str | None:
+    branches = _exec("git rev-parse --abbrev-ref HEAD", cwd=cwd)
     if branches:
         return branches[0]
     return None
 
 
-def get_all_tags(sort_by: str = DEFAULT_SORT_BY) -> list[str]:
-    tags = _exec(f"git tag --sort=-{sort_by}")
+def get_all_tags(sort_by: str = DEFAULT_SORT_BY, cwd: str | os.PathLike = os.getcwd()) -> list[str]:
+    tags = _exec(f"git tag --sort=-{sort_by}", cwd=cwd)
     if tags:
         return tags
     return []
@@ -85,8 +87,8 @@ def get_branch_tags(*args, **kwargs) -> list[str]:
     return get_tags(*args, **kwargs)
 
 
-def get_tags(sort_by: str = DEFAULT_SORT_BY) -> list[str]:
-    tags = _exec(f"git tag --sort=-{sort_by} --merged")
+def get_tags(sort_by: str = DEFAULT_SORT_BY, cwd: str | os.PathLike = os.getcwd()) -> list[str]:
+    tags = _exec(f"git tag --sort=-{sort_by} --merged", cwd=cwd)
     if tags:
         return tags
     return []
@@ -99,30 +101,30 @@ def get_tag(*args, **kwargs) -> str | None:
     return None
 
 
-def get_sha(name: str = "HEAD") -> str | None:
-    sha = _exec(f'git rev-list -n 1 "{name}"')
+def get_sha(name: str = "HEAD", cwd: str | os.PathLike = os.getcwd()) -> str | None:
+    sha = _exec(f'git rev-list -n 1 "{name}"', cwd=cwd)
     if sha:
         return sha[0]
     return None
 
 
-def get_latest_file_commit(path: str | os.PathLike) -> str | None:
+def get_latest_file_commit(path: str | os.PathLike, cwd: str | os.PathLike = os.getcwd()) -> str | None:
     file_path = Path(path)
-    sha = _exec(f'git log -n 1 --pretty=format:%H -- "{file_path}"')
+    sha = _exec(f'git log -n 1 --pretty=format:%H -- "{file_path}"', cwd=cwd)
     if sha:
         return sha[0]
     return None
 
 
-def is_dirty() -> bool:
-    res = _exec("git status --short")
+def is_dirty(cwd: str | os.PathLike = os.getcwd()) -> bool:
+    res = _exec("git status --short", cwd=cwd)
     if res:
         return True
     return False
 
 
-def count_since(name: str) -> int | None:
-    res = _exec(f'git rev-list --count HEAD "^{name}"')
+def count_since(name: str, cwd: str | os.PathLike = os.getcwd()) -> int | None:
+    res = _exec(f'git rev-list --count HEAD "^{name}"', cwd=cwd)
     if res:
         return int(res[0])
     return None
@@ -135,16 +137,30 @@ def load_config_from_dict(dictionary: Mapping) -> dict:
     return config
 
 
-def read_toml(file_name: str | os.PathLike) -> dict:
-    file_path = Path(file_name)
-    if not file_path.exists() or not file_path.is_file():
+def read_toml(name_or_path: str | os.PathLike = "pyproject.toml", cwd: str | os.PathLike = os.getcwd()) -> dict:
+    file_path = Path(cwd).joinpath(name_or_path)
+    if not file_path.exists():
         return {}
+
+    if not file_path.is_file():
+        raise OSError(f"'{file_path}' is not a file")
 
     import toml
 
     parsed_file = toml.load(file_path)
 
     return parsed_file.get("tool", {}).get("setuptools-git-versioning", None)
+
+
+def infer_setup_py(name_or_path: str = "setup.py", cwd: str | os.PathLike = os.getcwd()) -> str | None:
+    path = Path(cwd).joinpath(name_or_path)
+    if not path.exists():
+        return None
+
+    from distutils.core import run_setup
+
+    dist = run_setup(os.fspath(path), stop_after="init")
+    return infer_version(dist, cwd)
 
 
 # TODO: remove along with version_config
@@ -168,7 +184,7 @@ def parse_config(dist: Distribution, attr: Any, value: Any) -> None:
 
 
 # real version is generated here
-def infer_version(dist: Distribution) -> None:
+def infer_version(dist: Distribution, cwd: str | os.PathLike = os.getcwd()) -> str | None:
     from distutils.errors import DistutilsOptionError, DistutilsSetupError
 
     value = getattr(dist, "setuptools_git_versioning", None) or getattr(dist, "version_config", None)
@@ -183,7 +199,7 @@ def infer_version(dist: Distribution) -> None:
         )
         value = {"enabled": value}
 
-    toml_value = read_toml("pyproject.toml")
+    toml_value = read_toml(cwd=cwd)
 
     if value is None:
         value = toml_value
@@ -194,23 +210,24 @@ def infer_version(dist: Distribution) -> None:
 
     if value is None:
         # Nothing to do here
-        return
+        return None
 
     if not isinstance(value, Mapping):
         raise DistutilsOptionError(f"Wrong config format. Expected dict, got: {value}")
 
     if not value or not value.get("enabled", True):
         # Nothing to do here
-        return
+        return None
 
     config = load_config_from_dict(value)
 
-    version = version_from_git(dist.metadata.name, **config)
+    version = version_from_git(dist.metadata.name, **config, cwd=cwd)
     dist.metadata.version = version
+    return version
 
 
-def read_version_from_file(path: str | os.PathLike) -> str:
-    return Path(path).read_text().strip()
+def read_version_from_file(name_or_path: str | os.PathLike, cwd: str | os.PathLike = os.getcwd()) -> str:
+    return Path(cwd).joinpath(name_or_path).read_text().strip()
 
 
 def substitute_env_variables(template: str) -> str:
@@ -255,9 +272,14 @@ def resolve_substitutions(template: str, *args, **kwargs) -> str:
 def import_reference(
     ref: str,
     package_name: str | None = None,
+    cwd: str | os.PathLike = os.getcwd(),
 ) -> Any:
     if ":" not in ref:
         raise NameError(f"Wrong reference name: {ref}")
+
+    root = os.fspath(cwd)
+    if root not in sys.path:
+        sys.path.insert(0, root)
 
     module_name, attr = ref.split(":")
     module = importlib.import_module(module_name, package_name)
@@ -268,9 +290,10 @@ def import_reference(
 def load_callable(
     inp: str,
     package_name: str | None = None,
+    cwd: str | os.PathLike = os.getcwd(),
 ) -> Callable:
 
-    ref = import_reference(inp, package_name)
+    ref = import_reference(inp, package_name, cwd)
     if not callable(ref):
         raise ValueError(f"{ref} of type {type(ref)} is not callable")
 
@@ -280,6 +303,7 @@ def load_callable(
 def load_tag_formatter(
     tag_formatter: str | Callable[[str], str],
     package_name: str | None = None,
+    cwd: str | os.PathLike = os.getcwd(),
 ) -> Callable:
     log.warning(f"Parsing tag_formatter {tag_formatter} with type {type(tag_formatter)}")
 
@@ -287,7 +311,7 @@ def load_tag_formatter(
         return tag_formatter
 
     try:
-        return load_callable(tag_formatter, package_name)
+        return load_callable(tag_formatter, package_name, cwd)
     except (ImportError, NameError) as e:
         log.warning(f"tag_formatter is not a valid function reference:\n\t{e}")
 
@@ -311,6 +335,7 @@ def load_tag_formatter(
 def load_branch_formatter(
     branch_formatter: str | Callable[[str], str],
     package_name: str | None = None,
+    cwd: str | os.PathLike = os.getcwd(),
 ) -> Callable:
     log.warning(
         "Parsing branch_formatter {branch_formatter} with type {type}".format(
@@ -323,7 +348,7 @@ def load_branch_formatter(
         return branch_formatter
 
     try:
-        return load_callable(branch_formatter, package_name)
+        return load_callable(branch_formatter, package_name, cwd)
     except (ImportError, NameError) as e:
         log.warning(f"branch_formatter is not a valid function reference:\n\t{e}")
 
@@ -348,6 +373,7 @@ def load_branch_formatter(
 def get_version_from_callback(
     version_callback: str | Callable[[], str],
     package_name: str | None = None,
+    cwd: str | os.PathLike = os.getcwd(),
 ) -> str:
     log.warning(f"Parsing version_callback {version_callback} with type {type(version_callback)}")
 
@@ -357,9 +383,9 @@ def get_version_from_callback(
         result = version_callback
 
         try:
-            result = load_callable(version_callback, package_name)()
+            result = load_callable(version_callback, package_name, cwd)()
         except ValueError:
-            result = import_reference(version_callback, package_name)
+            result = import_reference(version_callback, package_name, cwd)
         except (ImportError, NameError) as e:
             log.warning(f"version_callback is not a valid reference:\n\t{e}")
 
@@ -381,6 +407,7 @@ def version_from_git(
     tag_formatter: Callable[[str], str] | None = None,
     branch_formatter: Callable[[str], str] | None = None,
     sort_by: str = DEFAULT_SORT_BY,
+    cwd: str | os.PathLike = os.getcwd(),
 ) -> str:
     # Check if PKG-INFO file exists and Version is present in it
     if os.path.exists("PKG-INFO"):
@@ -395,7 +422,7 @@ def version_from_git(
             raise ValueError(
                 "Either `version_file` or `version_callback` can be passed, but not both at the same time",
             )
-        return get_version_from_callback(version_callback, package_name)
+        return get_version_from_callback(version_callback, package_name, cwd)
 
     from_file = False
     tag = get_tag(sort_by=sort_by)
@@ -405,7 +432,7 @@ def version_from_git(
             return starting_version
         else:
             from_file = True
-            tag = read_version_from_file(version_file)
+            tag = read_version_from_file(version_file, cwd)
 
             if not tag:
                 return starting_version
@@ -413,12 +440,12 @@ def version_from_git(
             if not count_commits_from_version_file:
                 return VERSION_PREFIX_REGEXP.sub("", tag)  # for tag "v1.0.0" drop leading "v" symbol
 
-            tag_sha = get_latest_file_commit(version_file)
+            tag_sha = get_latest_file_commit(version_file, cwd)
     else:
         tag_sha = get_sha(tag)
 
         if tag_formatter is not None:
-            tag_fmt = load_tag_formatter(tag_formatter, package_name)
+            tag_fmt = load_tag_formatter(tag_formatter, package_name, cwd)
             tag = tag_fmt(tag)
 
     dirty = is_dirty()
@@ -429,7 +456,7 @@ def version_from_git(
 
     branch = get_branch()
     if branch_formatter is not None and branch is not None:
-        branch_fmt = load_branch_formatter(branch_formatter, package_name)
+        branch_fmt = load_branch_formatter(branch_formatter, package_name, cwd)
         branch = branch_fmt(branch)
 
     if dirty:
@@ -448,32 +475,48 @@ def version_from_git(
     return public_sanitized + sep + local_sanitized
 
 
-def main(config: dict | None = None) -> Version:
-    value = config or read_toml("pyproject.toml")
+def main(config: dict | None = None, cwd: str | os.PathLike = os.getcwd()) -> Version:
+    from packaging.version import Version
 
-    if not value or not value.get("enabled", True):
+    if not config:
+        result = infer_setup_py(cwd=cwd)
+        if result:
+            return Version(result)
+
+        config = read_toml(cwd=cwd)
+
+    if not config or not config.get("enabled", True):
         raise RuntimeError(
             textwrap.dedent(
-                """
-                'setuptools-git-versioning' command can be used only with 'pyproject.toml'
-                file setup (see https://setuptools-git-versioning.readthedocs.io/en/stable/install.html)
+                f"""
+                'setuptools-git-versioning' command can be used only
+                with 'pyproject.toml' or `setup.py` files present in '{cwd}' folder, with `enabled: True` option
+                (see https://setuptools-git-versioning.readthedocs.io/en/stable/install.html)
                 """,
             ),
         )
 
-    if not isinstance(value, Mapping):
-        raise RuntimeError(f"Wrong config format. Expected dict, got: {value}")
+    if not isinstance(config, Mapping):
+        raise RuntimeError(f"Wrong config format. Expected dict, got: {config}")
 
-    config = load_config_from_dict(value)
-    result = version_from_git(**config)
-
-    from packaging.version import Version
+    options = load_config_from_dict(config)
+    result = version_from_git(**options, cwd=cwd)
 
     return Version(result)
 
 
+def _parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "root", type=str, default=os.getcwd(), nargs="?", help="Path to folder containing setup.py/pyproject.toml"
+    )
+    return parser
+
+
 def __main__():
-    print(main().public)
+    parser = _parser()
+    namespace = parser.parse_args()
+    print(main(cwd=namespace.root).public)
 
 
 if __name__ == "__main__":
