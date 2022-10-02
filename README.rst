@@ -85,7 +85,7 @@ and a section ``tool.setuptools-git-versioning`` with config options:
     [tool.setuptools-git-versioning]
     enabled = true
 
-And check the package version generated (see :ref:`command` help):
+And check the package version generated (see `command help <https://setuptools-git-versioning.readthedocs.io/en/stable/command.html>`__):
 
 .. code:: bash
 
@@ -115,7 +115,7 @@ and then add new argument ``setuptools_git_versioning`` with config options:
         setup_requires=["setuptools-git-versioning<2"],
     )
 
-And check the package version generated (see :ref:`command` help):
+And check the package version generated (see `command help <https://setuptools-git-versioning.readthedocs.io/en/stable/command.html>`__):
 
 .. code:: bash
 
