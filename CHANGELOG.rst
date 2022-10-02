@@ -32,6 +32,12 @@ Changelog
 
         Add documentation for ``setuptools-git-versioning`` script
 
+    .. change::
+        :tags: tests, refactoring
+
+        Use builtin type annotations (instead of type comments) in ``tests/lib/util.py``,
+        use modern annotations syntax (``type | None`` instead of ``Optional[type]``)
+
 1.10
 ----
 

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import logging
 import os
 import subprocess
@@ -6,7 +8,7 @@ import textwrap
 from datetime import datetime
 from pathlib import Path
 from secrets import token_hex
-from typing import Any, Callable, Dict
+from typing import Any, Callable
 
 import toml
 
@@ -168,7 +170,7 @@ def create_pyproject_toml(
         **kwargs,
     )
 
-    cfg: Dict[str, Any] = {}
+    cfg: dict[str, Any] = {}
     cfg["build-system"] = {
         "requires": [
             "setuptools>=41",
