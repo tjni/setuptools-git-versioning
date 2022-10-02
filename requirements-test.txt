@@ -1,6 +1,5 @@
 build
 coverage
-flake8>=3.8
 pytest
 pytest-rerunfailures
 wheel

@@ -65,10 +65,12 @@ jobs:
       uses: actions/cache@v3
       with:
         path: ~/.cache/pip
-        key: ${{ runner.os }}-python-${{ matrix.python-version }}-pip-${{ hashFiles('requirements*.txt') }}
+        key: ${{ runner.os }}-python-${{ matrix.python-version }}-tests-${{ hashFiles('requirements*.txt') }}
         restore-keys: |
-          ${{ runner.os }}-python-${{ matrix.python-version }}-pip-${{ hashFiles('requirements*.txt') }}
-          ${{ runner.os }}-python-${{ matrix.python-version }}-pip-
+          ${{ runner.os }}-python-${{ matrix.python-version }}-tests-${{ hashFiles('requirements*.txt') }}
+          ${{ runner.os }}-python-${{ matrix.python-version }}-codeql-${{ hashFiles('requirements*.txt') }}
+          ${{ runner.os }}-python-${{ matrix.python-version }}-tests-
+          ${{ runner.os }}-python-${{ matrix.python-version }}-codeql-
           ${{ runner.os }}-python
           ${{ runner.os }}-
 
@@ -77,9 +79,6 @@ jobs:
 
     - name: Install dependencies
       run: pip install -I -r requirements.txt -r requirements-test.txt
-
-    - name: Run flake8
-      run: flake8 --count --max-line-length=120 .
 
     - name: Build package
       run: |
