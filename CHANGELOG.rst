@@ -6,6 +6,7 @@ Changelog
 
 .. changelog::
     :version: 1.11.0
+    :released: 02.10.2022
 
     .. change::
         :tags: core, feature
@@ -43,6 +44,7 @@ Changelog
 
 .. changelog::
     :version: 1.10.1
+    :released: 03.09.2022
 
     .. change::
         :tags: core, feature
