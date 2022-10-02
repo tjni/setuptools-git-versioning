@@ -32,9 +32,13 @@ LOCAL_REGEXP = re.compile(r"[^a-z\d.]+", re.IGNORECASE)
 VERSION_PREFIX_REGEXP = re.compile(r"^[^\d]+", re.IGNORECASE | re.UNICODE)
 
 LOG_FORMAT = "[%(asctime)s] %(levelname)+8s: %(message)s"
+# setup.py changes log level to INFO, so using a custom level between INFO and DEBUG
+# it is called INF0 (zero at the end)
+INF0 = 15
+logging.addLevelName(INF0, "INF0")
 VERBOSITY_LEVELS = {
     0: logging.WARNING,
-    1: logging.INFO,
+    1: INF0,
     2: logging.DEBUG,
 }
 
@@ -140,12 +144,13 @@ def set_default_options(config: dict):
 def read_toml(name_or_path: str | os.PathLike = "pyproject.toml", root: str | os.PathLike | None = None) -> dict:
     file_path = Path(root or os.getcwd()).joinpath(name_or_path)
     if not file_path.exists():
-        log.info("'%s' does not exist", file_path)
+        log.log(INF0, "'%s' does not exist", file_path)
         return {}
 
     if not file_path.is_file():
         raise OSError(f"'{file_path}' is not a file")
 
+    log.log(INF0, "Trying 'pyproject.toml' ...")
     import toml
 
     parsed_file = toml.load(file_path)
@@ -159,7 +164,7 @@ def infer_setup_py(name_or_path: str = "setup.py", root: str | os.PathLike | Non
     root_path = Path(root or os.getcwd())
     file_path = root_path.joinpath(name_or_path)
     if not file_path.exists():
-        log.info("'%s' does not exist", file_path)
+        log.log(INF0, "'%s' does not exist", file_path)
         return None
 
     from distutils.core import run_setup
@@ -205,6 +210,8 @@ def parse_config(dist: Distribution, attr: Any, value: Any) -> None:
 
 # real version is generated here
 def infer_version(dist: Distribution, root: str | os.PathLike | None = None) -> str | None:
+    log.log(INF0, "Trying 'setup.py' ...")
+
     from distutils.errors import DistutilsOptionError, DistutilsSetupError
 
     config = getattr(dist, "setuptools_git_versioning", None) or getattr(dist, "version_config", None)
@@ -349,7 +356,7 @@ def load_tag_formatter(
     package_name: str | None = None,
     root: str | os.PathLike | None = None,
 ) -> Callable:
-    log.info("Parsing tag_formatter '%s' of type '%s'", tag_formatter, type(tag_formatter).__name__)
+    log.log(INF0, "Parsing tag_formatter '%s' of type '%s'", tag_formatter, type(tag_formatter).__name__)
 
     if callable(tag_formatter):
         log.debug("Value is callable with signature %s", inspect.Signature.from_callable(tag_formatter))
@@ -382,7 +389,7 @@ def load_branch_formatter(
     package_name: str | None = None,
     root: str | os.PathLike | None = None,
 ) -> Callable:
-    log.info("Parsing branch_formatter '%s' of type '%s'", branch_formatter, type(branch_formatter).__name__)
+    log.log(INF0, "Parsing branch_formatter '%s' of type '%s'", branch_formatter, type(branch_formatter).__name__)
 
     if callable(branch_formatter):
         log.debug("Value is callable with signature %s", inspect.Signature.from_callable(branch_formatter))
@@ -416,30 +423,30 @@ def get_version_from_callback(
     package_name: str | None = None,
     root: str | os.PathLike | None = None,
 ) -> str:
-    log.info("Parsing version_callback %s of type %s", version_callback, type(version_callback))
+    log.log(INF0, "Parsing version_callback %s of type %s", version_callback, type(version_callback))
 
     if callable(version_callback):
         log.debug("Value is callable with signature %s", inspect.Signature.from_callable(version_callback))
         result = version_callback()
     else:
 
-        log.info("Is not callable, trying to import ...")
+        log.log(INF0, "Is not callable, trying to import ...")
         result = version_callback
 
         try:
             callback = load_callable(version_callback, package_name, root=root)
             result = callback()
         except ValueError as e:
-            log.info("Is not a callable")
+            log.log(INF0, "Is not a callable")
             log.debug(str(e))
-            log.info("Assuming it is a string attribute")
+            log.log(INF0, "Assuming it is a string attribute")
             result = import_reference(version_callback, package_name, root=root)
         except (ImportError, NameError) as e:
             log.warning("version_callback is not a valid reference: %s", e)
 
     from packaging.version import Version
 
-    log.info("Result %s", result)
+    log.log(INF0, "Result %s", result)
     return Version(result).public
 
 
@@ -461,12 +468,12 @@ def version_from_git(
     # Check if PKG-INFO file exists and Version is present in it
     pkg_info = Path(root or os.getcwd()).joinpath("PKG-INFO")
     if pkg_info.exists():
-        log.info("File '%s' is found, reading its content", pkg_info)
+        log.log(INF0, "File '%s' is found, reading its content", pkg_info)
         lines = pkg_info.read_text().splitlines()
         for line in lines:
             if line.startswith("Version:"):
                 result = line[8:].strip()
-                log.info("Return '%s'", result)
+                log.log(INF0, "Return '%s'", result)
                 return result
 
     if version_callback is not None:
@@ -477,40 +484,45 @@ def version_from_git(
         return get_version_from_callback(version_callback, package_name, root=root)
 
     from_file = False
-    log.info("Getting latest tag")
+    log.log(INF0, "Getting latest tag")
     log.debug("Sorting tags by '%s'", sort_by)
     tag = get_tag(sort_by=sort_by, root=root)
 
     if tag is None:
-        log.info("No tag, checking for 'version_file'")
+        log.log(INF0, "No tag, checking for 'version_file'")
         if version_file is None:
-            log.info("No 'version_file' set, return starting_version '%s'", starting_version)
+            log.log(INF0, "No 'version_file' set, return starting_version '%s'", starting_version)
             return starting_version
 
         if not Path(version_file).exists():
-            log.info("version_file '%s' does not exist, return starting_version '%s'", version_file, starting_version)
+            log.log(
+                INF0,
+                "version_file '%s' does not exist, return starting_version '%s'",
+                version_file,
+                starting_version,
+            )
             return starting_version
 
-        log.info("version_file '%s' does exist, reading its content", version_file)
+        log.log(INF0, "version_file '%s' does exist, reading its content", version_file)
         from_file = True
         tag = read_version_from_file(version_file, root=root)
 
         if not tag:
-            log.info("File is empty, return starting_version '%s'", version_file, starting_version)
+            log.log(INF0, "File is empty, return starting_version '%s'", version_file, starting_version)
             return starting_version
 
         log.debug("File content: '%s'", tag)
         if not count_commits_from_version_file:
             result = VERSION_PREFIX_REGEXP.sub("", tag)  # for tag "v1.0.0" drop leading "v" symbol
-            log.info("Return '%s'", result)
+            log.log(INF0, "Return '%s'", result)
             return result
 
         tag_sha = get_latest_file_commit(version_file, root=root)
         log.debug("File content: '%s'", tag)
     else:
-        log.info("Latest tag: '%s'", tag)
+        log.log(INF0, "Latest tag: '%s'", tag)
         tag_sha = get_sha(tag, root=root)
-        log.info("Tag SHA-256: '%s'", tag_sha)
+        log.log(INF0, "Tag SHA-256: '%s'", tag_sha)
 
         if tag_formatter is not None:
             tag_fmt = load_tag_formatter(tag_formatter, package_name, root=root)
@@ -518,51 +530,51 @@ def version_from_git(
             log.debug("Tag after formatting: '%s'", tag)
 
     dirty = is_dirty(root=root)
-    log.info("Is dirty: %s", dirty)
+    log.log(INF0, "Is dirty: %s", dirty)
 
     head_sha = get_sha(root=root)
-    log.info("HEAD SHA-256: '%s'", head_sha)
+    log.log(INF0, "HEAD SHA-256: '%s'", head_sha)
 
     full_sha = head_sha if head_sha is not None else ""
     ccount = count_since(tag_sha, root=root) if tag_sha is not None else None
-    log.info("Commits count between HEAD and latest tag: %s", ccount)
+    log.log(INF0, "Commits count between HEAD and latest tag: %s", ccount)
 
     on_tag = head_sha is not None and head_sha == tag_sha and not from_file
-    log.info("HEAD is tagged: %s", on_tag)
+    log.log(INF0, "HEAD is tagged: %s", on_tag)
 
     branch = get_branch(root=root)
-    log.info("Current branch: '%s'", branch)
+    log.log(INF0, "Current branch: '%s'", branch)
 
     if branch_formatter is not None and branch is not None:
         branch_fmt = load_branch_formatter(branch_formatter, package_name, root=root)
         branch = branch_fmt(branch)
-        log.info("Branch after formatting: '%s'", branch)
+        log.log(INF0, "Branch after formatting: '%s'", branch)
 
     if dirty:
-        log.info("Using template from 'dirty_template' option")
+        log.log(INF0, "Using template from 'dirty_template' option")
         t = dirty_template
     elif not on_tag and ccount is not None:
-        log.info("Using template from 'dev_template' option")
+        log.log(INF0, "Using template from 'dev_template' option")
         t = dev_template
     else:
-        log.info("Using template from 'template' option")
+        log.log(INF0, "Using template from 'template' option")
         t = template
 
     version = resolve_substitutions(t, sha=full_sha[:8], tag=tag, ccount=ccount, branch=branch, full_sha=full_sha)
-    log.info("Version number after resolving substitutions: '%s'", version)
+    log.log(INF0, "Version number after resolving substitutions: '%s'", version)
 
     # Ensure local version label only contains permitted characters
     public, sep, local = version.partition("+")
     local_sanitized = LOCAL_REGEXP.sub(".", local)
     if local_sanitized != local:
-        log.info("Local version part after sanitization: '%s'", local_sanitized)
+        log.log(INF0, "Local version part after sanitization: '%s'", local_sanitized)
 
     public_sanitized = VERSION_PREFIX_REGEXP.sub("", public)  # for version "v1.0.0" drop leading "v" symbol
     if public_sanitized != public:
-        log.info("Public version part after sanitization: '%s'", public_sanitized)
+        log.log(INF0, "Public version part after sanitization: '%s'", public_sanitized)
 
     result = (public_sanitized + sep + local_sanitized) or "0.0.0"
-    log.info("Result: '%s'", result)
+    log.log(INF0, "Result: '%s'", result)
     return result
 
 
@@ -570,14 +582,12 @@ def main(config: dict | None = None, root: str | os.PathLike | None = None) -> V
     from packaging.version import Version
 
     if not config:
-        log.info("No explicit config passed")
-        log.info("Searching for config files in '%s' folder", root or os.getcwd())
-        log.info("Trying 'setup.py' ...")
+        log.log(INF0, "No explicit config passed")
+        log.log(INF0, "Searching for config files in '%s' folder", root or os.getcwd())
         result = infer_setup_py(root=root)
         if result is not None:
             return Version(result)
 
-        log.info("Trying 'pyproject.toml' ...")
         config = read_toml(root=root)
 
     if not config or not config.pop("enabled", True):
