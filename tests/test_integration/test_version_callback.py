@@ -151,16 +151,32 @@ def test_version_callback_missing(repo, create_version_py, create_config):
     [
         ("1.0.0", "1.0.0"),
         ("v1.2.3", "1.2.3"),
+        ("1.2.3dev1", "1.2.3.dev1"),
+        ("1.2.3.dev1", "1.2.3.dev1"),
+        ("1.2.3-dev1", "1.2.3.dev1"),
+        ("1.2.3+local", "1.2.3+local"),
+        ("1.2.3+local-abc", "1.2.3+local.abc"),
+        ("1.2.3+local_abc", "1.2.3+local.abc"),
     ],
 )
-def test_version_callback_drop_leading_v(repo, version, real_version, create_config):
+def test_version_callback_sanitization(repo, version, real_version, create_config):
     create_file(repo, "version.py", VERSION_PY.format(version=version), commit=False)
     create_config(repo, {"version_callback": "version:get_version"})
     assert get_version(repo) == real_version
 
 
-def test_version_callback_wrong_version_number(repo, create_config):
-    create_file(repo, "version.py", VERSION_PY.format(version="alpha1.2.3"), commit=False)
+@pytest.mark.parametrize(
+    "version",
+    [
+        "alpha1.0.0",
+        "1.0.0abc",
+        "1.0.0.abc",
+        "1.0.0-abc",
+        "1.0.0_abc",
+    ],
+)
+def test_version_callback_wrong_version_number(repo, version, create_config):
+    create_file(repo, "version.py", VERSION_PY.format(version=version), commit=False)
     create_config(repo, {"version_callback": "version:get_version"})
 
     with pytest.raises(subprocess.CalledProcessError):

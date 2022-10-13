@@ -13,13 +13,11 @@ import warnings
 from datetime import datetime
 from pathlib import Path
 from pprint import pformat
-from typing import TYPE_CHECKING, Any, Callable
+from typing import Any, Callable
 
 from deprecated import deprecated
+from packaging.version import Version
 from setuptools.dist import Distribution
-
-if TYPE_CHECKING:
-    from packaging.version import Version
 
 DEFAULT_TEMPLATE = "{tag}"
 DEFAULT_DEV_TEMPLATE = "{tag}.post{ccount}+git.{sha}"
@@ -28,8 +26,6 @@ DEFAULT_STARTING_VERSION = "0.0.1"
 DEFAULT_SORT_BY = "creatordate"
 ENV_VARS_REGEXP = re.compile(r"\{env:(?P<name>[^:}]+):?(?P<default>[^}]+\}*)?\}", re.IGNORECASE | re.UNICODE)
 TIMESTAMP_REGEXP = re.compile(r"\{timestamp:?(?P<fmt>[^:}]+)?\}", re.IGNORECASE | re.UNICODE)
-LOCAL_REGEXP = re.compile(r"[^a-z\d.]+", re.IGNORECASE)
-VERSION_PREFIX_REGEXP = re.compile(r"^[^\d]+", re.IGNORECASE | re.UNICODE)
 
 LOG_FORMAT = "[%(asctime)s] %(levelname)+8s: %(message)s"
 # setuptools v60.2.0 changed default logging level to DEBUG: https://github.com/pypa/setuptools/pull/2974
@@ -62,7 +58,7 @@ log = logging.getLogger(__name__)
 
 
 def _exec(cmd: str, root: str | os.PathLike | None = None) -> list[str]:
-    log.log(DEBUG, "Executing '%s' at '%s'", cmd, root or os.getcwd())
+    log.log(DEBUG, "Executing %r at '%s'", cmd, root or os.getcwd())
     try:
         stdout = subprocess.check_output(cmd, shell=True, text=True, cwd=root)  # nosec
     except subprocess.CalledProcessError as e:
@@ -262,44 +258,44 @@ def read_version_from_file(name_or_path: str | os.PathLike, root: str | os.PathL
 
 
 def substitute_env_variables(template: str) -> str:
-    log.log(DEBUG, "Substitute environment variables in template '%s'", template)
+    log.log(DEBUG, "Substitute environment variables in template %r", template)
     for var, default in ENV_VARS_REGEXP.findall(template):
-        log.log(DEBUG, "Variable: '%s'", var)
+        log.log(DEBUG, "Variable: %r", var)
 
         if default.upper() == "IGNORE":
             default = ""
         elif not default:
             default = "UNKNOWN"
-        log.log(DEBUG, "Default: '%s'", default)
+        log.log(DEBUG, "Default: %r", default)
 
         value = os.environ.get(var, default)
-        log.log(DEBUG, "Value: '%s'", value)
+        log.log(DEBUG, "Value: %r", value)
 
         template, _ = ENV_VARS_REGEXP.subn(value, template, count=1)
 
-    log.log(DEBUG, "Result: '%s'", template)
+    log.log(DEBUG, "Result: %r", template)
     return template
 
 
 def substitute_timestamp(template: str) -> str:
-    log.log(DEBUG, "Substitute timestampts in template '%s'", template)
+    log.log(DEBUG, "Substitute timestamps in template %r", template)
 
     now = datetime.now()
     for fmt in TIMESTAMP_REGEXP.findall(template):
         format_string = fmt or "%s"
-        log.log(DEBUG, "Format: '%s'", format_string)
+        log.log(DEBUG, "Format: %r", format_string)
 
         result = now.strftime(fmt or "%s")
-        log.log(DEBUG, "Value: '%s'", result)
+        log.log(DEBUG, "Value: %r", result)
 
         template, _ = TIMESTAMP_REGEXP.subn(result, template, count=1)
 
-    log.log(DEBUG, "Result: '%s'", template)
+    log.log(DEBUG, "Result: %r", template)
     return template
 
 
 def resolve_substitutions(template: str, *args, **kwargs) -> str:
-    log.log(DEBUG, "Template: '%s'", template)
+    log.log(DEBUG, "Template: %r", template)
     log.log(DEBUG, "Args:%s", pformat(args))
 
     while True:
@@ -359,7 +355,7 @@ def load_tag_formatter(
     package_name: str | None = None,
     root: str | os.PathLike | None = None,
 ) -> Callable:
-    log.log(INFO, "Parsing tag_formatter '%s' of type '%s'", tag_formatter, type(tag_formatter).__name__)
+    log.log(INFO, "Parsing tag_formatter %r of type %r", tag_formatter, type(tag_formatter).__name__)
 
     if callable(tag_formatter):
         log.log(DEBUG, "Value is callable with signature %s", inspect.Signature.from_callable(tag_formatter))
@@ -383,8 +379,7 @@ def load_tag_formatter(
         return formatter
     except re.error as e:
         log.error("tag_formatter is not valid regexp: %s", e)
-
-    raise ValueError("Cannot parse tag_formatter")
+        raise ValueError("Cannot parse tag_formatter") from e
 
 
 def load_branch_formatter(
@@ -392,7 +387,7 @@ def load_branch_formatter(
     package_name: str | None = None,
     root: str | os.PathLike | None = None,
 ) -> Callable:
-    log.log(INFO, "Parsing branch_formatter '%s' of type '%s'", branch_formatter, type(branch_formatter).__name__)
+    log.log(INFO, "Parsing branch_formatter %r of type %r", branch_formatter, type(branch_formatter).__name__)
 
     if callable(branch_formatter):
         log.log(DEBUG, "Value is callable with signature %s", inspect.Signature.from_callable(branch_formatter))
@@ -416,8 +411,7 @@ def load_branch_formatter(
         return formatter
     except re.error as e:
         log.error("branch_formatter is not valid regexp: %s", e)
-
-    raise ValueError("Cannot parse branch_formatter")
+        raise ValueError("Cannot parse branch_formatter") from e
 
 
 # TODO: return Version object instead of str
@@ -426,7 +420,7 @@ def get_version_from_callback(
     package_name: str | None = None,
     root: str | os.PathLike | None = None,
 ) -> str:
-    log.log(INFO, "Parsing version_callback %s of type %s", version_callback, type(version_callback))
+    log.log(INFO, "Parsing version_callback %r of type %r", version_callback, type(version_callback).__name__)
 
     if callable(version_callback):
         log.log(DEBUG, "Value is callable with signature %s", inspect.Signature.from_callable(version_callback))
@@ -447,10 +441,15 @@ def get_version_from_callback(
         except (ImportError, NameError) as e:
             log.warning("version_callback is not a valid reference: %s", e)
 
-    from packaging.version import Version
+    return sanitize_version(result)
 
-    log.log(INFO, "Result %s", result)
-    return Version(result).public
+
+def sanitize_version(version: str) -> str:
+    log.log(INFO, "Before sanitization %r", version)
+
+    result = str(Version(version))
+    log.log(INFO, "Result %r", result)
+    return result
 
 
 # TODO: return Version object instead of str
@@ -476,8 +475,8 @@ def version_from_git(
         for line in lines:
             if line.startswith("Version:"):
                 result = line[8:].strip()
-                log.log(INFO, "Return '%s'", result)
-                return result
+                log.log(INFO, "Return %r", result)
+                return sanitize_version(result)
 
     if version_callback is not None:
         if version_file is not None:
@@ -488,70 +487,68 @@ def version_from_git(
 
     from_file = False
     log.log(INFO, "Getting latest tag")
-    log.log(DEBUG, "Sorting tags by '%s'", sort_by)
+    log.log(DEBUG, "Sorting tags by %r", sort_by)
     tag = get_tag(sort_by=sort_by, root=root)
 
     if tag is None:
         log.log(INFO, "No tag, checking for 'version_file'")
         if version_file is None:
-            log.log(INFO, "No 'version_file' set, return starting_version '%s'", starting_version)
-            return starting_version
+            log.log(INFO, "No 'version_file' set, return starting_version %r", starting_version)
+            return sanitize_version(starting_version)
 
         if not Path(version_file).exists():
             log.log(
                 INFO,
-                "version_file '%s' does not exist, return starting_version '%s'",
+                "version_file '%s' does not exist, return starting_version %r",
                 version_file,
                 starting_version,
             )
-            return starting_version
+            return sanitize_version(starting_version)
 
         log.log(INFO, "version_file '%s' does exist, reading its content", version_file)
         from_file = True
         tag = read_version_from_file(version_file, root=root)
 
         if not tag:
-            log.log(INFO, "File is empty, return starting_version '%s'", version_file, starting_version)
-            return starting_version
+            log.log(INFO, "File is empty, return starting_version %r", version_file, starting_version)
+            return sanitize_version(starting_version)
 
-        log.log(DEBUG, "File content: '%s'", tag)
+        log.log(DEBUG, "File content: %r", tag)
         if not count_commits_from_version_file:
-            result = VERSION_PREFIX_REGEXP.sub("", tag)  # for tag "v1.0.0" drop leading "v" symbol
-            log.log(INFO, "Return '%s'", result)
-            return result
+            return sanitize_version(tag)
 
         tag_sha = get_latest_file_commit(version_file, root=root)
-        log.log(DEBUG, "File content: '%s'", tag)
+        log.log(DEBUG, "File SHA-256: %r", tag_sha)
     else:
-        log.log(INFO, "Latest tag: '%s'", tag)
+        log.log(INFO, "Latest tag: %r", tag)
         tag_sha = get_sha(tag, root=root)
-        log.log(INFO, "Tag SHA-256: '%s'", tag_sha)
+        log.log(INFO, "Tag SHA-256: %r", tag_sha)
 
         if tag_formatter is not None:
             tag_fmt = load_tag_formatter(tag_formatter, package_name, root=root)
             tag = tag_fmt(tag)
-            log.log(DEBUG, "Tag after formatting: '%s'", tag)
+            log.log(DEBUG, "Tag after formatting: %r", tag)
 
     dirty = is_dirty(root=root)
-    log.log(INFO, "Is dirty: %s", dirty)
+    log.log(INFO, "Is dirty: %r", dirty)
 
     head_sha = get_sha(root=root)
-    log.log(INFO, "HEAD SHA-256: '%s'", head_sha)
+    log.log(INFO, "HEAD SHA-256: %r", head_sha)
 
     full_sha = head_sha if head_sha is not None else ""
     ccount = count_since(tag_sha, root=root) if tag_sha is not None else None
-    log.log(INFO, "Commits count between HEAD and latest tag: %s", ccount)
+    log.log(INFO, "Commits count between HEAD and latest tag: %r", ccount)
 
     on_tag = head_sha is not None and head_sha == tag_sha and not from_file
-    log.log(INFO, "HEAD is tagged: %s", on_tag)
+    log.log(INFO, "HEAD is tagged: %r", on_tag)
 
     branch = get_branch(root=root)
-    log.log(INFO, "Current branch: '%s'", branch)
+    log.log(INFO, "Current branch: %r", branch)
 
     if branch_formatter is not None and branch is not None:
         branch_fmt = load_branch_formatter(branch_formatter, package_name, root=root)
         branch = branch_fmt(branch)
-        log.log(INFO, "Branch after formatting: '%s'", branch)
+        log.log(INFO, "Branch after formatting: %r", branch)
 
     if dirty:
         log.log(INFO, "Using template from 'dirty_template' option")
@@ -564,26 +561,11 @@ def version_from_git(
         t = template
 
     version = resolve_substitutions(t, sha=full_sha[:8], tag=tag, ccount=ccount, branch=branch, full_sha=full_sha)
-    log.log(INFO, "Version number after resolving substitutions: '%s'", version)
-
-    # Ensure local version label only contains permitted characters
-    public, sep, local = version.partition("+")
-    local_sanitized = LOCAL_REGEXP.sub(".", local)
-    if local_sanitized != local:
-        log.log(INFO, "Local version part after sanitization: '%s'", local_sanitized)
-
-    public_sanitized = VERSION_PREFIX_REGEXP.sub("", public)  # for version "v1.0.0" drop leading "v" symbol
-    if public_sanitized != public:
-        log.log(INFO, "Public version part after sanitization: '%s'", public_sanitized)
-
-    result = (public_sanitized + sep + local_sanitized) or "0.0.0"
-    log.log(INFO, "Result: '%s'", result)
-    return result
+    log.log(INFO, "Version number after resolving substitutions: %r", version)
+    return sanitize_version(version)
 
 
 def main(config: dict | None = None, root: str | os.PathLike | None = None) -> Version:
-    from packaging.version import Version
-
     if not config:
         log.log(INFO, "No explicit config passed")
         log.log(INFO, "Searching for config files in '%s' folder", root or os.getcwd())
@@ -640,7 +622,7 @@ def __main__():
     namespace = parser.parse_args()
     log_level = VERBOSITY_LEVELS.get(namespace.verbose, logging.DEBUG)
     logging.basicConfig(level=log_level, format=LOG_FORMAT, stream=sys.stderr)
-    print(main(root=namespace.root).public)
+    print(str(main(root=namespace.root)))
 
 
 if __name__ == "__main__":

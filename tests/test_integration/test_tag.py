@@ -1,3 +1,4 @@
+import subprocess
 from datetime import datetime, timedelta
 import pytest
 import time
@@ -92,7 +93,7 @@ def test_tag_dirty(repo, create_config, add, template, subst):
 
 
 @pytest.mark.parametrize("starting_version, version", [(None, "0.0.1"), ("1.2.3", "1.2.3")])
-def test_tag_no_tag(repo, create_config, starting_version, version):
+def test_tag_missing(repo, create_config, starting_version, version):
     if starting_version:
         create_config(repo, {"starting_version": starting_version})
     else:
@@ -106,20 +107,54 @@ def test_tag_no_tag(repo, create_config, starting_version, version):
     [
         ("1.0.0", "1.0.0"),
         ("v1.2.3", "1.2.3"),
-        ("beta1.2.3", "1.2.3"),
-        ("alpha1.2.3", "1.2.3"),
+        ("1.2.3dev1", "1.2.3.dev1"),
+        ("1.2.3.dev1", "1.2.3.dev1"),
+        ("1.2.3-dev1", "1.2.3.dev1"),
+        ("1.2.3+local", "1.2.3+local"),
+        ("1.2.3+local-abc", "1.2.3+local.abc"),
+        ("1.2.3+local_abc", "1.2.3+local.abc"),
     ],
 )
-def test_tag_drop_leading_non_numbers(repo, create_config, tag, version):
+def test_tag_sanitization(repo, create_config, tag, version):
     create_config(repo)
-
     create_tag(repo, tag)
+
     assert get_version(repo) == version
 
 
-def test_tag_missing(repo, create_config):
+@pytest.mark.parametrize(
+    "tag",
+    [
+        "alpha1.0.0",
+        "1.0.0abc",
+        "1.0.0.abc",
+        "1.0.0-abc",
+        "1.0.0_abc",
+    ],
+)
+def test_tag_wrong_version_number(repo, tag, create_config):
     create_config(repo)
-    assert get_version(repo) == "0.0.1"
+    create_tag(repo, tag)
+
+    with pytest.raises(subprocess.CalledProcessError):
+        get_version(repo)
+
+
+@pytest.mark.parametrize(
+    "starting_version",
+    [
+        "alpha1.0.0",
+        "1.0.0abc",
+        "1.0.0.abc",
+        "1.0.0-abc",
+        "1.0.0_abc",
+    ],
+)
+def test_tag_wrong_starting_version(repo, create_config, starting_version):
+    create_config(repo, {"starting_version": starting_version})
+
+    with pytest.raises(subprocess.CalledProcessError):
+        get_version(repo)
 
 
 def test_tag_not_a_repo(repo_dir, create_config):

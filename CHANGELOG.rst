@@ -1,6 +1,22 @@
 Changelog
 ==========
 
+1.12
+----
+
+.. changelog::
+    :version: 1.12.0
+
+    .. change::
+        :tags: core, breaking
+
+        Sanitize ``starting_version`` according :pep:`440`
+
+    .. change::
+        :tags: core, breaking
+
+        Do not remove leading non-numeric symbols from version number (except ``v``)
+
 1.11
 ----
 

@@ -1,3 +1,4 @@
+import subprocess
 import pytest
 
 from tests.lib.util import create_commit, create_file, get_full_sha, get_version, get_sha, create_tag
@@ -115,22 +116,53 @@ def test_version_file_dirty(repo, create_config, add, template, subst):
     [
         ("1.0.0", "1.0.0"),
         ("v1.2.3", "1.2.3"),
-        ("beta1.2.3", "1.2.3"),
-        ("alpha1.2.3", "1.2.3"),
+        ("1.2.3dev1", "1.2.3.dev1"),
+        ("1.2.3.dev1", "1.2.3.dev1"),
+        ("1.2.3-dev1", "1.2.3.dev1"),
+        ("1.2.3+local", "1.2.3+local"),
+        ("1.2.3+local-abc", "1.2.3+local.abc"),
+        ("1.2.3+local_abc", "1.2.3+local.abc"),
     ],
 )
-def test_version_file_drop_leading_non_numbers(repo, create_config, version, real_version):
+@pytest.mark.parametrize("count_commits_from_version_file", [True, False])
+def test_version_file_sanitization(repo, create_config, version, real_version, count_commits_from_version_file):
     create_config(
         repo,
         {
             "version_file": "VERSION.txt",
             "dev_template": "{tag}",
-            "count_commits_from_version_file": True,
+            "count_commits_from_version_file": count_commits_from_version_file,
         },
     )
     create_file(repo, "VERSION.txt", version)
 
     assert get_version(repo) == real_version
+
+
+@pytest.mark.parametrize(
+    "version",
+    [
+        "alpha1.0.0",
+        "1.0.0abc",
+        "1.0.0.abc",
+        "1.0.0-abc",
+        "1.0.0_abc",
+    ],
+)
+@pytest.mark.parametrize("count_commits_from_version_file", [True, False])
+def test_version_file_wrong_version_number(repo, version, create_config, count_commits_from_version_file):
+    create_config(
+        repo,
+        {
+            "version_file": "VERSION.txt",
+            "dev_template": "{tag}",
+            "count_commits_from_version_file": count_commits_from_version_file,
+        },
+    )
+    create_file(repo, "VERSION.txt", version)
+
+    with pytest.raises(subprocess.CalledProcessError):
+        get_version(repo)
 
 
 def test_version_file_tag_is_preferred(repo, create_config):
