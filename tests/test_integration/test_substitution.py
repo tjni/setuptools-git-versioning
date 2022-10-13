@@ -69,38 +69,34 @@ def test_substitution_branch(repo, template, real_template, branch, suffix):
         # leading zeros are removed by setuptools
         ("{tag}.post{env:PIPELINE_ID}", "234", "234"),
         ("{tag}.post{env:PIPELINE_ID}", "0234", "234"),
-        ("{tag}.post{env:PIPELINE_ID}", None, "UNKNOWN"),
         ("{tag}.post{env:PIPELINE_ID:123}", "234", "234"),
         ("{tag}.post{env:PIPELINE_ID:123}", None, "123"),
         ("{tag}.post{env:PIPELINE_ID:IGNORE}", "234", "234"),
         ("{tag}.post{env:PIPELINE_ID:IGNORE}", None, "0"),
         ("{tag}.post{env:PIPELINE_ID:}", "234", "234"),
-        ("{tag}.post{env:PIPELINE_ID:}", None, "UNKNOWN"),
         ("{tag}.post{env:PIPELINE_ID:{ccount}}", "234", "234"),
         ("{tag}.post{env:PIPELINE_ID:{ccount}}", None, "1"),
         ("{tag}.post{env:PIPELINE_ID:{timestamp:%Y}}", "234", "234"),
         ("{tag}.post{env:PIPELINE_ID:{timestamp:%Y}}", None, datetime.now().year),
         ("{tag}.post{env:PIPELINE_ID:{env:ANOTHER_ENV}}", "234", "234"),
-        ("{tag}.post{env:PIPELINE_ID:{env:ANOTHER_ENV}}", None, "3.4.5"),
+        ("{tag}.post{env:PIPELINE_ID:{env:ANOTHER_ENV}}", None, "345"),
         ("{tag}.post{env:PIPELINE_ID:{env:MISSING_ENV}}", "234", "234"),
-        ("{tag}.post{env:PIPELINE_ID:{env:MISSING_ENV}}", None, "UNKNOWN"),
         ("{tag}.post{env:PIPELINE_ID:{env:MISSING_ENV:IGNORE}}", "234", "234"),
         ("{tag}.post{env:PIPELINE_ID:{env:MISSING_ENV:IGNORE}}", None, "0"),
         ("{tag}.post{env:PIPELINE_ID:{env:MISSING_ENV:}}", "234", "234"),
-        ("{tag}.post{env:PIPELINE_ID:{env:MISSING_ENV:}}", None, "UNKNOWN"),
-        ("{tag}.post{env:PIPELINE_ID:{env:MISSING_ENV:5.6.7}}", "234", "234"),
-        ("{tag}.post{env:PIPELINE_ID:{env:MISSING_ENV:5.6.7}}", None, "5.6.7"),
+        ("{tag}.post{env:PIPELINE_ID:{env:MISSING_ENV:567}}", "234", "234"),
+        ("{tag}.post{env:PIPELINE_ID:{env:MISSING_ENV:567}}", None, "567"),
         ("{tag}.post{env:PIPELINE_ID:{env:MISSING_ENV:{ccount}}}", "234", "234"),
         ("{tag}.post{env:PIPELINE_ID:{env:MISSING_ENV:{ccount}}}", None, "1"),
         ("{tag}.post{env:PIPELINE_ID:{env:MISSING_ENV:{timestamp:%Y}}}", "234", "234"),
         ("{tag}.post{env:PIPELINE_ID:{env:MISSING_ENV:{timestamp:%Y}}}", None, datetime.now().year),
-        ("{tag}.post{env:PIPELINE_ID}+abc{env:ANOTHER_ENV}", "234", "234+abc3.4.5"),
+        ("{tag}.post{env:PIPELINE_ID}+abc{env:ANOTHER_ENV}", "234", "234+abc345"),
         ("{tag}.post{env:PIPELINE_ID}+abc{env:MISSING_ENV}", "234", "234+abcunknown"),
         ("{tag}.post{env:PIPELINE_ID}+abc{env:MISSING_ENV:5.6.7}", "234", "234+abc5.6.7"),
-        ("{tag}.post{env:PIPELINE_ID}+abc{env:MISSING_ENV:B-C%D}", "234", "234+abcb.c.d"),
+        ("{tag}.post{env:PIPELINE_ID}+abc{env:MISSING_ENV:B-C-D}", "234", "234+abcb.c.d"),
         ("{tag}.post{env:PIPELINE_ID}+abc{env:MISSING_ENV:IGNORE}d", "234", "234+abcd"),
         ("{tag}.post{env:PIPELINE_ID}+abc{env:MISSING_ENV:}d", "234", "234+abcunknownd"),
-        ("{tag}.post{env:PIPELINE_ID}+abc{env:MISSING_ENV: }d", "234", "234+abc.d"),
+        ("{tag}.post{env:PIPELINE_ID}+abc{env:MISSING_ENV:.}d", "234", "234+abc.d"),
         ("{tag}.post{env:PIPELINE_ID}+abc{env:MISSING_ENV:{ccount}}", "234", "234+abc1"),
         (
             "{tag}.post{env:PIPELINE_ID}+abc{env:MISSING_ENV:{timestamp:%Y}}",
@@ -108,7 +104,7 @@ def test_substitution_branch(repo, template, real_template, branch, suffix):
             "234+abc" + str(datetime.now().year),
         ),
         # empty env variable name
-        ("{tag}.post{env: }", "234", "UNKNOWN"),
+        ("{tag}.post{env:PIPELINE_ID}+abc{env: }d", "234", "234+abcunknownd"),
     ],
 )
 def test_substitution_env(repo, dev_template, pipeline_id, suffix):
@@ -116,7 +112,7 @@ def test_substitution_env(repo, dev_template, pipeline_id, suffix):
     create_tag(repo, "1.2.3")
     create_file(repo)
 
-    env = {"ANOTHER_ENV": "3.4.5"}
+    env = {"ANOTHER_ENV": "345"}
     if pipeline_id is not None:
         env["PIPELINE_ID"] = pipeline_id
 
@@ -139,8 +135,8 @@ def test_substitution_env(repo, dev_template, pipeline_id, suffix):
             "{tag}.post{ccount}+{}",
             lambda dt: (dt.strftime("%Y.%m.%dt%H.%M"),),
         ),
-        # unknown format
-        ("{tag}+git{timestamp:%i}", "{tag}+git.i", lambda x: []),
+        # pure string
+        ("{tag}+git.{timestamp:abc}", "{tag}+git.abc", lambda x: []),
     ],
 )
 def test_substitution_timestamp(repo, template, fmt, callback):
@@ -155,6 +151,7 @@ def test_substitution_timestamp(repo, template, fmt, callback):
         if new_value == value:
             break
         value = new_value
+
     assert new_value in get_version_setup_py(repo)
 
 
@@ -170,6 +167,7 @@ def test_substitution_timestamp(repo, template, fmt, callback):
         "{tag}+a{env:MISSING_ENV:{}}}",
         "{tag}+a{timestamp:A:B}",
         "{tag}+a{timestamp:{%Y}",
+        "{tag}+a{timestamp:%i}",
     ],
 )
 def test_substitution_wrong_format(repo, template):

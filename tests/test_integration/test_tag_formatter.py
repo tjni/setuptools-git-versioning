@@ -25,7 +25,7 @@ def test_tag_formatter_external(repo, create_config, tag, version):
             import re
 
             def tag_formatter(tag):
-                return re.sub(r"[^\d.]+", "", tag)
+                return re.sub(r"[^\d.]+", "", tag) or "0.0.0"
             """
         ),
     )

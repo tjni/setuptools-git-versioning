@@ -285,7 +285,7 @@ def substitute_timestamp(template: str) -> str:
         format_string = fmt or "%s"
         log.log(DEBUG, "Format: %r", format_string)
 
-        result = now.strftime(fmt or "%s")
+        result = now.strftime(format_string)
         log.log(DEBUG, "Value: %r", result)
 
         template, _ = TIMESTAMP_REGEXP.subn(result, template, count=1)
