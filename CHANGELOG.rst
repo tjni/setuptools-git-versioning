@@ -6,6 +6,7 @@ Changelog
 
 .. changelog::
     :version: 1.12.0
+    :released: 13.10.2022
 
     .. change::
         :tags: core, breaking
