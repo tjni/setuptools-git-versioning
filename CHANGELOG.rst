@@ -6,6 +6,7 @@ Changelog
 
 .. changelog::
     :version: 1.12.1
+    :released: 24.10.2022
 
     .. change::
         :tags: core, bug
