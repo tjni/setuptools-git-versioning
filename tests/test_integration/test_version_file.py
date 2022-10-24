@@ -122,6 +122,8 @@ def test_version_file_dirty(repo, create_config, add, template, subst):
         ("1.2.3+local", "1.2.3+local"),
         ("1.2.3+local-abc", "1.2.3+local.abc"),
         ("1.2.3+local_abc", "1.2.3+local.abc"),
+        ("1.2.3+local/abc", "1.2.3+local.abc"),
+        ("1.2.3+local/abc/-", "1.2.3+local.abc"),
     ],
 )
 @pytest.mark.parametrize("count_commits_from_version_file", [True, False])

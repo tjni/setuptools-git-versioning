@@ -5,6 +5,15 @@ Changelog
 ----
 
 .. changelog::
+    :version: 1.12.1
+
+    .. change::
+        :tags: core, bug
+
+        Make version sanitization less strict, allow to automatically convert some cases, e.g.
+        ``1.0.0+feature/abc`` to ``1.0.0+feature.abc``
+
+.. changelog::
     :version: 1.12.0
     :released: 13.10.2022
 

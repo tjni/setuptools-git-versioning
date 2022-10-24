@@ -27,6 +27,9 @@ DEFAULT_SORT_BY = "creatordate"
 ENV_VARS_REGEXP = re.compile(r"\{env:(?P<name>[^:}]+):?(?P<default>[^}]+\}*)?\}", re.IGNORECASE | re.UNICODE)
 TIMESTAMP_REGEXP = re.compile(r"\{timestamp:?(?P<fmt>[^:}]+)?\}", re.IGNORECASE | re.UNICODE)
 
+# https://github.com/pypa/setuptools/blob/bc39d28bda2a1faee6680ae30e42526b9d775151/setuptools/command/dist_info.py#L108-L131
+UNSUPPORTED_SYMBOL_REGEXP = re.compile(r"[^\w\d]+", re.IGNORECASE | re.UNICODE)
+
 LOG_FORMAT = "[%(asctime)s] %(levelname)+8s: %(message)s"
 # setuptools v60.2.0 changed default logging level to DEBUG: https://github.com/pypa/setuptools/pull/2974
 # to avoid printing information messages to the same output as version number,
@@ -447,7 +450,19 @@ def get_version_from_callback(
 def sanitize_version(version: str) -> str:
     log.log(INFO, "Before sanitization %r", version)
 
-    result = str(Version(version))
+    public, sep, local = version.partition("+")
+
+    # replace "feature/ABC-123" with "feature.ABC.123"
+    sanitized_public = UNSUPPORTED_SYMBOL_REGEXP.sub(".", public)
+    sanitized_local = UNSUPPORTED_SYMBOL_REGEXP.sub(".", local)
+
+    sanitized_version = sanitized_public + sep + sanitized_local
+    sanitized_version = sanitized_version.rstrip(".")
+
+    # replace "feature.ABC.123" with "feature.abc.123"
+    # drop leading "v" symbol
+    # other replacements according to PEP-440, like "-dev" -> ".dev"
+    result = str(Version(sanitized_version))
     log.log(INFO, "Result %r", result)
     return result
 

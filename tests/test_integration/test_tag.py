@@ -113,6 +113,8 @@ def test_tag_missing(repo, create_config, starting_version, version):
         ("1.2.3+local", "1.2.3+local"),
         ("1.2.3+local-abc", "1.2.3+local.abc"),
         ("1.2.3+local_abc", "1.2.3+local.abc"),
+        ("1.2.3+local/abc", "1.2.3+local.abc"),
+        ("1.2.3+local/abc/-", "1.2.3+local.abc"),
     ],
 )
 def test_tag_sanitization(repo, create_config, tag, version):

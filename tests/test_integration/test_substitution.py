@@ -135,6 +135,8 @@ def test_substitution_env(repo, dev_template, pipeline_id, suffix):
             "{tag}.post{ccount}+{}",
             lambda dt: (dt.strftime("%Y.%m.%dt%H.%M"),),
         ),
+        # unknown substitution
+        ("{tag}+git.{timestamp:%i}", "{tag}+git.i", lambda x: []),
         # pure string
         ("{tag}+git.{timestamp:abc}", "{tag}+git.abc", lambda x: []),
     ],
@@ -167,7 +169,6 @@ def test_substitution_timestamp(repo, template, fmt, callback):
         "{tag}+a{env:MISSING_ENV:{}}}",
         "{tag}+a{timestamp:A:B}",
         "{tag}+a{timestamp:{%Y}",
-        "{tag}+a{timestamp:%i}",
     ],
 )
 def test_substitution_wrong_format(repo, template):

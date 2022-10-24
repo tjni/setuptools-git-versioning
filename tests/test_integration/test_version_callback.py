@@ -157,6 +157,8 @@ def test_version_callback_missing(repo, create_version_py, create_config):
         ("1.2.3+local", "1.2.3+local"),
         ("1.2.3+local-abc", "1.2.3+local.abc"),
         ("1.2.3+local_abc", "1.2.3+local.abc"),
+        ("1.2.3+local/abc", "1.2.3+local.abc"),
+        ("1.2.3+local/abc/-", "1.2.3+local.abc"),
     ],
 )
 def test_version_callback_sanitization(repo, version, real_version, create_config):
