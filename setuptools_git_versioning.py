@@ -6,7 +6,7 @@ import inspect
 import logging
 import os
 import re
-import subprocess
+import subprocess  # nosec
 import sys
 import textwrap
 import warnings
@@ -157,13 +157,13 @@ def read_toml(name_or_path: str | os.PathLike = "pyproject.toml", root: str | os
         # for Python 3.11
         import tomllib
 
-        toml_load = tomllib.load
+        with file_path.open("r") as file:
+            parsed_file = tomllib.load(file)
     except (ImportError, NameError):
         import toml
 
-        toml_load = toml.load
+        parsed_file = toml.load(file_path)
 
-    parsed_file = toml_load(file_path)
     result = parsed_file.get("tool", {}).get("setuptools-git-versioning", None)
     if result:
         log.log(DEBUG, "'tool.setuptools-git-versioning' section content:\n%s", pformat(result))

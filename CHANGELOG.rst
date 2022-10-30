@@ -5,6 +5,14 @@ Changelog
 ----
 
 .. changelog::
+    :version: 1.12.2
+
+    .. change::
+        :tags: dependencies, feature
+
+        For Python 3.11 use built-in ``tomllib`` instead of ``toml`` package
+
+.. changelog::
     :version: 1.12.1
     :released: 24.10.2022
 
