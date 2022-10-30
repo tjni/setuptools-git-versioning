@@ -153,9 +153,17 @@ def read_toml(name_or_path: str | os.PathLike = "pyproject.toml", root: str | os
         raise OSError(f"'{file_path}' is not a file")
 
     log.log(INFO, "Trying 'pyproject.toml' ...")
-    import toml
+    try:
+        # for Python 3.11
+        import tomllib
 
-    parsed_file = toml.load(file_path)
+        toml_load = tomllib.load
+    except (ImportError, NameError):
+        import toml
+
+        toml_load = toml.load
+
+    parsed_file = toml_load(file_path)
     result = parsed_file.get("tool", {}).get("setuptools-git-versioning", None)
     if result:
         log.log(DEBUG, "'tool.setuptools-git-versioning' section content:\n%s", pformat(result))
