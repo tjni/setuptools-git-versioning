@@ -157,7 +157,7 @@ def read_toml(name_or_path: str | os.PathLike = "pyproject.toml", root: str | os
         # for Python 3.11
         import tomllib
 
-        with file_path.open("r") as file:
+        with file_path.open("rb") as file:
             parsed_file = tomllib.load(file)
     except (ImportError, NameError):
         import toml
