@@ -12,6 +12,11 @@ Changelog
 
         For Python 3.11 use built-in ``tomllib`` instead of ``toml`` package
 
+    .. change::
+        :tags: docs, feature
+
+        Add documentation about fetching package version in runtime
+
 .. changelog::
     :version: 1.12.1
     :released: 24.10.2022
