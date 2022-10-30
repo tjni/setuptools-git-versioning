@@ -10,21 +10,10 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 
-import sys
-import subprocess
-from pathlib import Path
-
 from packaging.version import Version
+from setuptools_git_versioning import version_from_git
 
-sys.path.insert(0, str(Path(__file__).parent.parent.absolute()))
-ver = Version(
-    subprocess.check_output(  # nosec
-        f"{sys.executable} ../setup.py --version",
-        shell=True,
-    )
-    .decode("utf-8")
-    .strip()
-)
+ver = Version(version_from_git())
 
 # -- Project information -----------------------------------------------------
 
