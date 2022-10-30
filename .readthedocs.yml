@@ -5,5 +5,3 @@ python:
   install:
   - requirements: requirements-doc.txt
   - requirements: requirements.txt
-  - method: pip
-    path: . --no-build-isolation
