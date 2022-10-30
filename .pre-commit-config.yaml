@@ -71,6 +71,7 @@ repos:
   rev: 1.7.4
   hooks:
   - id: bandit
+    args: [-c, bandit.yaml]
 - repo: meta
   hooks:
   - id: check-hooks-apply
