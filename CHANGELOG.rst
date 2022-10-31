@@ -27,6 +27,12 @@ Changelog
 
         Add description for some functions
 
+    .. change::
+        :pullreq: 69
+        :tags: core, feature
+
+        Add ``tag_filter`` option. Special thanks to :github-user:`vortechs2000`
+
 1.12
 ----
 
