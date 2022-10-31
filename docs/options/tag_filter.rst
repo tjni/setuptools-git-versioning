@@ -19,7 +19,7 @@ substitution.
 
 Type
 ^^^^^
-``str``
+``str`` or ``callable``
 
 Default value
 ^^^^^^^^^^^^^
@@ -47,9 +47,8 @@ and you only want versions from ``product_y``, simply set:
 This will limit the tags considered to those that start with ``product_y``.
 
 You will likely still need to construct a :ref:`tag-formatter-option` that
-takes the entire tag into consideration.  To make thing easier, you can often
-use the same regexp/callback for the filter that you would use for the
-formatter.
+extract version number from a tag.  To make thing easier, you can often
+use the same regexp/callback for both ``tag_filter`` and ``tag_formatter``.
 
 Possible values
 ^^^^^^^^^^^^^^^
@@ -59,11 +58,10 @@ Possible values
 
 - function full name in format ``"some.module:function_name"``
 
-    Function should have signature ``(str) -> str | None``. It accepts original
-    tag name and returns the tag name (or subset thereof) if it should be in
-    the list and None if it is to be filtered out. When a formatter is
-    required, it it often easiest to use the same function for both the filter
-    and the formatter, following the rules for the formatter function.
+    Function should have signature ``(str) -> bool``. It accepts original
+    tag name and returns ``True`` if tag is accepted and ``False`` if not.
+    You can return other value type, like ``str`` or ``None``, it will be
+    treated as ``bool``.
 
     .. warning::
 
@@ -71,9 +69,10 @@ Possible values
 
 - regexp like ``"tag-prefix/.*"`` or ``"tag-prefix/(?P<tag>.*)"``
 
+    .. note::
 
-    The ``<tag>`` group isn't required for the filter, but makes it simpler to
-    share with the formatter option.
+        The ``<tag>`` group isn't required for the filter, but makes it simpler to
+        share with the ``tag_formatter`` option.
 
     .. warning::
 

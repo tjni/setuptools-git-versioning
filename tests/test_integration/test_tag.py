@@ -207,8 +207,6 @@ def test_tag_sort_by_version(repo, create_config, message):
     sort_by = "version:refname"
     create_config(repo, {"sort_by": sort_by})
 
-    commits = {}
-
     tags_to_commit = [
         "1.1.0",
         "1.1.10",
@@ -219,16 +217,7 @@ def test_tag_sort_by_version(repo, create_config, message):
         create_file(repo, commit=False)
         dt = datetime.now() - timedelta(days=len(tags_to_commit) - i)
         create_commit(repo, "Some commit", dt=dt)
-        commits[tag] = get_sha(repo)
-
-    tags_to_create = [
-        "1.1.0",
-        "1.1.10",
-        "1.1.1",
-    ]
-
-    for tag in tags_to_create:
-        create_tag(repo, tag, message=message, commit=commits[tag])
+        create_tag(repo, tag, message=message, commit=get_sha(repo))
 
     # the result is not stable because latest tag (by name)
     # has nothing in common with commit creation time

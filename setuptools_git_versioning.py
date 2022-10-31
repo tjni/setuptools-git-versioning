@@ -24,7 +24,6 @@ DEFAULT_DEV_TEMPLATE = "{tag}.post{ccount}+git.{sha}"
 DEFAULT_DIRTY_TEMPLATE = "{tag}.post{ccount}+git.{sha}.dirty"
 DEFAULT_STARTING_VERSION = "0.0.1"
 DEFAULT_SORT_BY = "creatordate"
-DEFAULT_TAG_FILTER = None
 ENV_VARS_REGEXP = re.compile(r"\{env:(?P<name>[^:}]+):?(?P<default>[^}]+\}*)?\}", re.IGNORECASE | re.UNICODE)
 TIMESTAMP_REGEXP = re.compile(r"\{timestamp:?(?P<fmt>[^:}]+)?\}", re.IGNORECASE | re.UNICODE)
 
@@ -55,8 +54,8 @@ DEFAULT_CONFIG = {
     "count_commits_from_version_file": False,
     "tag_formatter": None,
     "branch_formatter": None,
+    "tag_filter": None,
     "sort_by": DEFAULT_SORT_BY,
-    "tag_filter": DEFAULT_TAG_FILTER,
 }
 
 log = logging.getLogger(__name__)
@@ -210,7 +209,7 @@ def _infer_setup_py(name_or_path: str = "setup.py", root: str | os.PathLike | No
         _add_to_sys_path(root_path)
         os.chdir(root_path)
         dist = run_setup(os.fspath(file_path), stop_after="init")
-        return _infer_version(dist, root=root)
+        return infer_version(dist, root=root)
     finally:
         sys.path[:] = original_sys_path
         sys.modules = original_sys_modules
@@ -237,7 +236,7 @@ def _parse_config(dist: Distribution, attr: Any, value: Any) -> None:
             )
 
 
-def _infer_version(dist: Distribution, root: str | os.PathLike | None = None) -> str | None:
+def infer_version(dist: Distribution, root: str | os.PathLike | None = None) -> str | None:
     log.log(INFO, "Trying 'setup.py' ...")
 
     from distutils.errors import DistutilsOptionError, DistutilsSetupError
@@ -379,101 +378,69 @@ def _load_callable(
     return ref
 
 
-def _load_tag_formatter(
-    tag_formatter: str | Callable[[str], str],
+def _branch_formatter_factory(regexp: str) -> Callable[[str], str]:
+    pattern = re.compile(regexp)
+
+    def branch_formatter(branch: str) -> str:
+        match = pattern.match(branch)
+        if match:
+            return match.group("branch")
+
+        raise ValueError(f"Branch name {branch} does not match regexp '{regexp}'")
+
+    return branch_formatter
+
+
+def _tag_formatter_factory(regexp: str) -> Callable[[str], str]:
+    pattern = re.compile(regexp)
+
+    def tag_formatter(tag: str) -> str:
+        match = pattern.match(tag)
+        if match:
+            return match.group("tag")
+
+        raise ValueError(f"Tag name {tag} does not match regexp '{regexp}'")
+
+    return tag_formatter
+
+
+def _tag_filter_factory(regexp: str) -> Callable[[str], str | None]:
+    pattern = re.compile(regexp)
+
+    def tag_filter(tag: str) -> str | None:
+        match = pattern.match(tag)
+        if match:
+            log.info("Matched %s", tag)
+            return tag
+        else:
+            return None
+
+    return tag_filter
+
+
+def _callable_factory(
+    callable_name: str,
+    regexp_or_ref: str | Callable,
+    callable_factory: Callable[[str], Callable],
     package_name: str | None = None,
     root: str | os.PathLike | None = None,
 ) -> Callable:
-    log.log(INFO, "Parsing tag_formatter %r of type %r", tag_formatter, type(tag_formatter).__name__)
+    log.log(INFO, "Parsing %s %r of type %r", callable_name, regexp_or_ref, type(regexp_or_ref).__name__)
 
-    if callable(tag_formatter):
-        log.log(DEBUG, "Value is callable with signature %s", inspect.Signature.from_callable(tag_formatter))
-        return tag_formatter
+    if callable(regexp_or_ref):
+        log.log(DEBUG, "Value is callable with signature %s", inspect.Signature.from_callable(regexp_or_ref))
+        return regexp_or_ref
 
     try:
-        return _load_callable(tag_formatter, package_name, root=root)
+        return _load_callable(regexp_or_ref, package_name, root=root)
     except (ImportError, NameError) as e:
-        log.warning("tag_formatter is not a valid function reference: %s", e)
+        log.warning("%s is not a valid function reference: %s", callable_name, e)
 
     try:
-        pattern = re.compile(tag_formatter)
-
-        def formatter(tag):
-            match = pattern.match(tag)
-            if match:
-                return match.group("tag")
-
-            raise ValueError(f"Tag name {tag} does not match regexp '{tag_formatter}'")
-
-        return formatter
+        return callable_factory(regexp_or_ref)
     except re.error as e:
-        log.error("tag_formatter is not valid regexp: %s", e)
-        raise ValueError("Cannot parse tag_formatter") from e
-
-
-def _load_branch_formatter(
-    branch_formatter: str | Callable[[str], str],
-    package_name: str | None = None,
-    root: str | os.PathLike | None = None,
-) -> Callable:
-    log.log(INFO, "Parsing branch_formatter %r of type %r", branch_formatter, type(branch_formatter).__name__)
-
-    if callable(branch_formatter):
-        log.log(DEBUG, "Value is callable with signature %s", inspect.Signature.from_callable(branch_formatter))
-        return branch_formatter
-
-    try:
-        return _load_callable(branch_formatter, package_name, root=root)
-    except (ImportError, NameError) as e:
-        log.warning("branch_formatter is not a valid function reference: %s", e)
-
-    try:
-        pattern = re.compile(branch_formatter)
-
-        def formatter(branch):
-            match = pattern.match(branch)
-            if match:
-                return match.group("branch")
-
-            raise ValueError(f"Branch name {branch} does not match regexp '{branch_formatter}'")
-
-        return formatter
-    except re.error as e:
-        log.error("branch_formatter is not valid regexp: %s", e)
-        raise ValueError("Cannot parse branch_formatter") from e
-
-
-def _load_tag_filter(
-    tag_filter: str | Callable[[str], str | None],
-    package_name: str | None = None,
-    root: str | os.PathLike | None = None,
-) -> Callable[[str], str | None]:
-    log.log(INFO, "Parsing tag_filter %r of type %r", tag_filter, type(tag_filter).__name__)
-
-    if callable(tag_filter):
-        log.log(DEBUG, "Value is callable with signature %s", inspect.Signature.from_callable(tag_filter))
-        return tag_filter
-
-    try:
-        return _load_callable(tag_filter, package_name, root=root)
-    except (ImportError, NameError) as e:
-        log.warning("tag_filter is not a valid function reference: %s", e)
-
-    try:
-        pattern = re.compile(tag_filter)
-
-        def formatter(tag: str) -> str | None:
-            match = pattern.match(tag)
-            if match:
-                log.error("Matched %s", tag)
-                return tag
-            else:
-                return None
-
-        return formatter
-    except re.error as e:
-        log.error("tag_filter is not valid regexp: %s", e)
-        raise ValueError("Cannot parse tag_filter") from e
+        log.error("%s is not valid regexp: %s", callable_name, e)
+        raise ValueError(f"Cannot parse {callable_name}") from e
 
 
 # TODO: return Version object instead of str
@@ -537,7 +504,7 @@ def version_from_git(
     version_file: str | os.PathLike | None = None,
     count_commits_from_version_file: bool = False,
     tag_formatter: Callable[[str], str] | str | None = None,
-    branch_formatter: Callable[[str], str] | None = None,
+    branch_formatter: Callable[[str], str] | str | None = None,
     tag_filter: Callable[[str], str | None] | str | None = None,
     sort_by: str = DEFAULT_SORT_BY,
     root: str | os.PathLike | None = None,
@@ -562,7 +529,13 @@ def version_from_git(
 
     filter_callback = None
     if tag_filter:
-        filter_callback = _load_tag_filter(tag_filter=tag_filter, package_name=package_name, root=root)
+        filter_callback = _callable_factory(
+            callable_name="tag_filter",
+            regexp_or_ref=tag_filter,
+            callable_factory=_tag_filter_factory,
+            package_name=package_name,
+            root=root,
+        )
 
     from_file = False
     log.log(INFO, "Getting latest tag")
@@ -604,8 +577,15 @@ def version_from_git(
         log.log(INFO, "Tag SHA-256: %r", tag_sha)
 
         if tag_formatter is not None:
-            tag_fmt = _load_tag_formatter(tag_formatter, package_name, root=root)
-            tag = tag_fmt(tag)
+            tag_format_callback = _callable_factory(
+                callable_name="tag_formatter",
+                regexp_or_ref=tag_formatter,
+                callable_factory=_tag_formatter_factory,
+                package_name=package_name,
+                root=root,
+            )
+
+            tag = tag_format_callback(tag)
             log.log(DEBUG, "Tag after formatting: %r", tag)
 
     dirty = is_dirty(root=root)
@@ -625,8 +605,15 @@ def version_from_git(
     log.log(INFO, "Current branch: %r", branch)
 
     if branch_formatter is not None and branch is not None:
-        branch_fmt = _load_branch_formatter(branch_formatter, package_name, root=root)
-        branch = branch_fmt(branch)
+        branch_format_callback = _callable_factory(
+            callable_name="branch_formatter",
+            regexp_or_ref=branch_formatter,
+            callable_factory=_branch_formatter_factory,
+            package_name=package_name,
+            root=root,
+        )
+
+        branch = branch_format_callback(branch)
         log.log(INFO, "Branch after formatting: %r", branch)
 
     if dirty:

@@ -94,22 +94,18 @@ def test_tag_filter_external(repo, create_config, tag, version, filter_regex):
     assert get_version_module(os.getcwd(), args=[repo]) == version
 
 
-@pytest.mark.parametrize(
-    "tag, filter_regex",
-    [
-        ("foo/bar/1.2.0", r"foo/bar/.*"),
-    ],
-)
-def test_tag_filter_missing_format(repo, create_config, tag, filter_regex):
+def test_tag_filter_without_tag_formatter(repo, create_config):
     create_file(
         repo,
         "util.py",
         textwrap.dedent(
-            rf"""
+            r"""
+            from __future__ import annotations # For `str | None` type syntax
+
             import re
 
-            def tag_filter(tag: str) -> str:
-                if re.match(r"{filter_regex}", tag):
+            def tag_filter(tag: str) -> str | None:
+                if re.match(r"foo/bar/.*", tag):
                     return tag
                 return None
             """
@@ -122,8 +118,9 @@ def test_tag_filter_missing_format(repo, create_config, tag, filter_regex):
             "tag_filter": "util:tag_filter",
         },
     )
-    create_tag(repo, tag)
+    create_tag(repo, "foo/bar/1.2.0")
 
+    # foo/bar/1.2.0 has passed the filter, but is not a valid version number
     with pytest.raises(subprocess.CalledProcessError):
         get_version(repo)
 
