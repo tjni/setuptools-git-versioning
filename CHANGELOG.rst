@@ -15,6 +15,7 @@ Changelog
 
     .. change::
         :tags: docs, feature
+        :tickets: 55
 
         Add documentation about fetching package version in runtime
 
@@ -29,8 +30,9 @@ Changelog
         Add description for some functions
 
     .. change::
-        :pullreq: 69
         :tags: core, feature
+        :pullreq: 69
+        :tickets: 68
 
         Add ``tag_filter`` option. Special thanks to :github-user:`vortechs2000`
 
@@ -43,6 +45,7 @@ Changelog
 
     .. change::
         :tags: core, bug
+        :tickets: 67
 
         Make version sanitization less strict, allow to automatically convert some cases, e.g.
         ``1.0.0+feature/abc`` to ``1.0.0+feature.abc``
@@ -70,6 +73,7 @@ Changelog
 
     .. change::
         :tags: core, feature
+        :tickets: 58
 
         Allow ``setuptools-git-versioning`` script to infer version from ``setup.py`` if ``pyproject.toml`` is missing
 
@@ -90,6 +94,7 @@ Changelog
 
     .. change::
         :tags: docs, feature
+        :tickets: 58
 
         Add documentation for ``setuptools-git-versioning`` script
 
@@ -108,6 +113,7 @@ Changelog
 
     .. change::
         :tags: core, feature
+        :tickets: 58
 
         Add ``setuptools-git-versioning`` script to infer version from ``pyproject.toml`` config
 
@@ -122,6 +128,7 @@ Changelog
 
     .. change::
         :tags: core, breaking
+        :tickets: 56
 
         :ref:`version-callback-option` option is used even if there are some tags in the current branch
 
@@ -135,11 +142,6 @@ Changelog
 
         Remove all non-numeric symbols from version prefix, not just ``v``
 
-    .. change::
-        :tags: core, feature
-
-        Check :ref:`version-callback-option` option before checking a tag presence
-
 1.9
 ----
 
@@ -149,6 +151,7 @@ Changelog
 
     .. change::
         :tags: general
+        :tickets: 49
 
         Add ``setup_requires`` item to ``setup.py``
 
@@ -158,6 +161,7 @@ Changelog
 
     .. change::
         :tags: general
+        :tickets: 49
 
         Remove ``pyproject.toml`` file from ``.tag.gz`` package
 
@@ -172,6 +176,7 @@ Changelog
 
     .. change::
         :tags: core, feature
+        :tickets: 49
 
         Do not fail on ``toml`` and ``packaging`` modules import while installing ``setuptools-git-versioning`` from ``tag.gz`` file
 
@@ -189,6 +194,7 @@ Changelog
 
     .. change::
         :tags: core, bug
+        :tickets: 35
 
         Fix issue with empty ``pyproject.toml``
 
@@ -206,8 +212,6 @@ Changelog
         :tags: general, deprecated
 
         Python 2.7, 3.5 and 3.6 support is deprecated due to their end of life.
-
-        It will be completely removed in ``2.0.0`` release. A warning message is added
 
     .. change::
         :tags: core, deprecated
@@ -295,7 +299,6 @@ Changelog
 
     .. change::
         :tags: ci, feature
-        :changeset: ac47f210
 
         Change release workflow action from ``actions/create-release@v1``
         to ``softprops/action-gh-release@v1``
@@ -306,7 +309,6 @@ Changelog
 
     .. change::
         :tags: ci, feature
-        :changeset: a7af368f
 
         Change release workflow action from ``actions/create-release@v1``
         to ``softprops/action-gh-release@v1``
@@ -318,7 +320,6 @@ Changelog
     .. change::
         :tags: core, feature
         :tickets: 29
-        :changeset: c2ed0da8
 
         String leading 'v' symbol from tag name
 
@@ -329,7 +330,6 @@ Changelog
     .. change::
         :tags: core, feature
         :tickets: 29
-        :changeset: b2da6fbc
 
         String leading 'v' symbol from tag name
 
@@ -357,7 +357,6 @@ Changelog
 
     .. change::
         :tags: core, bug
-        :changeset: f59518bf
         :tickets: 23
 
         Fix sorting for annotated tags
@@ -368,32 +367,27 @@ Changelog
 
     .. change::
         :tags: ci, bug
-        :changeset: f43e6aa4
 
         Fix skipping duplicated runs
 
     .. change::
         :tags: ci, feature
-        :changeset: 543615ba
 
         Add automerge action for ``precommit-ci ``bot
 
     .. change::
         :tags: ci, bug
-        :changeset: e9e13e93
 
         Fix tests workflow
 
     .. change::
         :tags: core, bug
-        :changeset: 22bc1db8
         :tickets: 22
 
         Sort tags by commit date instead of name
 
     .. change::
         :tags: ci, bug
-        :changeset: c081fb9ca
 
         Fix release pipeline
 
@@ -408,14 +402,12 @@ Changelog
 
     .. change::
         :tags: docs
-        :changeset: 147abff1
         :tickets: 15
 
         Add ``setuptools-scm`` and ``versioneer`` to comparison table
 
     .. change::
         :tags: docs, feature
-        :changeset: d81106fc
         :tickets: 17
         :pullreq: 16
 
@@ -423,13 +415,11 @@ Changelog
 
     .. change::
         :tags: ci, feature
-        :changeset: 42f6f066
 
         Skip duplicated Github Actions runs
 
     .. change::
         :tags: dev, feature
-        :changeset: be88c2ac
 
         Add ``pre-commit`` hooks and commit changes made by it
 
@@ -443,13 +433,11 @@ Changelog
 
     .. change::
         :tags: ci, bug
-        :changeset: b680f53f
 
         Use absolute paths in ``setup.py``
 
     .. change::
         :tags: dev, bug
-        :changeset: 55b8e706
         :pullreq: 13
 
         Add JetBrains config files to ``.gitignore``.
@@ -458,7 +446,6 @@ Changelog
 
     .. change::
         :tags: core, feature
-        :changeset: c9cafa22
         :pullreq: 14
 
         Add ``branch_formatter`` option.
@@ -475,13 +462,11 @@ Changelog
 
     .. change::
         :tags: general, bug
-        :changeset: ffebe6f0
 
         Update package short description
 
     .. change::
         :tags: general
-        :changeset: ffebe6f0
 
         Set license in ``setup.py`` file
 
@@ -491,13 +476,11 @@ Changelog
 
     .. change::
         :tags: docs, bug
-        :changeset: 7ae433d6
 
         Fix comparison table typo
 
     .. change::
         :tags: docs, feature
-        :changeset: 813ef149
 
         Add license column into comparison table
 
@@ -507,13 +490,11 @@ Changelog
 
     .. change::
         :tags: docs, feature
-        :changeset: 0023523b
 
         Add list of supported substitutions into comparison table
 
     .. change::
         :tags: docs
-        :changeset: 7143b97f
 
         Add ``bad-setuptools-git-version`` and ``another-setuptools-git-version``
         to comparison table
@@ -524,7 +505,6 @@ Changelog
 
     .. change::
         :tags: core, bug
-        :changeset: 44bd8fd5
         :pullreq: 11
 
         Replace forbidden chars in local version label.
@@ -546,27 +526,23 @@ Changelog
 
     .. change::
         :tags: docs, feature
-        :changeset: cc5b03e2
         :tickets: 8
 
         Add Windows support column into comparison table
 
     .. change::
         :tags: ci, bug
-        :changeset: bc87c4f2
 
         Fix Github Actions
 
     .. change::
         :tags: core, bug
-        :changeset: 64e68cd4
         :tickets: 10
 
         Replace default suffix for dev and dirty versions from ``dev`` to ``post``
 
     .. change::
         :tags: docs, feature
-        :changeset: adf997c0
         :tickets: 10
 
         Major documentation update
@@ -577,7 +553,6 @@ Changelog
 
     .. change::
         :tags: core, feature
-        :changeset: 5ac7d8fd
         :tickets: 9
 
         Add ``full_sha`` substitution support
@@ -592,21 +567,18 @@ Changelog
 
     .. change::
         :tags: ci, bug
-        :changeset: e05f970c
         :pullreq: 7
 
         Fix release workflow
 
     .. change::
         :tags: ci, feature
-        :changeset: 7a51e76c
         :pullreq: 7
 
         Add some issue and PR automatization
 
     .. change::
         :tags: core, bug
-        :changeset: 96843236
         :tickets: 8
 
         Fix Windows compatibility
@@ -617,7 +589,6 @@ Changelog
 
     .. change::
         :tags: ci, feature
-        :changeset: 6848c244
         :pullreq: 7
 
         Use Github Actions instead of TravisCI
@@ -628,7 +599,6 @@ Changelog
 
     .. change::
         :tags: docs, bug
-        :changeset: 89478a04
         :pullreq: 6
 
         Fixed typo in code examples.
@@ -641,7 +611,6 @@ Changelog
 
     .. change::
         :tags: core, bug
-        :changeset: b808b01a
         :pullreq: 5
 
         Fix python error if no tag is found.
@@ -654,7 +623,6 @@ Changelog
 
     .. change::
         :tags: core, bug
-        :changeset: bc7e3500
 
         Fix version detection in case of missing .git folder
 
@@ -664,7 +632,6 @@ Changelog
 
     .. change::
         :tags: dependency, bug
-        :changeset: 07addd87
 
         Fix Python 2.7 dependencies
 
@@ -674,7 +641,6 @@ Changelog
 
     .. change::
         :tags: dependency, bug
-        :changeset: 07b92afc
 
         Fix Python 2.7 dependencies
 
@@ -684,13 +650,11 @@ Changelog
 
     .. change::
         :tags: core, feature
-        :changeset: bee32404
 
         Add ``get_all_tags`` function
 
     .. change::
         :tags: core, feature
-        :changeset: 1ed862d0
 
         Add ``get_branch_tags`` function
 
@@ -700,7 +664,6 @@ Changelog
 
     .. change::
         :tags: core, bug
-        :changeset: 1ed862d0
 
         Fix building version from VERSION file
 
@@ -710,7 +673,6 @@ Changelog
 
     .. change::
         :tags: core, feature
-        :changeset: 5a47ac43
 
         Add ``count_commits_from_version_file`` option
 
@@ -720,7 +682,6 @@ Changelog
 
     .. change::
         :tags: core, feature
-        :changeset: 5c4dd0f2
 
         Add ``version_file`` option
 
@@ -733,7 +694,6 @@ Changelog
 
     .. change::
         :tags: core, feature
-        :changeset: 4bce22ab
 
         Add ``version_callback`` option
 
@@ -743,7 +703,6 @@ Changelog
 
     .. change::
         :tags: ci, bug
-        :changeset: 4d57008d
         :tickets: 4
 
         Use ``six`` module for accessing ``collections.abc``
@@ -754,7 +713,6 @@ Changelog
 
     .. change::
         :tags: ci, bug
-        :changeset: b85a5e5d
         :tickets: 4
 
         Fix package name misspell
@@ -765,7 +723,6 @@ Changelog
 
     .. change::
         :tags: dependency, bug
-        :changeset: 184e9670
 
         Remove ``flake8`` from ``requirements.txt``
 
@@ -775,7 +732,6 @@ Changelog
 
     .. change::
         :tags: dependency, bug
-        :changeset: 119f98a0
 
         Make ``setuptools`` version check less strict
 
@@ -785,13 +741,11 @@ Changelog
 
     .. change::
         :tags: general, feature
-        :changeset: 2fde432b
 
         Test Python 3.9 support
 
     .. change::
         :tags: ci, bug
-        :changeset: b07d4af6
         :tickets: 3
 
         Include ``requirements.txt`` into ``.tar.gz`` file
@@ -802,7 +756,6 @@ Changelog
 
     .. change::
         :tags: general, feature
-        :changeset: f9dfa1e6
 
         Add Python 3.3 and 3.4 support
 
@@ -812,7 +765,6 @@ Changelog
 
     .. change::
         :tags: ci, bug
-        :changeset: 777c1366
 
         Fix TravisCI deploy
 
@@ -821,13 +773,11 @@ Changelog
 
     .. change::
         :tags: core, feature
-        :changeset: f444bdd8
 
         Add backward compatibility with ``git`` < 2.2
 
     .. change::
         :tags: docs, feature
-        :changeset: 1686d25c
 
         Add supported python versions badge
 
@@ -837,7 +787,6 @@ Changelog
 
     .. change::
         :tags: core, bug
-        :changeset: 8d427b31
         :pullreq: 1
 
         Fix runtime error on Python 3.3 and 3.4.
@@ -850,7 +799,6 @@ Changelog
 
     .. change::
         :tags: core, feature
-        :changeset: 3c213500
 
         Add ``branch`` substitution support
 
@@ -860,13 +808,11 @@ Changelog
 
     .. change::
         :tags: core, feature
-        :changeset: 85439b40
 
         Add ``starting_version`` option
 
     .. change::
         :tags: ci, bug
-        :changeset: b2293faa
 
         Fix TravisCI build
 
@@ -876,13 +822,11 @@ Changelog
 
     .. change::
         :tags: ci, bug
-        :changeset: 98323c6c
 
         Fix Python 2 version build
 
     .. change::
         :tags: dependency, bug
-        :changeset: 2966d03a
 
         Fix ``requirements.txt``
 
@@ -891,7 +835,6 @@ Changelog
 
     .. change::
         :tags: general, feature
-        :changeset: 7022ef37
 
         Change package name to ``setuptools-git-versioning`` and publish it on PyPi.org
 
@@ -900,13 +843,11 @@ Changelog
 
     .. change::
         :tags: general
-        :changeset: ad72cb72
 
         Create fork of unmaintained repo `setuptools-git-ver <https://github.com/camas/setuptools-git-ver>`_
 
     .. change::
         :tags: core, feature
-        :changeset: fd1fff57
 
         Added Python2 support.
 
@@ -915,12 +856,10 @@ Changelog
 
     .. change::
         :tags: core, feature
-        :changeset: b133dce5
 
         Make internal functions public
 
     .. change::
         :tags: core, feature
-        :changeset: 2693ef5b
 
         Add ``get_tags`` method
