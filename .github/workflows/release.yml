@@ -88,7 +88,8 @@ jobs:
         mkdir reports/
         pip install -e . --no-build-isolation
         version=$(echo $GITHUB_REF_SLUG | sed -E "s/v(.*)/\1/")
-        changelog generate-md -c ./docs/conf.py CHANGELOG.rst -v $version > reports/release.md
+        # lines 1 and 3 are empty, line 2 contains version number, line 4 contains release date
+        changelog generate-md -c ./docs/conf.py CHANGELOG.rst -v $version | sed "1,4d" > reports/release.md
 
     - name: Check package
       run: twine check dist/*

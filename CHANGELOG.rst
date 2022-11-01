@@ -9,7 +9,7 @@ Changelog
     :released: 01.11.2022
 
     .. change::
-        :tags: dependencies, feature
+        :tags: dependency, feature
 
         For Python 3.11 use built-in ``tomllib`` instead of ``toml`` package
 
