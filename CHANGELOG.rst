@@ -373,7 +373,7 @@ Changelog
     .. change::
         :tags: ci, feature
 
-        Add automerge action for ``precommit-ci ``bot
+        Add automerge action for ``precommit-ci`` bot
 
     .. change::
         :tags: ci, bug
