@@ -6,6 +6,7 @@ Changelog
 
 .. changelog::
     :version: 1.13.0
+    :released: 01.11.2022
 
     .. change::
         :tags: dependencies, feature
