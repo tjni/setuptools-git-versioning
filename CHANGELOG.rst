@@ -12,7 +12,7 @@ Changelog
         :tags: general, feature
         :tickets: 72, 49
 
-        Build sdist package again
+        Build and publish sdist package again
 
     .. change::
         :tags: general, bugfix
@@ -23,7 +23,17 @@ Changelog
     .. change::
         :tags: ci, feature
 
+        Publish development releases to `Test PyPI <test.pypi.org>`_
+
+    .. change::
+        :tags: ci, feature
+
         Use ``pypa/gh-action-pypi-publish`` Github action to publish releases to PyPI
+
+    .. change::
+        :tags: ci, bugfix
+
+        Remove local part of version because it is not allowed in PyPI
 
 .. changelog::
     :version: 1.13.0
