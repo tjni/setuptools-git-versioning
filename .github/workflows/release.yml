@@ -77,8 +77,15 @@ jobs:
     - name: Install dependencies
       run: pip install -r requirements.txt -r requirements-doc.txt
 
+    - name: Patch setup.py with explicit version number
+      # Fix for https://github.com/dolfinus/setuptools-git-versioning/issues/72#issuecomment-1312589464
+      run: |
+        version=$(echo $GITHUB_REF_SLUG | sed -E "s/v(.*)/\1/")
+        sed -i -E "s/.* setuptools_git_versioning.*//" setup.py
+        sed -i -E "s/version=.*/version='${version}',/" setup.py
+
     - name: Build package
-      run: python setup.py bdist_wheel
+      run: python setup.py sdist bdist_wheel
 
     - name: Inject slug/short variables
       uses: rlespinasse/github-slug-action@v4.x
@@ -86,8 +93,7 @@ jobs:
     - name: Build release notes
       run: |
         mkdir reports/
-        pip install -e . --no-build-isolation
-        version=$(echo $GITHUB_REF_SLUG | sed -E "s/v(.*)/\1/")
+        pip install -e .
         # lines 1 and 3 are empty, line 2 contains version number, line 4 contains release date
         changelog generate-md -c ./docs/conf.py CHANGELOG.rst -v $version | sed "1,4d" > reports/release.md
 

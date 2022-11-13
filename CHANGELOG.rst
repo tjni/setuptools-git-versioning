@@ -5,6 +5,21 @@ Changelog
 ----
 
 .. changelog::
+    :version: 1.13.1
+
+    .. change::
+        :tags: general, feature
+        :tickets: 72, 49
+
+        Build sdist package again
+
+    .. change::
+        :tags: general, bugfix
+        :tickets: 72, 49
+
+        Allow to install package from ``.tar.gz`` without ``--no-build-isolation`` flag
+
+.. changelog::
     :version: 1.13.0
     :released: 01.11.2022
 
