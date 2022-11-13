@@ -9,6 +9,12 @@ Changelog
     :released: 13.11.2022
 
     .. change::
+        :tags: ci, feature
+        :tickets: 72, 49
+
+        Use ``pypa/gh-action-pypi-publish`` Github action to publish releases to PyPI
+
+    .. change::
         :tags: general, feature
         :tickets: 72, 49
 
