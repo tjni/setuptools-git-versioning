@@ -1,9 +1,11 @@
-name: Release
+name: Dev release
 
 on:
   push:
-    tags:
-    - v*
+    branches-ignore:
+    - dependabot/**
+    - pre-commit-ci-update-config
+  workflow_dispatch:
 
 jobs:
   wait-tests:
@@ -60,10 +62,10 @@ jobs:
       uses: actions/cache@v3
       with:
         path: ~/.cache/pip
-        key: ${{ runner.os }}-python-3.10-release-${{ hashFiles('requirements*.txt') }}
+        key: ${{ runner.os }}-python-3.10-dev-release-${{ hashFiles('requirements*.txt') }}
         restore-keys: |
-          ${{ runner.os }}-python-3.10-release-${{ hashFiles('requirements*.txt') }}
           ${{ runner.os }}-python-3.10-dev-release-${{ hashFiles('requirements*.txt') }}
+          ${{ runner.os }}-python-3.10-release-${{ hashFiles('requirements*.txt') }}
           ${{ runner.os }}-python-3.10-tests-${{ hashFiles('requirements*.txt') }}
           ${{ runner.os }}-python-3.10-codeql-${{ hashFiles('requirements*.txt') }}
           ${{ runner.os }}-python-3.10-dev-release-
@@ -77,45 +79,24 @@ jobs:
       run: python -m pip install --upgrade pip setuptools wheel twine
 
     - name: Install dependencies
-      run: pip install -r requirements.txt -r requirements-doc.txt
-
-    - name: Inject slug/short variables
-      uses: rlespinasse/github-slug-action@v4.x
+      run: pip install -r requirements.txt
 
     - name: Patch setup.py with explicit version number
       # Fix for https://github.com/dolfinus/setuptools-git-versioning/issues/72#issuecomment-1312589464
       run: |
-        version=$(echo $GITHUB_REF_SLUG | sed -E "s/v(.*)/\1/")
+        version=$(python setup.py --version)
         sed -i -E "/from setuptools_git_versioning.*/d" setup.py
         sed -i -E "s/version=.*/version='${version}',/" setup.py
 
     - name: Build package
       run: python setup.py sdist bdist_wheel
 
-    - name: Build release notes
-      run: |
-        mkdir reports/
-        pip install -e .
-        # lines 1 and 3 are empty, line 2 contains version number, line 4 contains release date
-        changelog generate-md -c ./docs/conf.py CHANGELOG.rst -v $version | sed "1,4d" > reports/release.md
-
     - name: Check package
       run: twine check dist/*
 
     - name: Publish package
       env:
-        TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
-        TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+        TWINE_USERNAME: ${{ secrets.TEST_PYPI_USERNAME }}
+        TWINE_PASSWORD: ${{ secrets.TEST_PYPI_PASSWORD }}
       run: |
-        twine upload dist/*
-
-    - name: Create Github release
-      id: create_release
-      uses: softprops/action-gh-release@v1
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        draft: false
-        prerelease: false
-        body_path: reports/release.md
-        files: |
-          dist/*
+        twine upload --repository testpypi dist/*
