@@ -85,7 +85,6 @@ jobs:
         version=$(python setup.py --version)
         sed -i -E "/from setuptools_git_versioning.*/d" setup.py
         sed -i -E "s/version=.*/version='${version}',/" setup.py
-        cat setup.py
 
     - name: Build package
       run: python setup.py sdist bdist_wheel
