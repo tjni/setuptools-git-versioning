@@ -13,10 +13,15 @@ import warnings
 from datetime import datetime
 from pathlib import Path
 from pprint import pformat
-from typing import Any, Callable
+from typing import TYPE_CHECKING, Any, Callable
 
-from packaging.version import Version
-from setuptools.dist import Distribution
+if TYPE_CHECKING:
+    # avoid importing 'packaging' because setuptools-git-versioning can be installed using sdist
+    # without this package installed
+    from packaging.version import Version
+
+    # used only for mypy check
+    from setuptools.dist import Distribution
 
 DEFAULT_TEMPLATE = "{tag}"
 DEFAULT_DEV_TEMPLATE = "{tag}.post{ccount}+git.{sha}"
@@ -480,6 +485,8 @@ def _get_version_from_callback(
 
 
 def _sanitize_version(version: str) -> str:
+    from packaging.version import Version
+
     log.log(INFO, "Before sanitization %r", version)
 
     public, sep, local = version.partition("+")
@@ -524,7 +531,7 @@ def version_from_git(
             if line.startswith("Version:"):
                 result = line[8:].strip()
                 log.log(INFO, "Return %r", result)
-                return _sanitize_version(result)
+                return result
 
     if version_callback is not None:
         if version_file is not None:
@@ -638,6 +645,8 @@ def version_from_git(
 
 
 def get_version(config: dict | None = None, root: str | os.PathLike | None = None) -> Version:
+    from packaging.version import Version
+
     if not config:
         log.log(INFO, "No explicit config passed")
         log.log(INFO, "Searching for config files in '%s' folder", root or os.getcwd())
