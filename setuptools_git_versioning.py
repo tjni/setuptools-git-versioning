@@ -17,7 +17,7 @@ from typing import TYPE_CHECKING, Any, Callable
 
 if TYPE_CHECKING:
     # avoid importing 'packaging' because setuptools-git-versioning can be installed using sdist
-    # without this package installed
+    # where 'packaging' is not installed yet
     from packaging.version import Version
 
     # used only for mypy check
