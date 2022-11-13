@@ -22,14 +22,14 @@ To get current package version in `mypackage` repo just execute:
 
 Version will be printed to ``stdout``.
 
-This script is a wrapper for ``setuptools_git_versioning`` module, you just call it:
+This script is a wrapper for ``setuptools_git_versioning`` module, you can just call it:
 
 .. code:: bash
 
     $ python -m setuptools_git_versioning /path/to/mypackage
     0.0.1
 
-``-v`` option enables verbose output which is useful for DE8UGging, messages are printed to ``stderr``:
+``-v`` option enables verbose output which is useful for debugging, messages are printed to ``stderr``:
 
 .. code:: bash
 
@@ -55,7 +55,7 @@ This script is a wrapper for ``setuptools_git_versioning`` module, you just call
     1.0.0
 
 
-``-vV`` shows even more DE8UG messages:
+``-vV`` shows even more debug messages:
 
 .. code:: bash
 
