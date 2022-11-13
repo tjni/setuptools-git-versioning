@@ -531,6 +531,7 @@ def version_from_git(
             if line.startswith("Version:"):
                 result = line[8:].strip()
                 log.log(INFO, "Return %r", result)
+                # running on sdist package, do not sanitize
                 return result
 
     if version_callback is not None:
