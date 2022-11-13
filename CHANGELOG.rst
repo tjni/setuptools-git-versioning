@@ -35,6 +35,12 @@ Changelog
 
         Remove local part of version because it is not allowed in PyPI
 
+    .. change::
+        :tags: dependency, bugfix
+        :tickets: 72
+
+        Get rid of ``deprecated`` package dependency
+
 .. changelog::
     :version: 1.13.0
     :released: 01.11.2022

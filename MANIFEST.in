@@ -1,5 +1,5 @@
-include README.rst LICENSE requirements.txt requirements-test.txt requirements-dev.txt requirements-doc.txt
-exclude pyproject.toml
+include README.rst LICENSE requirements.txt
+exclude pyproject.toml requirements-test.txt requirements-dev.txt requirements-doc.txt
 recursive-exclude * __pycache__
 recursive-exclude * *.pyc
 recursive-exclude * *.pyo

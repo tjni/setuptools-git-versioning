@@ -15,7 +15,6 @@ from pathlib import Path
 from pprint import pformat
 from typing import Any, Callable
 
-from deprecated import deprecated
 from packaging.version import Version
 from setuptools.dist import Distribution
 
@@ -95,8 +94,15 @@ def get_all_tags(sort_by: str = DEFAULT_SORT_BY, root: str | os.PathLike | None 
     return []
 
 
-@deprecated(version="1.8.0", reason="will be dropped in v2.0.0. Please use 'get_tags' instead")
 def get_branch_tags(*args, **kwargs) -> list[str]:
+    warnings.warn(
+        "`get_branch_tags` function is deprecated "
+        "since setuptools-git-versioning v1.8.0 "
+        "and will be dropped in v2.0.0\n"
+        "Please use `get_tags` instead",
+        category=UserWarning,
+    )
+
     return get_tags(*args, **kwargs)
 
 
