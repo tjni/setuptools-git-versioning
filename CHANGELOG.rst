@@ -6,6 +6,7 @@ Changelog
 
 .. changelog::
     :version: 1.13.1
+    :released: 13.11.2022
 
     .. change::
         :tags: general, feature
