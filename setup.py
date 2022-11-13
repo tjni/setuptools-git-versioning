@@ -18,7 +18,9 @@ with open(os.path.join(HERE, "requirements.txt")) as f:
 
 setup(
     name="setuptools-git-versioning",
-    version=version_from_git(root=HERE),
+    # +local version is not allowed in PyPI
+    # https://github.com/pypa/pypi-legacy/issues/731#issuecomment-345461596
+    version=version_from_git(root=HERE, dev_template="{tag}.post{ccount}"),
     author="dolfinus",
     author_email="martinov.m.s.8@gmail.com",
     description="Use git repo data for building a version number according PEP-440",

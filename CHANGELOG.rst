@@ -9,12 +9,6 @@ Changelog
     :released: 13.11.2022
 
     .. change::
-        :tags: ci, feature
-        :tickets: 72, 49
-
-        Use ``pypa/gh-action-pypi-publish`` Github action to publish releases to PyPI
-
-    .. change::
         :tags: general, feature
         :tickets: 72, 49
 
@@ -25,6 +19,21 @@ Changelog
         :tickets: 72, 49
 
         Allow to install package from ``.tar.gz`` without ``--no-build-isolation`` flag
+
+    .. change::
+        :tags: ci, feature
+
+        Publish development releases to `Test PyPI <test.pypi.org>`_
+
+    .. change::
+        :tags: ci, feature
+
+        Use ``pypa/gh-action-pypi-publish`` Github action to publish releases to PyPI
+
+    .. change::
+        :tags: ci, bugfix
+
+        Remove local part of version because it is not allowed in PyPI
 
 .. changelog::
     :version: 1.13.0
