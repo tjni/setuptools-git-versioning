@@ -81,7 +81,7 @@ jobs:
       # Fix for https://github.com/dolfinus/setuptools-git-versioning/issues/72#issuecomment-1312589464
       run: |
         version=$(echo $GITHUB_REF_SLUG | sed -E "s/v(.*)/\1/")
-        sed -i -E "s/.* setuptools_git_versioning.*//" setup.py
+        sed -i -E "/from setuptools_git_versioning.*/d" setup.py
         sed -i -E "s/version=.*/version='${version}',/" setup.py
 
     - name: Build package
