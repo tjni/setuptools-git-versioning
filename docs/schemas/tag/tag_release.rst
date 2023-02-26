@@ -1,7 +1,7 @@
 .. _tag-release:
 
 Release is a git tag
-^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^
 
 For example, current repo state is:
 

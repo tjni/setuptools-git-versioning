@@ -13,3 +13,10 @@ as ``dirty``.
 
 You should such files to the ``.gitignore`` file. See `current repo .gitignore <https://github.com/dolfinus/setuptools-git-versioning/blob/master/.gitignore>`__
 as an example.
+
+In most the cases adding these lines solves the issue:
+
+.. code:: gitignore
+
+    eggs/
+    *.egg*

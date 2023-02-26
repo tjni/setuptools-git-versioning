@@ -17,7 +17,6 @@ from pathlib import Path
 from packaging.version import Version
 
 try:
-
     from setuptools_git_versioning import version_from_git
 
     ver = Version(version_from_git())
@@ -80,7 +79,11 @@ html_title = f"setuptools-git-versioning {version}"
 # html_static_path = ['_static']
 
 
-extlinks = {"github-user": ("https://github.com/%s", "@%s")}
+extlinks = {
+    "github-user": ("https://github.com/%s", "@%s"),
+    "issue": ("https://github.com/dolfinus/setuptools-git-versioning/issues/%s", "#%s"),
+    "pr": ("https://github.com/dolfinus/setuptools-git-versioning/pull/%s", "#%s"),
+}
 
 changelog_sections = [
     "general",
@@ -96,7 +99,7 @@ changelog_sections = [
 changelog_caption_class = ""
 
 changelog_inner_tag_sort = ["breaking", "deprecated", "feature", "bug", "refactor"]
-changelog_hive_secgions_from_tags = True
+changelog_hide_sections_from_tags = True
 
 changelog_render_ticket = "https://github.com/dolfinus/setuptools-git-versioning/issues/%s"
 changelog_render_pullreq = {"default": "https://github.com/dolfinus/setuptools-git-versioning/pull/%s"}

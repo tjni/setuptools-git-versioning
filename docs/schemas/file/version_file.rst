@@ -1,7 +1,7 @@
 .. _version-file:
 
 Read some file content as current version
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 For example, current repo state is:
 

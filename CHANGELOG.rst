@@ -5,6 +5,21 @@ Changelog
 ----
 
 .. changelog::
+    :version: 1.13.2
+
+    .. change::
+        :tags: docs, feature
+        :tickets: 77, 77
+
+        Recommend users to use file-based schema instead of tag-based due some cases.
+
+    .. change::
+        :tags: docs, feature
+        :tickets: 17
+
+        Add small example of ``.gitignore`` file to common issues section
+
+.. changelog::
     :version: 1.13.1
     :released: 13.11.2022
 
