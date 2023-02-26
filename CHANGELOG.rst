@@ -17,7 +17,7 @@ Changelog
         :tags: docs, feature
         :tickets: 17
 
-        Add small example of ``.gitignore`` file to common issues section.
+        Add small example of ``.gitignore`` file to common issues section. Thanks to :github-user:`aram-eskandari`
 
     .. change::
         :tags: docs, feature
