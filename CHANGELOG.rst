@@ -17,7 +17,13 @@ Changelog
         :tags: docs, feature
         :tickets: 17
 
-        Add small example of ``.gitignore`` file to common issues section
+        Add small example of ``.gitignore`` file to common issues section.
+
+    .. change::
+        :tags: docs, feature
+        :tickets: 55
+
+        Improve examples of fetching package version in runtime.
 
 .. changelog::
     :version: 1.13.1

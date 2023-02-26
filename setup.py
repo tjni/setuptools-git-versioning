@@ -1,26 +1,22 @@
-import os
+from pathlib import Path
 from setuptools import setup, find_packages
 from setuptools_git_versioning import version_from_git
 
-HERE = os.path.dirname(os.path.abspath(__file__))
+
+def parse_requirements(file: Path) -> list[str]:
+    lines = file.read_text().splitlines()
+    return [line.rstrip() for line in lines if line and not line.startswith("#")]
 
 
-def parse_requirements(file_content):
-    lines = file_content.splitlines()
-    return [line.strip() for line in lines if line and not line.startswith("#")]
-
-
-with open(os.path.join(HERE, "README.rst")) as f:
-    long_description = f.read()
-
-with open(os.path.join(HERE, "requirements.txt")) as f:
-    requirements = parse_requirements(f.read())
+here = Path(__file__).parent.resolve()
+requirements = parse_requirements(here / "requirements.txt")
+long_description = here.joinpath("README.rst").read_text()
 
 setup(
     name="setuptools-git-versioning",
     # +local version is not allowed in PyPI
     # https://github.com/pypa/pypi-legacy/issues/731#issuecomment-345461596
-    version=version_from_git(root=HERE, dev_template="{tag}.post{ccount}"),
+    version=version_from_git(root=here, dev_template="{tag}.post{ccount}"),
     author="dolfinus",
     author_email="martinov.m.s.8@gmail.com",
     description="Use git repo data for building a version number according PEP-440",

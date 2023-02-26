@@ -39,16 +39,17 @@ Then place it in both the branches and update your config file:
 
     .. code:: python
 
-        import os
+        # you can use os.path instead of pathlib
+        from pathlib import Path
 
-        HERE = os.path.dirname(__file__)
-        VERSION_FILE = os.path.join(HERE, "VERSION")
+        root_path = Path(__file__).parent
+        version_file = root_path / "VERSION"
 
         setuptools.setup(
             ...,
             setuptools_git_versioning={
                 "enabled": True,
-                "version_file": VERSION_FILE,
+                "version_file": version_file,
             },
         )
 
@@ -63,10 +64,11 @@ Then place it in both the branches and update your config file:
 When you'll try to get current version in non-master branch, the content
 of this file (``1.0.0``) will be returned instead default version number.
 
-**Please take into account that version_file is ignored if tag
-is present**
+**Please take into account that version_file is ignored if any tag
+is present in the current branch.**
 
 See also
 """""""""
 - :ref:`version-callback`
 - :ref:`version-file-option` option
+- :ref:`runtime-version`

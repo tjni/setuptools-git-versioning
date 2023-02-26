@@ -73,7 +73,7 @@ This script is a wrapper for ``setuptools_git_versioning`` module, you can just 
     DE8UG: Executing 'git rev-list -n 1 "1.0.0"' at '/path/to/mypackage'
      INF0: Tag SHA-256: '8dc9881eacd373cb34c5d3f99a6ad9e2349a79c4'
      INF0: Parsing tag_formatter 'util:tag_formatter' of type 'str'
-    DE8UG: Executing 'from mypkg.util import tag_formatter'
+    DE8UG: Executing 'from my_module.util import tag_formatter'
     DE8UG: Tag after formatting: '1.0.0'
     DE8UG: Executing 'git status --short' at '/path/to/mypackage'
      INF0: Is dirty: False

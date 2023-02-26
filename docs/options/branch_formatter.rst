@@ -40,7 +40,7 @@ you'll get version number which ``pip`` cannot understand.
 To fix that you can define a callback which will receive current branch
 name and return a properly formatted one:
 
-- ``mypkg/util.py`` file:
+- ``my_module/util.py`` file:
 
     .. code:: python
 
@@ -67,7 +67,7 @@ name and return a properly formatted one:
 
     .. code:: python
 
-        from mypkg.util import format_branch_name
+        from my_module.util import format_branch_name
 
         setuptools.setup(
             ...,
@@ -92,7 +92,7 @@ name and return a properly formatted one:
         enabled = true
         dev_template = "{branch}.dev{ccount}"
         dirty_template = "{branch}.dev{ccount}"
-        branch_formatter = "mypkg.util:format_branch_name"
+        branch_formatter = "my_module.util:format_branch_name"
 
     .. note::
 

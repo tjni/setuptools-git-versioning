@@ -42,7 +42,7 @@ you'll get version number which ``pip`` cannot understand.
 To fix that you can define a callback which will receive current tag
 name and return a properly formatted one:
 
-- ``mypkg/util.py`` file:
+- ``my_module/util.py`` file:
 
     .. code:: python
 
@@ -68,7 +68,7 @@ name and return a properly formatted one:
 
     .. code:: python
 
-        from mypkg.util import format_tag_name
+        from my_module.util import format_tag_name
 
         setuptools.setup(
             ...,
@@ -93,7 +93,7 @@ name and return a properly formatted one:
         enabled = true
         dev_template = "{tag}.dev{ccount}"
         dirty_template = "{tag}.dev{ccount}"
-        tag_formatter = "mypkg.util:format_tag_name"
+        tag_formatter = "my_module.util:format_tag_name"
 
     .. note::
 

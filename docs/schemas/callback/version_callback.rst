@@ -25,7 +25,7 @@ because there are no tags in the ``dev`` branch.
 
 If you want to get synchronized version numbers in both ``master`` and ``dev`` branches,
 you can create a function in some file (for example, in the
-``mypkg/version.py`` file):
+``my_module/version.py`` file):
 
 .. code:: python
 
@@ -36,7 +36,7 @@ Then place it in both the branches and update your ``setup.py`` or ``pyproject.t
 
 .. code:: python
 
-    from mypkg.version import get_version
+    from my_module.version import get_version
 
     setuptools.setup(
         ...,
@@ -55,7 +55,7 @@ Then place it in both the branches and update your ``setup.py`` or ``pyproject.t
 
     [tool.setuptools-git-versioning]
     enabled = true
-    version_callback = "mypkg.version:get_version"
+    version_callback = "my_module.version:get_version"
 
 When you'll try to get current version in **any** branch, the result
 of executing this function will be returned instead of latest tag
@@ -63,7 +63,7 @@ number.
 
 If a value of this option is not a function but just str, it also could be used:
 
--  ``mypkg/__init__.py`` file:
+-  ``my_module/__init__.py`` file:
 
     .. code:: python
 
@@ -73,13 +73,13 @@ If a value of this option is not a function but just str, it also could be used:
 
     .. code:: python
 
-        import mypkg
+        import my_module
 
         setuptools.setup(
             ...,
             setuptools_git_versioning={
                 "enabled": True,
-                "version_callback": mypkg.__version__,
+                "version_callback": my_module.__version__,
             },
         )
 
@@ -92,7 +92,7 @@ If a value of this option is not a function but just str, it also could be used:
 
         [tool.setuptools-git-versioning]
         enabled = true
-        version_callback = "mypkg:__version__"
+        version_callback = "my_module:__version__"
 
 **Please take into account that any tag in the branch is completely ignored if version_callback
 is set**.
@@ -105,3 +105,4 @@ You should explicitly call ``setuptools_git_versioning.version_from_git`` functi
 See also
 """"""""
 - :ref:`version-callback-option` option
+- :ref:`runtime-version`

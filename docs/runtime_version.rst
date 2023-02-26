@@ -3,20 +3,83 @@
 Retrieving package version at runtime
 -------------------------------------
 
-Using ``version_file`` or ``version_callback`` options
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Using ``version_file`` option (recommended)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The preferred way to set version number inside a package is
-to simply store it in some file or variable/function, and
-then use it in ``setup.py`` / ``pyproject.toml`` as version source.
+In case of using :ref:`version_file <version-file>` option you can directly read the ``VERSION`` file content,
+and use at as version number.
 
-It this case you can get current version without any access to ``.git`` folder
-(which is required by ``setuptools-git-versioning``).
+To resolve version number in runtime, you should move ``VERSION`` file to your module subfolder:
 
-See:
+- ``setup.py``:
 
-* :ref:`version-file`
-* :ref:`version-callback`
+    Create ``MANIFEST.in`` file in the project root:
+
+    .. code::
+
+        include my_module/VERSION
+
+    Then make few changes in ``setup.py``:
+
+    .. code:: python
+
+        ...
+
+        # change VERSION file path
+        version_file = root_path / "my_module" / "VERSION"
+
+        setuptools.setup(
+            ...,
+            setuptools_git_versioning={
+                "enabled": True,
+                "version_file": version_file,
+            },
+            # read MANIFEST.in and include files mentioned here to the package
+            include_package_data=True,
+            # this package will read some included files in runtime, avoid installing it as .zip
+            zip_safe=False,
+        )
+
+- ``pyproject.toml``:
+
+    .. code:: toml
+
+        [tool.setuptools.package-data]
+        # include VERSION file to a package
+        my_module = ["VERSION"]
+        # this package will read some included files in runtime, avoid installing it as .zip
+        zip-safe = false
+
+        [tool.setuptools-git-versioning]
+        enabled = true
+        # change the file path
+        version_file = "my_module/VERSION"
+
+And then read this file:
+
+.. code:: python
+
+    # content of my_module/__init__.py
+
+    from pathlib import Path
+
+    # you can use os.path and open() as well
+    __version__ = Path(__file__).parent.joinpath("VERSION").read_text()
+
+
+Using ``version_callback`` option
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+In case of using :ref:`version_callback <version-callback>` option you can directly call this callback inside a module:
+
+.. code:: python
+
+    # content of my_module/__init__.py
+
+    from my_module.version import get_version
+
+    __version__ = get_version()
+
 
 Using ``importlib``
 ~~~~~~~~~~~~~~~~~~~
@@ -66,19 +129,19 @@ Calling internals of ``setuptools_git_versioning`` module
 
 .. warning::
 
-  This way is STRONGLY DISCOURAGED. Functions in the module
-  are not a part of public API, and could be changed in the future without
-  maintaining backward compatibility.
+    This way is STRONGLY DISCOURAGED. Functions in the module
+    are not a part of public API, and could be changed in the future without
+    maintaining backward compatibility.
 
 .. warning::
 
-  Use this ONLY in CI/CD tools.
+    Use this ONLY in CI/CD tools.
 
-  NEVER use ``setuptools_git_versioning`` inside your package, because ``.git``
-  folder is not being included into it, and target OS can lack of ``git`` executable.
+    NEVER use ``setuptools_git_versioning`` inside your package, because ``.git``
+    folder is not being included into it, and target OS can lack of ``git`` executable.
 
-  ``.git`` folder and ``git`` executable presence is crucial
-  for ``setuptools-git-versioning`` to work properly.
+    ``.git`` folder and ``git`` executable presence is crucial
+    for ``setuptools-git-versioning`` to work properly.
 
 .. code:: python
 

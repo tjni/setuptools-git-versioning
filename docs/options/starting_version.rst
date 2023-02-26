@@ -25,7 +25,7 @@ You can change this version by setting up ``starting_version`` option in your co
         )
 
 - ``pyproject.toml`` file:
--
+
     .. code:: toml
 
         [tool.setuptools-git-versioning]
