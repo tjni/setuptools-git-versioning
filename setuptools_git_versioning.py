@@ -466,7 +466,6 @@ def _get_version_from_callback(
         log.log(DEBUG, "Value is callable with signature %s", inspect.Signature.from_callable(version_callback))
         result = version_callback()
     else:
-
         log.log(INFO, "Is not callable, trying to import ...")
         result = version_callback
 

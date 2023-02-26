@@ -219,7 +219,6 @@ def create_setup_py(
     option: str = "setuptools_git_versioning",
     **kwargs,
 ) -> str | None:
-
     if config is None:
         config = {"enabled": True}
 
