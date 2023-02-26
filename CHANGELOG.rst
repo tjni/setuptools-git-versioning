@@ -10,7 +10,7 @@ Changelog
 
     .. change::
         :tags: docs, feature
-        :tickets: 77, 77
+        :tickets: 77, 75
 
         Recommend users to use file-based schema instead of tag-based due some cases.
 
