@@ -6,6 +6,7 @@ Changelog
 
 .. changelog::
     :version: 1.13.2
+    :released: 26.02.2023
 
     .. change::
         :tags: docs, feature
