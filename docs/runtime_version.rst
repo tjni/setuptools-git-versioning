@@ -47,6 +47,8 @@ To resolve version number in runtime, you should move ``VERSION`` file to your m
         [tool.setuptools.package-data]
         # include VERSION file to a package
         my_module = ["VERSION"]
+
+        [tool.setuptools]
         # this package will read some included files in runtime, avoid installing it as .zip
         zip-safe = false
 
