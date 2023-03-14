@@ -9,7 +9,7 @@ Changelog
     :released: 14.03.2023
 
     .. change::
-        :tags: docs
+        :tags: docs, bugfix
         :tickets: 78
 
         Move ``zip-safe`` option to ``tool.setuptools`` section of ``pyproject.toml``.
