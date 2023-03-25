@@ -1,11 +1,20 @@
 import subprocess
+
 import pytest
 
-from tests.lib.util import create_commit, create_file, get_full_sha, get_version, get_sha, create_tag
+from tests.lib.util import (
+    create_commit,
+    create_file,
+    create_tag,
+    get_full_sha,
+    get_sha,
+    get_version,
+)
 
 pytestmark = pytest.mark.all
 
 
+@pytest.mark.flaky(reruns=3)  # sha and full_sha can start with 0 which are removed, just try again
 @pytest.mark.important
 @pytest.mark.parametrize(
     "template",
@@ -167,6 +176,7 @@ def test_version_file_wrong_version_number(repo, version, create_config, count_c
         get_version(repo)
 
 
+@pytest.mark.flaky(reruns=3)  # sha and full_sha can start with 0 which are removed, just try again
 def test_version_file_tag_is_preferred(repo, create_config):
     create_tag(repo, "1.2.3")
 

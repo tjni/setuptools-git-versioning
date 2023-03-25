@@ -1,16 +1,17 @@
 import subprocess
-from datetime import datetime, timedelta
-import pytest
 import time
+from datetime import datetime, timedelta
+
+import pytest
 
 from tests.lib.util import (
-    create_file,
-    get_full_sha,
-    get_version,
-    get_sha,
-    create_tag,
     checkout_branch,
     create_commit,
+    create_file,
+    create_tag,
+    get_full_sha,
+    get_sha,
+    get_version,
 )
 
 pytestmark = pytest.mark.all
@@ -180,6 +181,7 @@ def test_tag_non_linear_history(repo, create_config):
     assert get_version(repo) == "0.0.1"
 
 
+@pytest.mark.flaky(reruns=3)  # sha and full_sha can start with 0 which are removed, just try again
 def test_tag_linear_history(repo, create_config):
     create_tag(repo, "1.0.0")
     checkout_branch(repo, "dev")

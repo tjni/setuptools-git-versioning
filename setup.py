@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 from pathlib import Path
-from setuptools import setup, find_packages
+
+from setuptools import find_packages, setup
+
 from setuptools_git_versioning import version_from_git
 
 

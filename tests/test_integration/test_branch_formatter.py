@@ -1,10 +1,17 @@
 import os
 import pickle
-import pytest
 import subprocess
 import textwrap
 
-from tests.lib.util import checkout_branch, create_file, get_version, get_version_script, get_version_module
+import pytest
+
+from tests.lib.util import (
+    checkout_branch,
+    create_file,
+    get_version,
+    get_version_module,
+    get_version_script,
+)
 
 pytestmark = pytest.mark.all
 

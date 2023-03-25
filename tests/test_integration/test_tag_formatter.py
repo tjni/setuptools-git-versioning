@@ -1,9 +1,16 @@
 import os
-import pytest
 import subprocess
 import textwrap
 
-from tests.lib.util import create_file, get_version, create_tag, get_version_script, get_version_module
+import pytest
+
+from tests.lib.util import (
+    create_file,
+    create_tag,
+    get_version,
+    get_version_module,
+    get_version_script,
+)
 
 pytestmark = pytest.mark.all
 

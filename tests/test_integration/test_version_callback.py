@@ -1,14 +1,15 @@
 import os
 import subprocess
+
 import pytest
 
 from tests.lib.util import (
     create_file,
-    get_version,
-    get_version_setup_py,
     create_tag,
-    get_version_script,
+    get_version,
     get_version_module,
+    get_version_script,
+    get_version_setup_py,
 )
 
 pytestmark = pytest.mark.all

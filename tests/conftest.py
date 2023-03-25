@@ -1,9 +1,10 @@
 import os
-import pytest
 import shutil
 import textwrap
 
-from tests.lib.util import rand_str, create_file, execute
+import pytest
+
+from tests.lib.util import create_file, execute, rand_str
 
 root = os.path.dirname(os.path.dirname(__file__))
 

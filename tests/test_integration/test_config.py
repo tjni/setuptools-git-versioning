@@ -1,19 +1,20 @@
 import itertools
 import os
-import pytest
 import subprocess
 import textwrap
+
+import pytest
 import toml
 
 from tests.lib.util import (
-    create_folder,
-    get_version,
-    get_version_setup_py,
-    get_version_script,
-    get_version_module,
     create_file,
+    create_folder,
     create_pyproject_toml,
     create_setup_py,
+    get_version,
+    get_version_module,
+    get_version_script,
+    get_version_setup_py,
 )
 
 pytestmark = [pytest.mark.all, pytest.mark.important]

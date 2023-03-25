@@ -1,9 +1,16 @@
-from datetime import datetime
-import pytest
 import re
 import subprocess
+from datetime import datetime
 
-from tests.lib.util import checkout_branch, get_version_setup_py, create_file, create_setup_py, create_tag
+import pytest
+
+from tests.lib.util import (
+    checkout_branch,
+    create_file,
+    create_setup_py,
+    create_tag,
+    get_version_setup_py,
+)
 
 pytestmark = pytest.mark.all
 
