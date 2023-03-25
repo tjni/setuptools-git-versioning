@@ -1,7 +1,9 @@
 [run]
 branch = True
-source_pkgs = setuptools_git_versioning
+source =
+  setuptools_git_versioning.py
 omit =
     tests/*
 parallel = true
+relative_files = true
 data_file = reports/.coverage
