@@ -75,18 +75,13 @@ jobs:
       run: |
         mkdir reports/
         pip install -e . --no-build-isolation
-        coverage run -m pytest --reruns 5 -m ${{ matrix.mark }}
-
-    - name: Combine coverage
-      run: |
-        coverage combine
-        coverage xml -o reports/coverage-${{ matrix.python-version }}.xml -i
+        coverage run -m pytest -m ${{ matrix.mark }}
 
     - name: Upload coverage results
       uses: actions/upload-artifact@v3
       with:
         name: code-coverage-${{ matrix.python-version }}
-        path: reports/coverage-${{ matrix.python-version }}.xml
+        path: reports/.coverage*
 
   all_done:
     name: Tests done
@@ -104,6 +99,11 @@ jobs:
 
     - name: Move coverage reports to the root folder
       run: find reports -type f -exec mv '{}' reports \;
+
+    - name: Combine coverage
+      run: |
+        coverage combine
+        coverage xml -o reports/coverage.xml -i
 
     - name: Check coverage
       uses: codecov/codecov-action@v3
