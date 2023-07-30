@@ -5,45 +5,21 @@ on:
     tags:
     - v*
 
+env:
+  DEFAULT_PYTHON: '3.11'
+
 jobs:
-  wait-tests:
-    name: Wait for tests
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: fountainhead/action-wait-for-check@v1.1.0
-      id: wait-for-tests
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        checkName: Tests done
-        ref: ${{ github.sha }}
-        timeoutSeconds: 3600
-
-    - name: Fail the Build
-      uses: cutenode/action-always-fail@v1
-      if: steps.wait-for-tests.outputs.conclusion != 'success'
-
-  wait-codeql:
-    name: Wait for CodeQL
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: fountainhead/action-wait-for-check@v1.1.0
-      id: wait-for-codeql
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        checkName: Analyze
-        ref: ${{ github.sha }}
-        timeoutSeconds: 3600
-
-    - name: Fail the Build
-      uses: cutenode/action-always-fail@v1
-      if: steps.wait-for-codeql.outputs.conclusion != 'success'
-
   release:
     name: Release package
     runs-on: ubuntu-latest
-    needs: [wait-tests, wait-codeql]
+    if: github.repository == 'dolfinus/setuptools-git-versioning'  # prevent running on forks
+
+    environment:
+      name: pypi
+      url: https://pypi.org/p/onetl
+    permissions:
+      id-token: write # to auth in PyPI
+      contents: write # to create Github release
 
     steps:
     - name: Checkout code
@@ -51,19 +27,19 @@ jobs:
       with:
         fetch-depth: 0
 
-    - name: Set up Python 3.11
+    - name: Set up Python ${{ env.DEFAULT_PYTHON }}
       uses: actions/setup-python@v4
       with:
-        python-version: '3.11'
+        python-version: ${{ env.DEFAULT_PYTHON }}
 
     - name: Cache pip
       uses: actions/cache@v3
       with:
         path: ~/.cache/pip
-        key: ${{ runner.os }}-python-3.11-release-${{ hashFiles('requirements*.txt') }}
+        key: ${{ runner.os }}-python-${{ env.DEFAULT_PYTHON }}-release-${{ hashFiles('requirements*.txt') }}
         restore-keys: |
-          ${{ runner.os }}-python-3.11-release-${{ hashFiles('requirements*.txt') }}
-          ${{ runner.os }}-python-3.11-release-
+          ${{ runner.os }}-python-${{ env.DEFAULT_PYTHON }}-release-${{ hashFiles('requirements*.txt') }}
+          ${{ runner.os }}-python-${{ env.DEFAULT_PYTHON }}-release-
           ${{ runner.os }}-python
           ${{ runner.os }}-
 
@@ -96,8 +72,6 @@ jobs:
 
     - name: Publish package
       uses: pypa/gh-action-pypi-publish@release/v1
-      with:
-        password: ${{ secrets.PYPI_API_TOKEN }}
 
     - name: Create Github release
       id: create_release
