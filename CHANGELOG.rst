@@ -5,7 +5,13 @@ Changelog
 ----
 
 .. changelog::
-    :version: 1.13.3
+    :version: 1.13.4
+
+    .. change::
+        :tags: docs, feature
+        :tickets: 83
+
+        Update documentation to mention shallow clone issues.
 
     .. change::
         :tags: general, feature
