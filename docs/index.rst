@@ -16,6 +16,7 @@
 
     install
     command
+    ci
     runtime_version
     schemas/index
     options/index
