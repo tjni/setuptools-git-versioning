@@ -6,6 +6,19 @@ Changelog
 
 .. changelog::
     :version: 1.13.3
+
+    .. change::
+        :tags: general, feature
+
+        Test PyPy 3.10 support
+
+    .. change::
+        :tags: ci, feature
+
+        Push release using ``Trusted publishers`` feature of PyPI.org
+
+.. changelog::
+    :version: 1.13.3
     :released: 14.03.2023
 
     .. change::
