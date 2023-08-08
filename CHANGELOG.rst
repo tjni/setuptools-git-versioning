@@ -6,6 +6,7 @@ Changelog
 
 .. changelog::
     :version: 1.13.5
+    :released: 08.08.2023
 
     .. change::
         :tags: dependency, bugfix
