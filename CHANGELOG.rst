@@ -5,7 +5,17 @@ Changelog
 ----
 
 .. changelog::
+    :version: 1.13.5
+
+    .. change::
+        :tags: dependency, bugfix
+        :pullreq: 84
+
+        Import ``setuptools`` before importing ``distutils``. Thanks to :github-user:`tjni`
+
+.. changelog::
     :version: 1.13.4
+    :released: 31.07.2023
 
     .. change::
         :tags: docs, feature
