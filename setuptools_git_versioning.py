@@ -450,12 +450,12 @@ def _callable_factory(
     try:
         return _load_callable(regexp_or_ref, package_name, root=root)
     except (ImportError, NameError) as e:
-        log.warning("%s is not a valid function reference: %s", callable_name, e)
+        pass
 
     try:
         return callable_factory(regexp_or_ref)
     except re.error as e:
-        log.error("%s is not valid regexp: %s", callable_name, e)
+        log.error("%s is not valid regexp neither a valid function reference: %s", callable_name, e)
         raise ValueError(f"Cannot parse {callable_name}") from e
 
 
