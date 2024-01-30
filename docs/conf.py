@@ -34,7 +34,7 @@ except (ImportError, NameError):
 # -- Project information -----------------------------------------------------
 
 project = "setuptools-git-versioning"
-copyright = "2022, dolfinus"
+copyright = "2020-2024, dolfinus"
 author = "dolfinus"
 
 # The short X.Y version

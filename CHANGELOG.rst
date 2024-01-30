@@ -6,6 +6,7 @@ Changelog
 
 .. changelog::
     :version: 1.13.6
+    :released: 30.01.2024
 
     .. change::
         :tags: general, feature
