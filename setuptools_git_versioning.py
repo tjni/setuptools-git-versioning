@@ -450,7 +450,7 @@ def _callable_factory(
     try:
         return _load_callable(regexp_or_ref, package_name, root=root)
     except (ImportError, NameError) as e:
-        pass
+        log.log(DEBUG, "%s is not a valid function reference: %s", callable_name, e)
 
     try:
         return callable_factory(regexp_or_ref)
