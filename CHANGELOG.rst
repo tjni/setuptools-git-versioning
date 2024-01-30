@@ -5,6 +5,14 @@ Changelog
 ----
 
 .. changelog::
+    :version: 1.13.6
+
+    .. change::
+        :tags: general, feature
+
+        Remove useless warning if ``tag_filter``, ``tag_formatter`` or ``branch_formatter`` is a regexp instead of function reference.
+
+.. changelog::
     :version: 1.13.5
     :released: 08.08.2023
 
