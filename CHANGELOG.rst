@@ -10,6 +10,12 @@ Changelog
     .. change::
         :tags: general, feature
 
+        Test Python 3.12 compatibility
+
+    .. change::
+        :tags: general, feature
+        :tickets: 93
+
         Remove useless warning if ``tag_filter``, ``tag_formatter`` or ``branch_formatter`` is a regexp instead of function reference.
 
 .. changelog::

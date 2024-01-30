@@ -13,6 +13,9 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
 
+env:
+  DEFAULT_PYTHON: '3.12'
+
 jobs:
   tests:
     name: Run ${{ matrix.mark}} tests (${{ matrix.python-version }} on ${{ matrix.os }})
@@ -27,14 +30,14 @@ jobs:
         include:
         - os: macos-latest
           mark: important
-          python-version: '3.11'
+          python-version: '3.12'
         - os: windows-latest
           mark: important
-          python-version: '3.11'
+          python-version: '3.12'
         # run all the tests only on latest python version
         - os: ubuntu-latest
           mark: all
-          python-version: '3.11'
+          python-version: '3.12'
 
     steps:
     - name: Checkout code
@@ -92,19 +95,19 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Set up Python 3.11
+    - name: Set up Python ${{ env.DEFAULT_PYTHON }}
       uses: actions/setup-python@v5
       with:
-        python-version: '3.11'
+        python-version: ${{ env.DEFAULT_PYTHON }}
 
     - name: Cache pip
       uses: actions/cache@v4
       with:
         path: ~/.cache/pip
-        key: ${{ runner.os }}-python-3.11-tests-${{ hashFiles('requirements*.txt') }}
+        key: ${{ runner.os }}-python-${{ env.DEFAULT_PYTHON }}-tests-${{ hashFiles('requirements*.txt') }}
         restore-keys: |
-          ${{ runner.os }}-python-3.11-tests-${{ hashFiles('requirements*.txt') }}
-          ${{ runner.os }}-python-3.11-tests-
+          ${{ runner.os }}-python-${{ env.DEFAULT_PYTHON }}-tests-${{ hashFiles('requirements*.txt') }}
+          ${{ runner.os }}-python-${{ env.DEFAULT_PYTHON }}-tests-
           ${{ runner.os }}-python
           ${{ runner.os }}-
 
