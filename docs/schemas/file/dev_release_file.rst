@@ -121,7 +121,7 @@ For example, if the branch name is something like ``alpha``, ``beta``,
     .. code:: toml
 
         [tool.setuptools-git-versioning]
-        enabled = True
+        enabled = true
         version_file = "VERSION"
         count_commits_from_version_file = true
         dev_template = "{tag}.{branch}{ccount}"
