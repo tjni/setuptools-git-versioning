@@ -73,6 +73,7 @@ exclude_patterns = ["_build", "Thumds.db", ".DS_Store"]
 #
 html_theme = "furo"
 html_title = f"setuptools-git-versioning {version}"
+html_extra_path = ["robots.txt"]
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
