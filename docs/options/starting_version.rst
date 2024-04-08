@@ -13,23 +13,33 @@ initial version, like ``0.0.1``
 
 You can change this version by setting up ``starting_version`` option in your config file:
 
-- ``setup.py`` file
+.. tabs::
 
-    .. code:: python
+    .. code-tab:: python ``setup.py`` file
+
+        import setuptools
 
         setuptools.setup(
             ...,
+            setup_requires=["setuptools-git-versioning>=2.0,<3"],
             setuptools_git_versioning={
-                "starting_version": "1.0.0",
+                "enabled": True,
+                "starting_version": "1.0.0",  # <---
             },
         )
 
-- ``pyproject.toml`` file:
+    .. code-tab:: toml ``pyproject.toml`` file
 
-    .. code:: toml
+        [build-system]
+        requires = [ "setuptools>=41", "wheel", "setuptools-git-versioning>=2.0,<3", ]
+        build-backend = "setuptools.build_meta"
+
+        [project]
+        dynamic = ["version"]
 
         [tool.setuptools-git-versioning]
-        starting_version = "1.0.0"
+        enabled = true
+        starting_version = "1.0.0"  # <---
 
 .. note::
 

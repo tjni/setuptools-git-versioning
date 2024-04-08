@@ -40,9 +40,9 @@ you'll get version number which ``pip`` cannot understand.
 To fix that you can define a callback which will receive current branch
 name and return a properly formatted one:
 
-- ``my_module/util.py`` file:
+.. tabs::
 
-    .. code:: python
+    .. code-tab:: python ``my_module/util.py`` file
 
         import re
 
@@ -63,36 +63,38 @@ name and return a properly formatted one:
             # fail in case of wrong branch names like "bugfix/issue-unknown"
             raise ValueError(f"Wrong branch name: {name}")
 
-- ``setup.py`` file:
+    .. code-tab:: python ``setup.py`` file
 
-    .. code:: python
-
+        import setuptools
         from my_module.util import format_branch_name
 
         setuptools.setup(
             ...,
+            setup_requires=["setuptools-git-versioning>=2.0,<3"],
             setuptools_git_versioning={
                 "enabled": True,
                 "dev_template": "{branch}.dev{ccount}",
                 "dirty_template": "{branch}.dev{ccount}",
-                "branch_formatter": format_branch_name,
+                "branch_formatter": format_branch_name,  # <---
             },
         )
 
-- ``pyproject.toml`` file:
-
-    .. code:: toml
+    .. code-tab:: toml ``pyproject.toml`` file
 
         [build-system]
+        requires = [ "setuptools>=41", "wheel", "setuptools-git-versioning>=2.0,<3", ]
         # __legacy__ is required to have access to package
         # during build step
         build-backend = "setuptools.build_meta:__legacy__"
+
+        [project]
+        dynamic = ["version"]
 
         [tool.setuptools-git-versioning]
         enabled = true
         dev_template = "{branch}.dev{ccount}"
         dirty_template = "{branch}.dev{ccount}"
-        branch_formatter = "my_module.util:format_branch_name"
+        branch_formatter = "my_module.util:format_branch_name"  # <---
 
     .. note::
 

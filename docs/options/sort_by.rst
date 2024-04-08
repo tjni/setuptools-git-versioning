@@ -9,12 +9,6 @@ Used by :ref:`tag-release` versioning schema to get the latest tag in the curren
 
 .. note::
 
-    This option is completely ignored if :ref:`version-file` schema is used.
-    This is because all tags are set on ``master`` / ``main`` branch,
-    so commits to other branches like ``develop`` are tagless.
-
-.. note::
-
     This option is completely ignored if :ref:`version-callback` schema is used,
     because git commit history is not fetched in such a case.
 

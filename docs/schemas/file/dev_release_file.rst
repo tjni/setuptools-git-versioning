@@ -32,11 +32,11 @@ with your **next release number** (e.g. ``1.1.0``):
 
 Then update your config file:
 
-- ``setup.py`` :
+.. tabs::
 
-    .. code:: python
+    .. code-tab:: python ``setup.py``
 
-        # you can use os.path instead of pathlib
+        import setuptools
         from pathlib import Path
 
         root_path = Path(__file__).parent
@@ -44,25 +44,31 @@ Then update your config file:
 
         setuptools.setup(
             ...,
+            setup_requires=["setuptools-git-versioning>=2.0,<3"],
             setuptools_git_versioning={
                 "enabled": True,
                 "version_file": version_file,
-                "count_commits_from_version_file": True,  # enable commits tracking
+                "count_commits_from_version_file": True,  # <--- enable commits tracking
                 "dev_template": "{tag}.dev{ccount}",  # suffix for versions will be .dev
                 "dirty_template": "{tag}.dev{ccount}",  # same thing here
             },
         )
 
-- ``pyproject.toml``:
+    .. code-tab:: toml ``pyproject.toml``
 
-    .. code:: toml
+        [build-system]
+        requires = [ "setuptools>=41", "wheel", "setuptools-git-versioning>=2.0,<3", ]
+        build-backend = "setuptools.build_meta"
+
+        [project]
+        dynamic = ["version"]
 
         [tool.setuptools-git-versioning]
         enabled = true
         version_file = "VERSION"
-        count_commits_from_version_file = true
-        dev_template = "{tag}.dev{ccount}"
-        dirty_template = "{tag}.dev{ccount}"
+        count_commits_from_version_file = true  # <--- enable commits tracking
+        dev_template = "{tag}.dev{ccount}"  # suffix for versions will be .dev
+        dirty_template = "{tag}.dev{ccount}"  # same thing here
 
 In case of next release version ``1.1.0``, the third commit to ``dev`` branch will produce
 version number ``1.1.0.dev3``, and so on.
@@ -93,30 +99,42 @@ present in the version number.
 For example, if the branch name is something like ``alpha``, ``beta``,
 ``preview`` or ``rc``, you can add ``{branch}`` substitution to template in your config file:
 
-- ``setup.py``:
+.. tabs::
 
-    .. code:: python
+    .. code-tab:: python ``setup.py``
+
+        import setuptools
+        from pathlib import Path  # same thing here
+
+        root_path = Path(__file__).parent
+        version_file = root_path / "VERSION.txt"
 
         setuptools.setup(
             ...,
+            setup_requires=["setuptools-git-versioning>=2.0,<3"],
             setuptools_git_versioning={
                 "enabled": True,
                 "version_file": version_file,
                 "count_commits_from_version_file": True,
-                "dev_template": "{tag}.{branch}{ccount}",
+                "dev_template": "{tag}.{branch}{ccount}",  # <--- note {branch} here
                 "dirty_template": "{tag}.{branch}{ccount}",
             },
         )
 
-- ``pyproject.toml``:
+    .. code-tab:: toml ``pyproject.toml``
 
-    .. code:: toml
+        [build-system]
+        requires = [ "setuptools>=41", "wheel", "setuptools-git-versioning>=2.0,<3", ]
+        build-backend = "setuptools.build_meta"
+
+        [project]
+        dynamic = ["version"]
 
         [tool.setuptools-git-versioning]
         enabled = true
         version_file = "VERSION"
         count_commits_from_version_file = true
-        dev_template = "{tag}.{branch}{ccount}"
+        dev_template = "{tag}.{branch}{ccount}"  # <--- note {branch} here
         dirty_template = "{tag}.{branch}{ccount}"
 
 Fourth commit to ``alpha`` branch with next release number ``1.2.3``
@@ -132,27 +150,43 @@ Development releases using only branch name
 
 It is also possible to use branch names like ``1.0-alpha`` or ``1.1.beta``:
 
-.. code:: python
+.. tabs::
 
-    setuptools.setup(
-        ...,
-        setuptools_git_versioning={
-            "enabled": True,
-            "count_commits_from_version_file": True,
-            "dev_template": "{branch}{ccount}",
-            "dirty_template": "{branch}{ccount}",
-            "version_file": version_file,
-        },
-    )
+    .. code-tab:: python ``setup.py``
 
-.. code:: toml
+        import setuptools
+        from pathlib import Path
 
-    [tool.setuptools-git-versioning]
-    enabled = true
-    version_file = "VERSION"
-    count_commits_from_version_file = true
-    dev_template = "{branch}{ccount}"
-    dirty_template = "{branch}{ccount}"
+        root_path = Path(__file__).parent
+        version_file = root_path / "VERSION.txt"
+
+        setuptools.setup(
+            ...,
+            setup_requires=["setuptools-git-versioning>=2.0,<3"],
+            setuptools_git_versioning={
+                "enabled": True,
+                "count_commits_from_version_file": True,
+                "dev_template": "{branch}{ccount}",  # <--- without {tag}
+                "dirty_template": "{branch}{ccount}",
+                "version_file": version_file,
+            },
+        )
+
+    .. code-tab:: toml ``pyproject.toml``
+
+        [build-system]
+        requires = [ "setuptools>=41", "wheel", "setuptools-git-versioning>=2.0,<3", ]
+        build-backend = "setuptools.build_meta"
+
+        [project]
+        dynamic = ["version"]
+
+        [tool.setuptools-git-versioning]
+        enabled = true
+        version_file = "VERSION"
+        count_commits_from_version_file = true
+        dev_template = "{branch}{ccount}"  # <--- without {tag}
+        dirty_template = "{branch}{ccount}"
 
 Second commit to ``1.0-alpha`` branch
 will generate a version number like ``1.0a2``.

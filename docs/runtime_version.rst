@@ -11,38 +11,44 @@ and use at as version number.
 
 To resolve version number in runtime, you should move ``VERSION`` file to your module subfolder:
 
-- ``setup.py``:
+.. tabs::
 
-    Create ``MANIFEST.in`` file in the project root:
+    .. tab:: ``setup.py``
 
-    .. code::
+        Create ``MANIFEST.in`` file in the project root:
 
-        include my_module/VERSION
+            include my_module/VERSION
 
-    Then make few changes in ``setup.py``:
+        Then make few changes in ``setup.py``:
 
-    .. code:: python
+        .. code:: python
 
-        ...
+            from path import Path
 
-        # change VERSION file path
-        version_file = root_path / "my_module" / "VERSION"
+            root_path = Path(__file__).parent
+            version_file = root_path / "my_module" / "VERSION"
 
-        setuptools.setup(
-            ...,
-            setuptools_git_versioning={
-                "enabled": True,
-                "version_file": version_file,
-            },
-            # read MANIFEST.in and include files mentioned here to the package
-            include_package_data=True,
-            # this package will read some included files in runtime, avoid installing it as .zip
-            zip_safe=False,
-        )
+            setuptools.setup(
+                ...,
+                setup_requires=["setuptools-git-versioning>=2.0,<3"],
+                setuptools_git_versioning={
+                    "enabled": True,
+                    "version_file": version_file,
+                },
+                # read MANIFEST.in and include files mentioned here to the package
+                include_package_data=True,
+                # this package will read some included files in runtime, avoid installing it as .zip
+                zip_safe=False,
+            )
 
-- ``pyproject.toml``:
+    .. code-tab:: toml ``pyproject.toml``
 
-    .. code:: toml
+        [build-system]
+        requires = [ "setuptools>=41", "wheel", "setuptools-git-versioning>=2.0,<3", ]
+        build-backend = "setuptools.build_meta"
+
+        [project]
+        dynamic = ["version"]
 
         [tool.setuptools.package-data]
         # include VERSION file to a package

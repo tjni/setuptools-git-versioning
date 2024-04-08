@@ -32,11 +32,11 @@ and save here current version number:
 
 Then place it in both the branches and update your config file:
 
-- ``setup.py``:
+.. tabs::
 
-    .. code:: python
+    .. code-tab:: python ``setup.py``
 
-        # you can use os.path instead of pathlib
+        import setuptools
         from pathlib import Path
 
         root_path = Path(__file__).parent
@@ -44,19 +44,22 @@ Then place it in both the branches and update your config file:
 
         setuptools.setup(
             ...,
+            setup_requires=["setuptools-git-versioning>=2.0,<3"],
             setuptools_git_versioning={
                 "enabled": True,
-                "version_file": version_file,
+                "version_file": version_file,  # <---
             },
         )
 
-- ``pyproject.toml``:
+    .. code-tab:: toml ``pyproject.toml``
 
-    .. code:: toml
+        [build-system]
+        requires = [ "setuptools>=41", "wheel", "setuptools-git-versioning>=2.0,<3", ]
+        build-backend = "setuptools.build_meta"
 
         [tool.setuptools-git-versioning]
         enabled = true
-        version_file = "VERSION"
+        version_file = "VERSION"  # <---
 
 When you'll try to get current version in non-master branch, the content
 of this file (``1.0.0``) will be returned instead default version number.

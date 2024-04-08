@@ -15,7 +15,7 @@ But one or all of these requirements cannot be satisfied in the following cases:
 
 * Downloading source tarball without ``.git`` folder (:issue:`77`).
 * Shallow repo clone without tags (:issue:`75`).
-* Getting version number from a branch which does not contain any tags (`Git-flow <https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow>`__ and its derivatives)
+* Getting version number from a branch which does not contain any tags (`Git-flow <https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow>`_ and its derivatives)
 
 To avoid getting meaningless version number prefer using versioning schema described below.
 

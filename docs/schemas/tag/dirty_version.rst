@@ -33,25 +33,30 @@ Sometimes you want see just ``1.0.0.post1+dirty`` value or even ``1.0.0+dirty``.
 
 To get version in such a format you can set a template in the config file:
 
-- ``setup.py``:
+.. tabs::
 
-    .. code:: python
+    .. code-tab:: python ``setup.py``
+
+        import setuptools
 
         setuptools.setup(
             ...,
+            setup_requires=["setuptools-git-versioning>=2.0,<3"],
             setuptools_git_versioning={
                 "enabled": True,
-                "dirty_template": "{tag}.post{ccount}+dirty",
+                "dirty_template": "{tag}.post{ccount}+dirty",  # <---
             },
         )
 
-- ``pyproject.toml``:
+    .. code-tab:: toml ``pyproject.toml``
 
-    .. code:: toml
+        [build-system]
+        requires = [ "setuptools>=41", "wheel", "setuptools-git-versioning>=2.0,<3", ]
+        build-backend = "setuptools.build_meta"
 
         [tool.setuptools-git-versioning]
         enabled = true
-        dirty_template = "{tag}.post{ccount}+dirty"
+        dirty_template = "{tag}.post{ccount}+dirty"  # <---
 
 
 See also

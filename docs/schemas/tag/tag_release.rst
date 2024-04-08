@@ -43,34 +43,38 @@ If tag number had ``v`` prefix, like ``v1.0.0``, it will be trimmed.
 Version number template
 """"""""""""""""""""""""
 
-By default, when you try to get current version, you'll receive version
-number like ``1.0.0``.
+By default, when you try to get current version, you'll receive version == current tag, e.g. ``1.0.0``.
 
 You can change this template in the config file:
 
-- ``setup.py``:
+.. tabs::
 
-    .. code:: python
+    .. code-tab:: python ``setup.py``
+
+        import setuptools
 
         setuptools.setup(
             ...,
+            setup_requires=["setuptools-git-versioning>=2.0,<3"],
             setuptools_git_versioning={
-                "template": "2022.{tag}",
+                "template": "2022.{tag}",  # <---
             },
         )
 
-- ``pyproject.toml``:
+    .. code-tab:: toml ``pyproject.toml``
 
-    .. code:: toml
+        [build-system]
+        requires = [ "setuptools>=41", "wheel", "setuptools-git-versioning>=2.0,<3", ]
+        build-backend = "setuptools.build_meta"
 
         [tool.setuptools-git-versioning]
-        template = "2022.{tag}"
+        template = "2022.{tag}"  # <---
 
-In this case, for tag ``3.4`` version number will be ``2021.3.4``
+In this case, for tag ``3.4`` version number will be ``2022.3.4``
 
 .. note::
 
-    If branch name is not :pep:`440` compliant, like ``"release/1.2.3"``,
+    If tag name is not :pep:`440` compliant, like ``"release/1.2.3"``,
     use :ref:`tag-formatter-option` option
 
 

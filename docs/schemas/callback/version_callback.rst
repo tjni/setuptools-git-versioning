@@ -32,30 +32,37 @@ you can create a function in some file (for example, in the
     def get_version():
         return "1.0.0"
 
-Then place it in both the branches and update your ``setup.py`` or ``pyproject.toml`` file:
+Then place it in both the branches and update your config:
 
-.. code:: python
+.. tabs::
 
-    from my_module.version import get_version
+    .. code-tab:: python ``setup.py`` file
 
-    setuptools.setup(
-        ...,
-        setuptools_git_versioning={
-            "enabled": True,
-            "version_callback": get_version,
-        },
-    )
+        from my_module.version import get_version
 
-.. code:: toml
+        setuptools.setup(
+            ...,
+            setup_requires=["setuptools-git-versioning>=2.0,<3"],
+            setuptools_git_versioning={
+                "enabled": True,
+                "version_callback": get_version,  # <---
+            },
+        )
 
-    [build-system]
-    # __legacy__ is required to have access to package
-    # during build step
-    build-backend = "setuptools.build_meta:__legacy__"
+    .. code-tab:: toml ``pyproject.toml`` file
 
-    [tool.setuptools-git-versioning]
-    enabled = true
-    version_callback = "my_module.version:get_version"
+        [build-system]
+        requires = [ "setuptools>=41", "wheel", "setuptools-git-versioning>=2.0,<3", ]
+        # __legacy__ is required to have access to package
+        # during build step
+        build-backend = "setuptools.build_meta:__legacy__"
+
+        [project]
+        dynamic = ["version"]
+
+        [tool.setuptools-git-versioning]
+        enabled = true
+        version_callback = "my_module.version:get_version"  # <---
 
 When you'll try to get current version in **any** branch, the result
 of executing this function will be returned instead of latest tag
@@ -63,36 +70,41 @@ number.
 
 If a value of this option is not a function but just str, it also could be used:
 
--  ``my_module/__init__.py`` file:
+.. tabs::
 
-    .. code:: python
+    .. code-tab:: python ``my_module/__init__.py`` file
 
         __version__ = "1.0.0"
 
--  ``setup.py`` file:
+    .. code-tab:: python ``setup.py`` file
 
-    .. code:: python
+        import setuptools
 
         import my_module
 
         setuptools.setup(
             ...,
+            setup_requires=["setuptools-git-versioning>=2.0,<3"],
             setuptools_git_versioning={
                 "enabled": True,
-                "version_callback": my_module.__version__,
+                "version_callback": my_module.__version__,  # <---
             },
         )
 
--  ``pyproject.toml`` file:
-
-    .. code:: toml
+    ..  code-tab:: toml ``pyproject.toml`` file
 
         [build-system]
+        requires = [ "setuptools>=41", "wheel", "setuptools-git-versioning>=2.0,<3", ]
+        # __legacy__ is required to have access to package
+        # during build step
         build-backend = "setuptools.build_meta:__legacy__"
+
+        [project]
+        dynamic = ["version"]
 
         [tool.setuptools-git-versioning]
         enabled = true
-        version_callback = "my_module:__version__"
+        version_callback = "my_module:__version__"  # <---
 
 **Please take into account that any tag in the branch is completely ignored if version_callback
 is set**.

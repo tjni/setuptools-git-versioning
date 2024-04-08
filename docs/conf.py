@@ -10,8 +10,8 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 
-import sys
 import subprocess
+import sys
 from pathlib import Path
 
 from packaging.version import Version
@@ -55,6 +55,7 @@ extensions = [
     "changelog",
     "numpydoc",
     "sphinxarg.ext",
+    "sphinx_tabs.tabs",
 ]
 
 # Add any paths that contain templates here, relative to this directory.

@@ -90,7 +90,7 @@ add a section ``tool.setuptools-git-versioning`` with config options, and mark t
     [project]
     dynamic = ["version"]
 
-And check the package version generated (see `command help <https://setuptools-git-versioning.readthedocs.io/en/stable/command.html>`__):
+And check the package version generated (see `command help <https://setuptools-git-versioning.readthedocs.io/en/stable/command.html>`_):
 
 .. code:: bash
 
@@ -103,7 +103,7 @@ And check the package version generated (see `command help <https://setuptools-g
     0.0.1
 
 ``setup.py``
-~~~~~~~~~~~~~~
+~~~~~~~~~~~~
 
 Just add ``setuptools-git-versioning`` to ``setup_requires`` argument of ``setuptools.setup`` function call,
 and then add new argument ``setuptools_git_versioning`` with config options:
@@ -120,7 +120,7 @@ and then add new argument ``setuptools_git_versioning`` with config options:
         setup_requires=["setuptools-git-versioning>=2.0,<3"],
     )
 
-And check the package version generated (see `command help <https://setuptools-git-versioning.readthedocs.io/en/stable/command.html>`__):
+And check the package version generated (see `command help <https://setuptools-git-versioning.readthedocs.io/en/stable/command.html>`_):
 
 .. code:: bash
 
