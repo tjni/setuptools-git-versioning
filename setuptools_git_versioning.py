@@ -9,7 +9,6 @@ import re
 import subprocess  # nosec
 import sys
 import textwrap
-import warnings
 from datetime import datetime
 from pathlib import Path
 from pprint import pformat
@@ -102,18 +101,6 @@ def get_all_tags(sort_by: str = DEFAULT_SORT_BY, root: str | os.PathLike | None 
     if tags:
         return tags
     return []
-
-
-def get_branch_tags(*args, **kwargs) -> list[str]:
-    warnings.warn(
-        "`get_branch_tags` function is deprecated "
-        "since setuptools-git-versioning v1.8.0 "
-        "and will be dropped in v2.0.0\n"
-        "Please use `get_tags` instead",
-        category=UserWarning,
-    )
-
-    return get_tags(*args, **kwargs)
 
 
 def get_tags(
@@ -232,24 +219,9 @@ def _infer_setup_py(name_or_path: str = "setup.py", root: str | os.PathLike | No
         os.chdir(original_cwd)
 
 
-# TODO: remove along with version_config
-def _parse_config(dist: Distribution, attr: Any, value: Any) -> None:
-    from distutils.errors import DistutilsOptionError
-
-    if attr == "version_config" and value is not None:
-        warnings.warn(
-            "'version_config' option is deprecated "
-            "since setuptools-git-versioning v1.8.0 "
-            "and will be dropped in v2.0.0\n"
-            "Please rename it to 'setuptools_git_versioning'",
-            category=UserWarning,
-        )
-
-        if getattr(dist, "setuptools_git_versioning", None) is not None:
-            raise DistutilsOptionError(
-                "You can set either 'version_config' or 'setuptools_git_versioning' "
-                "but not both of them at the same time"
-            )
+def parse_config(dist: Distribution, attr: Any, value: Any) -> None:
+    "Dummy function used only to register in distutils"
+    return None
 
 
 def infer_version(dist: Distribution, root: str | os.PathLike | None = None) -> str | None:
@@ -257,18 +229,7 @@ def infer_version(dist: Distribution, root: str | os.PathLike | None = None) -> 
 
     from distutils.errors import DistutilsOptionError, DistutilsSetupError
 
-    config = getattr(dist, "setuptools_git_versioning", None) or getattr(dist, "version_config", None)
-
-    if isinstance(config, bool):
-        warnings.warn(
-            "Passing boolean value to 'version_config'/'setuptools_git_versioning' option is deprecated "
-            "since setuptools-git-versioning 1.8.0 "
-            "and will be dropped in v2.0.0\n"
-            "Please change value to '{'enabled': False/True}'",
-            category=UserWarning,
-        )
-        config = {"enabled": config}
-
+    config = getattr(dist, "setuptools_git_versioning", None)
     toml_config = _read_toml(root=root)
 
     if config is None:

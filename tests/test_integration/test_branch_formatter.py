@@ -1,5 +1,4 @@
 import os
-import pickle
 import subprocess
 import textwrap
 
@@ -118,13 +117,11 @@ def test_branch_formatter_external_setup_py_direct_import(repo, template_config)
     checkout_branch(repo, branch)
 
     def config_creator(root, cfg):
-        conf = pickle.dumps(cfg)
-
         return create_file(
             root,
             "setup.py",
             textwrap.dedent(
-                """
+                f"""
                 from coverage.control import Coverage
 
                 coverage = Coverage()
@@ -138,7 +135,7 @@ def test_branch_formatter_external_setup_py_direct_import(repo, template_config)
                     def branch_formatter(branch):
                         return re.sub("[^\\d]+", "", branch)
 
-                    version_config = pickle.loads({conf})
+                    version_config = {cfg}
                     version_config["branch_formatter"] = branch_formatter
 
                     setuptools.setup(
@@ -154,7 +151,7 @@ def test_branch_formatter_external_setup_py_direct_import(repo, template_config)
                     coverage.stop()
                     coverage.save()
             """
-            ).format(conf=conf),
+            ),
         )
 
     template_config(repo, config_creator, template="{tag}.{branch}{ccount}")

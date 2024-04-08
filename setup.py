@@ -56,8 +56,7 @@ setup(
     setup_requires=requirements,
     entry_points={
         "distutils.setup_keywords": [
-            "version_config = setuptools_git_versioning:_parse_config",
-            "setuptools_git_versioning = setuptools_git_versioning:_parse_config",
+            "setuptools_git_versioning = setuptools_git_versioning:parse_config",
         ],
         "setuptools.finalize_distribution_options": [
             "setuptools_git_versioning = setuptools_git_versioning:infer_version",

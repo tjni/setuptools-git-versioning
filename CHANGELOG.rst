@@ -1,6 +1,28 @@
 Changelog
 ==========
 
+2.0
+---
+
+.. changelog::
+    :version: 2.0.0
+
+    .. change::
+        :tags: config, breaking
+
+        Drop ``version_config`` keyword from ``setup.py``, which was deprecated since ``1.8.0``.
+
+    .. change::
+        :tags: config, breaking
+
+        Does not allow passing ``setuptools_git_versioning=False`` and ``setuptools_git_versioning=True`` to config.
+        Always use ``setuptools_git_versioning={"enabled": True}``.
+
+    .. change::
+        :tags: core, breaking
+
+        Drop ``get_branch_tags`` function which was deprecated since ``1.8.0``.
+
 1.13
 ----
 

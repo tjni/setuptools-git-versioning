@@ -32,7 +32,7 @@ try:
     from version import get_version
 
     setuptools.setup(
-        version_config={
+        setuptools_git_versioning={
             "version_callback": get_version
         },
         setup_requires=[
@@ -58,7 +58,7 @@ try:
     from version import __version__
 
     setuptools.setup(
-        version_config={
+        setuptools_git_versioning={
             "version_callback": __version__
         },
         setup_requires=[

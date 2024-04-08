@@ -223,7 +223,6 @@ def create_pyproject_toml(
 def create_setup_py(
     cwd: str | os.PathLike,
     config: dict | None = None,
-    option: str = "setuptools_git_versioning",
     **kwargs,
 ) -> str | None:
     if config is None:
@@ -232,13 +231,13 @@ def create_setup_py(
     if config == NotImplemented:
         cfg = ""
     else:
-        cfg = f"{option}={config},"
+        cfg = f"setuptools_git_versioning={config},"
 
     return create_file(
         cwd,
         "setup.py",
         textwrap.dedent(
-            """
+            f"""
             from coverage.control import Coverage
 
             coverage = Coverage()
@@ -261,7 +260,7 @@ def create_setup_py(
                 coverage.stop()
                 coverage.save()
             """
-        ).format(cfg=cfg),
+        ),
         **kwargs,
     )
 
