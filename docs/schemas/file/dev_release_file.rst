@@ -19,9 +19,6 @@ For example, current repo state is:
     |
     ...
 
-**And there are no tags in the current branch** (``dev``), **all
-of them are placed in the** ``master`` **branch.**
-
 If you want to create development releases (prereleases) for the next planned version ``1.1.0``,
 so every commit to ``dev`` branch should produce version number like ``1.1.0.dev123`` (just plain increment)
 or even ``1.1.0.dev123+git.sha`` (to describe which commit was used for this exact version).
@@ -39,16 +36,17 @@ Then update your config file:
 
     .. code:: python
 
-        import os
+        # you can use os.path instead of pathlib
+        from pathlib import Path
 
-        HERE = os.path.dirname(__file__)
-        VERSION_FILE = os.path.join(HERE, "VERSION.txt")
+        root_path = Path(__file__).parent
+        version_file = root_path / "VERSION.txt"
 
         setuptools.setup(
             ...,
             setuptools_git_versioning={
                 "enabled": True,
-                "version_file": VERSION_FILE,
+                "version_file": version_file,
                 "count_commits_from_version_file": True,  # enable commits tracking
                 "dev_template": "{tag}.dev{ccount}",  # suffix for versions will be .dev
                 "dirty_template": "{tag}.dev{ccount}",  # same thing here
@@ -66,22 +64,16 @@ Then update your config file:
         dev_template = "{tag}.dev{ccount}"
         dirty_template = "{tag}.dev{ccount}"
 
-In case of next release version ``1.1.0`` the third commit to ``dev`` branch will produce
+In case of next release version ``1.1.0``, the third commit to ``dev`` branch will produce
 version number ``1.1.0.dev3``, and so on.
 
 Release process
-""""""""""""""""
+"""""""""""""""
 
 -  Merge ``dev`` branch into ``master`` branch.
--  Tag commit in the ``master`` branch with next release version (e.g. ``1.1.0``). Tag will be used as a version number for the release.
-
-    .. warning::
-
-        Do not place any tags in the ``dev`` branch!
-
+-  Tag commit in the ``master`` branch, and publis a repease from code on this branch.
 -  Checkout back to ``dev`` branch
 -  Save next release version (e.g. ``1.2.0``) in ``VERSION`` or ``VERSION.txt`` file in the ``dev`` branch.
-
 -  Next commits to a ``dev`` branch will lead to returning this next release version plus dev suffix, like ``1.2.0.dev1`` or so.
 -  ``N`` in ``.devN`` suffix is a number of commits since the last change of a certain file.
 
@@ -109,7 +101,7 @@ For example, if the branch name is something like ``alpha``, ``beta``,
             ...,
             setuptools_git_versioning={
                 "enabled": True,
-                "version_file": VERSION_FILE,
+                "version_file": version_file,
                 "count_commits_from_version_file": True,
                 "dev_template": "{tag}.{branch}{ccount}",
                 "dirty_template": "{tag}.{branch}{ccount}",
@@ -149,7 +141,7 @@ It is also possible to use branch names like ``1.0-alpha`` or ``1.1.beta``:
             "count_commits_from_version_file": True,
             "dev_template": "{branch}{ccount}",
             "dirty_template": "{branch}{ccount}",
-            "version_file": VERSION_FILE,
+            "version_file": version_file,
         },
     )
 
@@ -172,7 +164,7 @@ If branch name is not :pep:`440` compliant, use :ref:`branch-formatter-option` o
 
 .. note::
 
-    Although ``VERSION`` file content is not used in this case, you still need to update it
+    Although ``VERSION`` file content is not used in this particular example, you still need to update it
     while changing your next release version.
 
     Otherwise this tool will not be able to properly calculate version number.

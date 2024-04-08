@@ -205,7 +205,7 @@ def test_version_callback_not_a_repo(repo_dir, create_config):
     assert get_version_module(os.getcwd(), args=[repo_dir]) == version
 
 
-def test_version_callback_has_more_priority_than_tag(repo, create_config):
+def test_version_callback_has_higher_priority_than_tag(repo, create_config):
     version = "1.0.0"
 
     create_file(repo, "version.py", VERSION_PY.format(version=version), commit=False)

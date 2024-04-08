@@ -19,9 +19,6 @@ For example, current repo state is:
     |
     ...
 
-**And there are no tags in the current branch** (``dev``), **all
-of them are placed in the** ``master`` **branch.**
-
 By default, when you try to get current version, you'll receive some
 initial value (see :ref:`starting-version-option` option).
 
@@ -64,8 +61,7 @@ Then place it in both the branches and update your config file:
 When you'll try to get current version in non-master branch, the content
 of this file (``1.0.0``) will be returned instead default version number.
 
-**Please take into account that version_file is ignored if any tag
-is present in the current branch.**
+**Please take into account that any tags in the repo are ignored if this option is being used.**
 
 See also
 """""""""

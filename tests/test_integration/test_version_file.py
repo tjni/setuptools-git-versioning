@@ -64,11 +64,10 @@ def test_version_file_count_commits(repo, create_config, template, subst):
         "count_commits_from_version_file": True,
     }
     if template:
-        # template is not ignored
+        # template is ignored
         config["dev_template"] = template
 
     create_config(repo, config)
-
     create_file(repo, "VERSION.txt", "1.0.0")
 
     full_sha = get_full_sha(repo)
@@ -177,7 +176,7 @@ def test_version_file_wrong_version_number(repo, version, create_config, count_c
 
 
 @pytest.mark.flaky(reruns=3)  # sha and full_sha can start with 0 which are removed, just try again
-def test_version_file_tag_is_preferred(repo, create_config):
+def test_version_file_tagged_history(repo, create_config):
     create_tag(repo, "1.2.3")
 
     create_file(repo, "VERSION.txt", "1.0.0")
@@ -190,7 +189,24 @@ def test_version_file_tag_is_preferred(repo, create_config):
     )
 
     sha = get_sha(repo)
-    assert get_version(repo) == f"1.2.3.post2+git.{sha}"
+    assert get_version(repo) == f"1.0.0.post1+git.{sha}"
+
+
+@pytest.mark.flaky(reruns=3)  # sha and full_sha can start with 0 which are removed, just try again
+def test_version_file_tagged_head(repo, create_config):
+    create_file(repo, "VERSION.txt", "1.0.0")
+    create_config(
+        repo,
+        {
+            "version_file": "VERSION.txt",
+            "count_commits_from_version_file": True,
+        },
+    )
+    create_tag(repo, "1.2.3")
+
+    # template is for release, because commit is tagged
+    # but version_file content is up to user
+    assert get_version(repo) == "1.0.0"
 
 
 @pytest.mark.parametrize("starting_version, version", [(None, "0.0.1"), ("1.2.3", "1.2.3")])

@@ -23,6 +23,11 @@ Changelog
 
         Drop ``get_branch_tags`` function which was deprecated since ``1.8.0``.
 
+    .. change::
+        :tags: core, breaking
+
+        ``version_file`` option now have precedence over any tags in the current branch.
+
 1.13
 ----
 

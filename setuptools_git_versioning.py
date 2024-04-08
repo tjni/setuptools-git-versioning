@@ -506,6 +506,9 @@ def version_from_git(
             )
         return _get_version_from_callback(version_callback, package_name, root=root)
 
+    head_sha = get_sha(root=root)
+    log.log(INFO, "HEAD SHA-256: %r", head_sha)
+
     filter_callback = None
     if tag_filter:
         filter_callback = _callable_factory(
@@ -516,16 +519,22 @@ def version_from_git(
             root=root,
         )
 
-    from_file = False
     log.log(INFO, "Getting latest tag")
     log.log(DEBUG, "Sorting tags by %r", sort_by)
     tag = get_tag(sort_by=sort_by, root=root, filter_callback=filter_callback)
+    if not tag:
+        log.log(INFO, "No tags found")
+        tag_sha = None
+        on_tag = False
+    else:
+        tag_sha = get_sha(tag, root=root)
+        log.log(INFO, "Tag SHA-256: %r", tag_sha)
 
-    if tag is None:
-        log.log(INFO, "No tag, checking for 'version_file'")
-        if version_file is None:
-            log.log(INFO, "No 'version_file' set, return starting_version %r", starting_version)
-            return _sanitize_version(starting_version)
+        on_tag = head_sha is not None and head_sha == tag_sha
+        log.log(INFO, "HEAD is tagged: %r", on_tag)
+
+    if version_file:
+        log.log(INFO, "Checking for 'version_file'")
 
         if not Path(version_file).exists():
             log.log(
@@ -534,26 +543,30 @@ def version_from_git(
                 version_file,
                 starting_version,
             )
-            return _sanitize_version(starting_version)
+            tag = None
+        else:
+            log.log(INFO, "Reading version_file '%s' content", version_file)
+            tag = _read_version_from_file(version_file, root=root) or None
 
-        log.log(INFO, "version_file '%s' does exist, reading its content", version_file)
-        from_file = True
-        tag = _read_version_from_file(version_file, root=root)
+            if not tag:
+                log.log(INFO, "File %r is empty", version_file)
+            else:
+                log.log(DEBUG, "File content: %r", tag)
+                if not count_commits_from_version_file:
+                    return _sanitize_version(tag)
 
-        if not tag:
-            log.log(INFO, "File is empty, return starting_version %r", version_file, starting_version)
-            return _sanitize_version(starting_version)
+                file_sha = get_latest_file_commit(version_file, root=root)
+                log.log(DEBUG, "File SHA-256: %r", file_sha)
 
-        log.log(DEBUG, "File content: %r", tag)
-        if not count_commits_from_version_file:
-            return _sanitize_version(tag)
+                ccount = count_since(file_sha, root=root) if file_sha is not None else None
+                log.log(INFO, "Commits count between HEAD and last version file change: %r", ccount)
 
-        tag_sha = get_latest_file_commit(version_file, root=root)
-        log.log(DEBUG, "File SHA-256: %r", tag_sha)
-    else:
-        log.log(INFO, "Latest tag: %r", tag)
-        tag_sha = get_sha(tag, root=root)
-        log.log(INFO, "Tag SHA-256: %r", tag_sha)
+    elif not head_sha:
+        log.log(INFO, "Not a git repo, or repo without any branch")
+
+    elif tag_sha:
+        ccount = count_since(tag_sha, root=root)
+        log.log(INFO, "Commits count between HEAD and last tag: %r", ccount)
 
         if tag_formatter is not None:
             tag_format_callback = _callable_factory(
@@ -567,18 +580,12 @@ def version_from_git(
             tag = tag_format_callback(tag)
             log.log(DEBUG, "Tag after formatting: %r", tag)
 
+    if not tag:
+        log.log(INFO, "No source for version, return starting_version %r", starting_version)
+        return _sanitize_version(starting_version)
+
     dirty = is_dirty(root=root)
     log.log(INFO, "Is dirty: %r", dirty)
-
-    head_sha = get_sha(root=root)
-    log.log(INFO, "HEAD SHA-256: %r", head_sha)
-
-    full_sha = head_sha if head_sha is not None else ""
-    ccount = count_since(tag_sha, root=root) if tag_sha is not None else None
-    log.log(INFO, "Commits count between HEAD and latest tag: %r", ccount)
-
-    on_tag = head_sha is not None and head_sha == tag_sha and not from_file
-    log.log(INFO, "HEAD is tagged: %r", on_tag)
 
     branch = get_branch(root=root)
     log.log(INFO, "Current branch: %r", branch)
@@ -605,6 +612,7 @@ def version_from_git(
         log.log(INFO, "Using template from 'template' option")
         t = template
 
+    full_sha = head_sha if head_sha is not None else ""
     version = _resolve_substitutions(t, sha=full_sha[:8], tag=tag, ccount=ccount, branch=branch, full_sha=full_sha)
     log.log(INFO, "Version number after resolving substitutions: %r", version)
     return _sanitize_version(version)
