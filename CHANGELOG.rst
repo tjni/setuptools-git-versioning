@@ -6,6 +6,7 @@ Changelog
 
 .. changelog::
     :version: 2.0.0
+    :released: 08.04.2024
 
     .. change::
         :tags: config, breaking
