@@ -25,6 +25,7 @@ Changelog
 
     .. change::
         :tags: core, breaking
+        :tickets: 97,94
 
         ``version_file`` option now have precedence over any tags in the current branch.
 
