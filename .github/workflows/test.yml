@@ -2,11 +2,11 @@ name: Tests
 on:
   push:
     branches-ignore:
-    - dependabot/**
-    - pre-commit-ci-update-config
+      - dependabot/**
+      - pre-commit-ci-update-config
   pull_request:
     branches:
-    - master
+      - master
   workflow_dispatch:
 
 concurrency:
@@ -28,63 +28,63 @@ jobs:
         # run only limited set of tests because it takes too long
         mark: [important]
         include:
-        - os: macos-latest
-          mark: important
-          python-version: '3.12'
-        - os: windows-latest
-          mark: important
-          python-version: '3.12'
+          - os: macos-latest
+            mark: important
+            python-version: '3.12'
+          - os: windows-latest
+            mark: important
+            python-version: '3.12'
         # run all the tests only on latest python version
-        - os: ubuntu-latest
-          mark: all
-          python-version: '3.12'
+          - os: ubuntu-latest
+            mark: all
+            python-version: '3.12'
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v5
-      with:
-        python-version: ${{ matrix.python-version }}
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
 
-    - name: Cache pip
-      uses: actions/cache@v4
-      with:
-        path: ~/.cache/pip
-        key: ${{ runner.os }}-python-${{ matrix.python-version }}-tests-${{ hashFiles('requirements*.txt') }}
-        restore-keys: |
-          ${{ runner.os }}-python-${{ matrix.python-version }}-tests-${{ hashFiles('requirements*.txt') }}
-          ${{ runner.os }}-python-${{ matrix.python-version }}-tests-
-          ${{ runner.os }}-python
-          ${{ runner.os }}-
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-python-${{ matrix.python-version }}-tests-${{ hashFiles('requirements*.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-python-${{ matrix.python-version }}-tests-${{ hashFiles('requirements*.txt') }}
+            ${{ runner.os }}-python-${{ matrix.python-version }}-tests-
+            ${{ runner.os }}-python
+            ${{ runner.os }}-
 
-    - name: Upgrade pip
-      run: python -m pip install --upgrade pip setuptools wheel
+      - name: Upgrade pip
+        run: python -m pip install --upgrade pip setuptools wheel
 
-    - name: Install dependencies
-      run: pip install -I -r requirements.txt -r requirements-test.txt
+      - name: Install dependencies
+        run: pip install -I -r requirements.txt -r requirements-test.txt
 
-    - name: Build package
-      run: |
-        git version
-        git tag -l --sort=-creatordate --merged
-        python setup.py --version
-        python setup.py bdist_wheel sdist
+      - name: Build package
+        run: |
+          git version
+          git tag -l --sort=-creatordate --merged
+          python setup.py --version
+          python setup.py bdist_wheel sdist
 
-    - name: Run tests
-      run: |
-        mkdir reports/
-        pip install -e . --no-build-isolation
-        coverage run -m pytest -m ${{ matrix.mark }}
+      - name: Run tests
+        run: |
+          mkdir reports/
+          pip install -e . --no-build-isolation
+          coverage run -m pytest -m ${{ matrix.mark }}
 
-    - name: Upload coverage results
-      uses: actions/upload-artifact@v4
-      with:
-        name: code-coverage-${{ matrix.os }}-${{ matrix.python-version }}-${{ matrix.mark }}
-        path: reports/.coverage*
+      - name: Upload coverage results
+        uses: actions/upload-artifact@v4
+        with:
+          name: code-coverage-${{ matrix.os }}-${{ matrix.python-version }}-${{ matrix.mark }}
+          path: reports/.coverage*
 
   all_done:
     name: Tests done
@@ -92,50 +92,50 @@ jobs:
     needs: [tests]
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Set up Python ${{ env.DEFAULT_PYTHON }}
-      uses: actions/setup-python@v5
-      with:
-        python-version: ${{ env.DEFAULT_PYTHON }}
+      - name: Set up Python ${{ env.DEFAULT_PYTHON }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.DEFAULT_PYTHON }}
 
-    - name: Cache pip
-      uses: actions/cache@v4
-      with:
-        path: ~/.cache/pip
-        key: ${{ runner.os }}-python-${{ env.DEFAULT_PYTHON }}-tests-${{ hashFiles('requirements*.txt') }}
-        restore-keys: |
-          ${{ runner.os }}-python-${{ env.DEFAULT_PYTHON }}-tests-${{ hashFiles('requirements*.txt') }}
-          ${{ runner.os }}-python-${{ env.DEFAULT_PYTHON }}-tests-
-          ${{ runner.os }}-python
-          ${{ runner.os }}-
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-python-${{ env.DEFAULT_PYTHON }}-tests-${{ hashFiles('requirements*.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-python-${{ env.DEFAULT_PYTHON }}-tests-${{ hashFiles('requirements*.txt') }}
+            ${{ runner.os }}-python-${{ env.DEFAULT_PYTHON }}-tests-
+            ${{ runner.os }}-python
+            ${{ runner.os }}-
 
-    - name: Upgrade pip
-      run: python -m pip install --upgrade pip setuptools wheel
+      - name: Upgrade pip
+        run: python -m pip install --upgrade pip setuptools wheel
 
-    - name: Install dependencies
-      run: pip install -I -r requirements.txt -r requirements-test.txt
+      - name: Install dependencies
+        run: pip install -I -r requirements.txt -r requirements-test.txt
 
-    - name: Download all coverage reports
-      uses: actions/download-artifact@v4
-      with:
-        path: reports
+      - name: Download all coverage reports
+        uses: actions/download-artifact@v4
+        with:
+          path: reports
 
-    - name: Move coverage reports to the root folder
-      run: find reports -type f -exec mv '{}' reports \;
+      - name: Move coverage reports to the root folder
+        run: find reports -type f -exec mv '{}' reports \;
 
-    - name: Combine coverage
-      run: |
-        coverage combine
-        coverage xml -o reports/coverage.xml -i
+      - name: Combine coverage
+        run: |
+          coverage combine
+          coverage xml -o reports/coverage.xml -i
 
-    - name: Check coverage
-      uses: codecov/codecov-action@v4
-      with:
-        token: ${{ secrets.CODECOV_TOKEN }}
-        directory: ./reports
-        fail_ci_if_error: true
+      - name: Check coverage
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          directory: ./reports
+          fail_ci_if_error: true
 
-    - name: All done
-      run: echo 1
+      - name: All done
+        run: echo 1

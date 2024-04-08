@@ -6,9 +6,9 @@ build:
     python: '3.12'
   jobs:
     post_checkout:
-    - git fetch --unshallow || true
+      - git fetch --unshallow || true
 
 python:
   install:
-  - requirements: requirements-doc.txt
-  - requirements: requirements.txt
+    - requirements: requirements-doc.txt
+    - requirements: requirements.txt

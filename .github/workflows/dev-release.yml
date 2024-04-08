@@ -3,8 +3,8 @@ name: Dev release
 on:
   push:
     branches-ignore:
-    - dependabot/**
-    - pre-commit-ci-update-config
+      - dependabot/**
+      - pre-commit-ci-update-config
   workflow_dispatch:
 
 env:
@@ -27,45 +27,45 @@ jobs:
       id-token: write # to auth in Test PyPI
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-    - name: Set up Python ${{ env.DEFAULT_PYTHON }}
-      id: python
-      uses: actions/setup-python@v5
-      with:
-        python-version: ${{ env.DEFAULT_PYTHON }}
+      - name: Set up Python ${{ env.DEFAULT_PYTHON }}
+        id: python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.DEFAULT_PYTHON }}
 
-    - name: Cache pip
-      uses: actions/cache@v4
-      with:
-        path: ~/.cache/pip
-        key: ${{ runner.os }}-python-${{ env.DEFAULT_PYTHON }}-release-${{ hashFiles('requirements*.txt') }}
-        restore-keys: |
-          ${{ runner.os }}-python-${{ env.DEFAULT_PYTHON }}-release-${{ hashFiles('requirements*.txt') }}
-          ${{ runner.os }}-python-${{ env.DEFAULT_PYTHON }}-release-
-          ${{ runner.os }}-python
-          ${{ runner.os }}-
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-python-${{ env.DEFAULT_PYTHON }}-release-${{ hashFiles('requirements*.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-python-${{ env.DEFAULT_PYTHON }}-release-${{ hashFiles('requirements*.txt') }}
+            ${{ runner.os }}-python-${{ env.DEFAULT_PYTHON }}-release-
+            ${{ runner.os }}-python
+            ${{ runner.os }}-
 
-    - name: Upgrade pip
-      run: python -m pip install --upgrade pip setuptools wheel
+      - name: Upgrade pip
+        run: python -m pip install --upgrade pip setuptools wheel
 
-    - name: Install dependencies
-      run: pip install -r requirements.txt
+      - name: Install dependencies
+        run: pip install -r requirements.txt
 
-    - name: Patch setup.py with explicit version number
+      - name: Patch setup.py with explicit version number
       # Fix for https://github.com/dolfinus/setuptools-git-versioning/issues/72#issuecomment-1312589464
-      run: |
-        version=$(python setup.py --version)
-        sed -i -E "/from setuptools_git_versioning.*/d" setup.py
-        sed -i -E "s/version=.*/version='${version}',/" setup.py
+        run: |
+          version=$(python setup.py --version)
+          sed -i -E "/from setuptools_git_versioning.*/d" setup.py
+          sed -i -E "s/version=.*/version='${version}',/" setup.py
 
-    - name: Build package
-      run: python setup.py sdist bdist_wheel
+      - name: Build package
+        run: python setup.py sdist bdist_wheel
 
-    - name: Publish package
-      uses: pypa/gh-action-pypi-publish@release/v1
-      with:
-        repository_url: https://test.pypi.org/legacy/
+      - name: Publish package
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          repository_url: https://test.pypi.org/legacy/
