@@ -40,14 +40,16 @@ version number according :pep:`440`.
 
 - Well-documented
 
-See `difference <https://setuptools-git-versioning.readthedocs.io/en/latest/differences.html>`_
+See `comparison <https://setuptools-git-versioning.readthedocs.io/en/stable/comparison.html>`_
 between ``setuptools-git-versioning`` and other tools.
 
 **Limitations:**
 
 - Currently the only supported VCS is *Git*
 
-- Only git v2 is supported
+- Only Git v2 is supported
+
+- Only Setuptools build backend is supported (no Poetry & others)
 
 - Currently does not support automatic exporting of package version to a file for runtime use
   (but you can use ``setuptools-git-versioning > file`` redirect instead)
