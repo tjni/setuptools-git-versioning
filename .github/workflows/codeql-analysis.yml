@@ -7,15 +7,13 @@ on:
   pull_request:
     branches:
       - master
-  schedule:
-    - cron: 45 13 * * 6
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
 
 env:
-  DEFAULT_PYTHON: '3.12'
+  DEFAULT_PYTHON: '3.11'
 
 jobs:
   analyze:
