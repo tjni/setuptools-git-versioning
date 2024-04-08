@@ -6,7 +6,7 @@
 .. toctree::
     :hidden:
 
-    differences
+    comparison
 
 .. toctree::
     :maxdepth: 3
