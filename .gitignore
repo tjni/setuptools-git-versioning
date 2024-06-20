@@ -30,3 +30,4 @@ share/python-wheels/
 var/
 venv/
 wheels/
+.python-version

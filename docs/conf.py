@@ -56,6 +56,7 @@ extensions = [
     "numpydoc",
     "sphinxarg.ext",
     "sphinx_tabs.tabs",
+    "sphinx_last_updated_by_git",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
