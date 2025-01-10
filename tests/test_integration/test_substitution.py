@@ -126,6 +126,7 @@ def test_substitution_env(repo, dev_template, pipeline_id, suffix):
     assert get_version_setup_py(repo, env=env) == f"1.2.3.post{suffix}"
 
 
+@pytest.mark.flaky(reruns=3)  # running subprocess takes some time, so we can get previous second
 @pytest.mark.parametrize(
     "template, fmt, callback",
     [
