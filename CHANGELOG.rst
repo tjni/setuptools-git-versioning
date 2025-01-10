@@ -1,6 +1,24 @@
 Changelog
 ==========
 
+2.1
+---
+
+.. changelog::
+    :version: 2.1.0
+    :released: 10.01.2025
+
+    .. change::
+        :tags: dependency, bugfix
+        :tickets: 108
+
+        Replace outdated ``toml`` package with modern ``tomli``.  Thanks to :github-user:`graingert`
+
+    .. change::
+        :tags: general, feature
+
+        Test Python 3.13 compatibility
+
 2.0
 ---
 
