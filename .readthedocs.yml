@@ -12,3 +12,6 @@ python:
   install:
     - requirements: requirements-doc.txt
     - requirements: requirements.txt
+
+sphinx:
+  configuration: docs/conf.py
