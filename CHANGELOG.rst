@@ -6,7 +6,7 @@ Changelog
 
 .. changelog::
     :version: 2.1.1
-    :released: 14.01.2026
+    :released: 15.01.2026
 
     .. change::
         :tags: bugfix

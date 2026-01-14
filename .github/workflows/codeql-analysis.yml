@@ -46,7 +46,8 @@ jobs:
           echo "CODEQL_PYTHON=$(which python)" >> $GITHUB_ENV
 
       - name: Run flake8
-        run: flake8 --count --max-line-length=120 .
+        run: |
+          uv run flake8 --count --max-line-length=120 .
 
     # Initializes the CodeQL tools for scanning.
       - name: Initialize CodeQL
