@@ -3,11 +3,11 @@
 Console command
 ---------------
 
-Package contains script `setuptools-git-versioning` which can be used for calculating version number.\
+Package contains script ``setuptools-git-versioning``` which can be used for calculating version number.\
 
 See :ref:`_installation` instruction for creating the repo with your package.
 
-To get current package version in `mypackage` repo just execute:
+To get current package version in ``mypackage`` repo just execute:
 
 .. code:: bash
 

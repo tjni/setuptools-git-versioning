@@ -14,6 +14,8 @@ repos:
         priority: 0
       - id: check-merge-conflict
         priority: 0
+      - id: check-toml
+        priority: 0
       - id: check-vcs-permalinks
         priority: 0
       - id: name-tests-test
@@ -24,10 +26,24 @@ repos:
         priority: 0
       - id: end-of-file-fixer
         priority: 1
+      - id: mixed-line-ending
+        args: [--fix=lf]
+        types: [python]
+        priority: 1
       - id: fix-byte-order-marker
         priority: 2
       - id: trailing-whitespace
         priority: 3
+
+  - repo: https://github.com/pre-commit/pygrep-hooks
+    rev: v1.10.0
+    hooks:
+      - id: rst-backticks
+        priority: 0
+      - id: rst-directive-colons
+        priority: 0
+      - id: rst-inline-touching-normal
+        priority: 0
 
   - repo: https://github.com/codespell-project/codespell
     rev: v2.4.1
