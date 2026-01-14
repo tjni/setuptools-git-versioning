@@ -25,7 +25,7 @@ def repo_dir(tmp_path_factory: pytest.TempPathFactory):
 
     if os.environ.get("CI", "false").lower() in ["1", "true"]:
         # move collect coverage data to reports directory
-        for file in reports.glob("*"):
+        for file in reports.iterdir():
             file.rename(reports / file.name)
 
 
