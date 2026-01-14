@@ -331,7 +331,7 @@ def get_version_script(cwd: str | os.PathLike, args: list[str] | None = None, **
 
 def get_version(cwd: str | os.PathLike, *, isolated: bool = False, **kwargs) -> str:
     options = [] if isolated else ["--no-isolation"]
-    execute(cwd, sys.executable, "-m", "coverage", "run", "-m", "build", "-s", *options, **kwargs)
+    execute(cwd, sys.executable, "-m", "build", "-s", *options, **kwargs)
 
     content = Path(cwd).joinpath("mypkg.egg-info/PKG-INFO").read_text().splitlines()
     for line in content:

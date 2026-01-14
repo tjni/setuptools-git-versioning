@@ -430,7 +430,7 @@ def _get_version_from_callback(
         try:
             callback = _load_callable(version_callback, package_name, root=root)
             result = callback()
-        except ValueError as e:
+        except TypeError as e:
             log.log(INFO, "Is not a callable")
             log.log(DEBUG, str(e))
             log.log(INFO, "Assuming it is a string attribute")
