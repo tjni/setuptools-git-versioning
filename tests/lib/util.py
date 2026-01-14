@@ -322,10 +322,6 @@ def get_version_module(cwd: str | os.PathLike, args: list[str] | None = None, **
 def get_version_script(cwd: str | os.PathLike, args: list[str] | None = None, **kwargs) -> str:
     return execute(
         cwd,
-        sys.executable,
-        "-m",
-        "coverage",
-        "run",
         "setuptools-git-versioning",
         *(args or []),
         "-vv",
