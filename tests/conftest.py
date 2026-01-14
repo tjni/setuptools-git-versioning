@@ -31,10 +31,10 @@ def repo_dir(tmp_path_factory: pytest.TempPathFactory):
 
 @pytest.fixture
 def repo(repo_dir):
-    execute(repo_dir, "git init -b master")
-    execute(repo_dir, "git config --local user.email 'tests@example.com'")
-    execute(repo_dir, "git config --local user.name 'Tests runner'")
-    execute(repo_dir, "git add .coveragerc")
+    execute(repo_dir, "git", "init", "-b", "master")
+    execute(repo_dir, "git", "config", "--local", "user.email", "tests@example.com")
+    execute(repo_dir, "git", "config", "--local", "user.name", "Tests runner")
+    execute(repo_dir, "git", "add", ".coveragerc")
     create_file(
         repo_dir,
         ".gitignore",

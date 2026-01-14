@@ -31,7 +31,7 @@ def rand_sha() -> str:
     return token_hex(8)
 
 
-def execute(cwd: str | os.PathLike, cmd: str, **kwargs) -> str:
+def execute(cwd: str | os.PathLike, *cmd: str, **kwargs) -> str:
     log.info("Executing '%s' at '%s'", cmd, cwd)
 
     if "env" in kwargs:
@@ -40,11 +40,11 @@ def execute(cwd: str | os.PathLike, cmd: str, **kwargs) -> str:
         if pythonpath:
             kwargs["env"]["PYTHONPATH"] = pythonpath
 
-    return subprocess.check_output(cmd, cwd=cwd, shell=True, universal_newlines=True, **kwargs)  # nosec
+    return subprocess.check_output(cmd, cwd=cwd, universal_newlines=True, **kwargs)  # nosec
 
 
 def get_full_sha(cwd: str | os.PathLike, **kwargs) -> str:
-    return execute(cwd, "git rev-list -n 1 HEAD", **kwargs).strip()
+    return execute(cwd, "git", "rev-list", "-n", "1", "HEAD", **kwargs).strip()
 
 
 def get_sha(cwd: str | os.PathLike, **kwargs) -> str:
@@ -57,18 +57,18 @@ def create_commit(
     dt: datetime | None = None,
     **kwargs,
 ) -> str:
-    options = ""
+    options: list[str] = []
 
     if dt is not None:
         # Store committer date in case it was set somewhere else
         original_committer_date = os.environ.get("GIT_COMMITTER_DATE", None)
 
-        options += f"--date {dt.isoformat()}"
+        options.extend(["--date", dt.isoformat()])
         # The committer date is what is used to determine sort order for tags, etc
         os.environ["GIT_COMMITTER_DATE"] = dt.isoformat()
 
     try:
-        return_value = execute(cwd, f'git commit -m "{message}" {options}', **kwargs)
+        return_value = execute(cwd, "git", "commit", "-m", message, *options, **kwargs)
     finally:
         # Return committer date env var to prior value if set
         if dt is not None:
@@ -89,21 +89,14 @@ def create_tag(
     commit: str | None = None,
     **kwargs,
 ) -> str:
-    options = ""
-    if message:
-        options += f' -a -m "{message}"'
-
-    if not commit:
-        commit = ""
-
-    return execute(cwd, f"git tag {options} {tag} {commit}", **kwargs)
+    message_options = ["-a", "-m", message] if message else []
+    commit_options = [commit] if commit else []
+    return execute(cwd, "git", "tag", *message_options, tag, *commit_options, **kwargs)
 
 
 def checkout_branch(cwd: str | os.PathLike, branch: str, *, new: bool = True, **kwargs) -> str:
-    options = ""
-    if new:
-        options += " -b"
-    return execute(cwd, f"git checkout {options} {branch}", **kwargs)
+    options = ["-b"] if new else []
+    return execute(cwd, "git", "checkout", *options, branch, **kwargs)
 
 
 def create_folder(
@@ -125,9 +118,9 @@ def create_folder(
     path.joinpath(rand_str()).touch()
 
     if add:
-        execute(cwd, f"git add {name}")
-        log.info(execute(cwd, "git status"))
-        log.info(execute(cwd, "git diff"))
+        execute(cwd, "git", "add", name)
+        log.info(execute(cwd, "git", "status"))
+        log.info(execute(cwd, "git", "diff"))
 
         if commit:
             create_commit(cwd, f"Add {name}")
@@ -156,9 +149,9 @@ def create_file(
     Path(cwd).joinpath(name).write_text(content)
 
     if add:
-        execute(cwd, f"git add {name}")
-        log.info(execute(cwd, "git status"))
-        log.info(execute(cwd, "git diff"))
+        execute(cwd, "git", "add", name)
+        log.info(execute(cwd, "git", "status"))
+        log.info(execute(cwd, "git", "diff"))
 
         if commit:
             create_commit(cwd, f"Add {name}")
@@ -302,32 +295,33 @@ def typed_config(  # noqa: PLR0913
 
 
 def get_version_setup_py(cwd: str | os.PathLike, **kwargs) -> str:
-    return execute(cwd, f"{sys.executable} setup.py --version", **kwargs).strip()
+    return execute(cwd, sys.executable, "setup.py", "--version", **kwargs).strip()
 
 
 def get_version_module(cwd: str | os.PathLike, args: list[str] | None = None, **kwargs) -> str:
-    args_str = " ".join(map(str, args or []))
-
     return execute(
         cwd,
-        f"{sys.executable} -m coverage run -m setuptools_git_versioning {args_str} -vv",
+        sys.executable,
+        "-m",
+        "coverage",
+        "run",
+        "-m",
+        "setuptools_git_versioning",
+        *(args or []),
+        "-vv",
         **kwargs,
     ).strip()
 
 
 def get_version_script(cwd: str | os.PathLike, args: list[str] | None = None, **kwargs) -> str:
-    args_str = " ".join(map(str, args or []))
-    return execute(cwd, f"setuptools-git-versioning {args_str} -vv", **kwargs).strip()
+    return execute(cwd, "setuptools-git-versioning", *(args or []), "-vv", **kwargs).strip()
 
 
 def get_version(cwd: str | os.PathLike, *, isolated: bool = False, **kwargs) -> str:
-    cmd = f"{sys.executable} -m build -s"
-    if not isolated:
-        cmd += " --no-isolation"
-    execute(cwd, cmd, **kwargs)
+    options = [] if isolated else ["--no-isolation"]
+    execute(cwd, sys.executable, "-m", "coverage", "run", "-m", "build", "-s", *options, **kwargs)
 
     content = Path(cwd).joinpath("mypkg.egg-info/PKG-INFO").read_text().splitlines()
-
     for line in content:
         if line.startswith("Version: "):
             return line.replace("Version: ", "").strip()
