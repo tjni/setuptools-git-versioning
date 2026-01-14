@@ -47,21 +47,16 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@v7
         with:
+          activate-environment: "true"
           enable-cache: "false"
 
       - name: Install dependencies
         run: |
           uv sync --group test
 
-      - name: Git info
-        run: |
-          git version
-          git tag -l --sort=-creatordate --merged
-
       - name: Run tests
         run: |
           mkdir reports/
-          source .venv/bin/activate
           coverage run -m pytest -n auto -m ${{ matrix.mark }}
 
       - name: Upload coverage results

@@ -52,6 +52,9 @@ setuptools_git_versioning = "setuptools_git_versioning:parse_config"
 [project.entry-points."setuptools.finalize_distribution_options"]
 setuptools_git_versioning = "setuptools_git_versioning:infer_version"
 
+[project.entry-points."console_scripts"]
+setuptools-git-versioning = "setuptools_git_versioning:__main__"
+
 [tool.setuptools-git-versioning]
 enabled = true
 dev_template = "{tag}.post{ccount}"

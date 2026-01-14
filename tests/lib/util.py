@@ -40,7 +40,6 @@ def execute(cwd: str | os.PathLike, *cmd: str, **kwargs) -> str:
         if pythonpath:
             kwargs["env"]["PYTHONPATH"] = pythonpath
 
-    print(os.environ)
     with subprocess.Popen(cmd, cwd=cwd, stdout=subprocess.PIPE, universal_newlines=True, **kwargs) as process:
         stdout, stderr = process.communicate()
         if process.returncode != 0:
