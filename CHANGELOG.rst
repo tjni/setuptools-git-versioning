@@ -21,7 +21,7 @@ Changelog
     .. change::
         :tags: refactor
 
-        Timestamps in version template are now timezone-aware
+        Timestamps in version templates are now timezone-aware.
 
     .. change::
         :tags: bugfix

@@ -111,7 +111,7 @@ ignore = ["ARG", "ANN", "A002", "COM812", "D", "TD", "FIX002", "PLC0415"]
     "DTZ005",
 ]
 
-[pytest.ini_options]
+[pytest]
 markers = [
     "all: mark all tests",
     "important: mark only important tests (e.g. functions which depend on OS and Python version)",
