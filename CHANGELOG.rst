@@ -9,19 +9,19 @@ Changelog
     :released: 15.01.2026
 
     .. change::
-        :tags: refactor
-
-        Do not use ``Popen(shell=True)`` anymore.
-
-    .. change::
-        :tags: refactor
+        :tags: refactor,breaking
 
         Make most of args in ``version_from_git()`` keyword-only.
 
     .. change::
-        :tags: refactor
+        :tags: refactor,breaking
 
         Timestamps in version templates are now timezone-aware.
+
+    .. change::
+        :tags: refactor
+
+        Do not use ``Popen(shell=True)`` anymore.
 
     .. change::
         :tags: bugfix
@@ -31,6 +31,7 @@ Changelog
 
     .. change::
         :tags: bugfix
+        :tickets: 122
 
         Fix epoch versions like ``0!2025.12.3`` were wrongly converted to ``0.2025.12.3``.
 
