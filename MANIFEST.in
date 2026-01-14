@@ -1,5 +1,4 @@
-include README.rst LICENSE requirements.txt
-exclude pyproject.toml requirements-test.txt requirements-dev.txt requirements-doc.txt
+include README.rst LICENSE pyproject.toml setuptools_git_versioning.py
 recursive-exclude * __pycache__
 recursive-exclude * *.pyc
 recursive-exclude * *.pyo

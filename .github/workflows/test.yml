@@ -14,7 +14,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  DEFAULT_PYTHON: '3.12'
+  DEFAULT_PYTHON: '3.13'
 
 jobs:
   tests:
@@ -44,35 +44,17 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Cache pip
-        uses: actions/cache@v5
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
         with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-python-${{ matrix.python-version }}-tests-${{ hashFiles('requirements*.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-python-${{ matrix.python-version }}-tests-${{ hashFiles('requirements*.txt') }}
-            ${{ runner.os }}-python-${{ matrix.python-version }}-tests-
-            ${{ runner.os }}-python
-            ${{ runner.os }}-
-
-      - name: Upgrade pip
-        run: python -m pip install --upgrade pip setuptools wheel
-
-      - name: Install dependencies
-        run: pip install -I -r requirements.txt -r requirements-test.txt
-
-      - name: Build package
-        run: |
-          git version
-          git tag -l --sort=-creatordate --merged
-          python setup.py --version
-          python setup.py bdist_wheel sdist
+          enable-cache: "false"
 
       - name: Run tests
         run: |
+          git version
+          git tag -l --sort=-creatordate --merged
           mkdir reports/
-          pip install -e . --no-build-isolation
-          coverage run -m pytest -m ${{ matrix.mark }}
+          uv run --group test coverage run -m pytest -m ${{ matrix.mark }}
 
       - name: Upload coverage results
         uses: actions/upload-artifact@v6
@@ -91,40 +73,33 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
 
+      - name: Download all coverage reports
+        uses: actions/download-artifact@v7
+        with:
+          path: reports/
+          pattern: coverage-*
+          merge-multiple: true
+
+      - name: Show test results
+        uses: mikepenz/action-junit-report@v6
+        if: success() || failure() # always run even if the previous step fails
+        with:
+          report_paths: reports/junit/*.xml
+
       - name: Set up Python ${{ env.DEFAULT_PYTHON }}
         uses: actions/setup-python@v6
         with:
           python-version: ${{ env.DEFAULT_PYTHON }}
 
-      - name: Cache pip
-        uses: actions/cache@v5
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
         with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-python-${{ env.DEFAULT_PYTHON }}-tests-${{ hashFiles('requirements*.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-python-${{ env.DEFAULT_PYTHON }}-tests-${{ hashFiles('requirements*.txt') }}
-            ${{ runner.os }}-python-${{ env.DEFAULT_PYTHON }}-tests-
-            ${{ runner.os }}-python
-            ${{ runner.os }}-
-
-      - name: Upgrade pip
-        run: python -m pip install --upgrade pip setuptools wheel
-
-      - name: Install dependencies
-        run: pip install -I -r requirements.txt -r requirements-test.txt
-
-      - name: Download all coverage reports
-        uses: actions/download-artifact@v7
-        with:
-          path: reports
-
-      - name: Move coverage reports to the root folder
-        run: find reports -type f -exec mv '{}' reports \;
+          enable-cache: "false"
 
       - name: Combine coverage
         run: |
-          coverage combine
-          coverage xml -o reports/coverage.xml -i
+          uv run --group test coverage combine
+          uv run --group test coverage xml -o reports/coverage.xml
 
       - name: Check coverage
         uses: codecov/codecov-action@v5

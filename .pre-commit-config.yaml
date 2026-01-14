@@ -8,8 +8,6 @@ repos:
       - id: check-merge-conflict
       - id: check-vcs-permalinks
       - id: check-yaml
-      - id: requirements-txt-fixer
-        files: ^(requirements.*\.txt)$
       - id: end-of-file-fixer
       - id: fix-byte-order-marker
       - id: fix-encoding-pragma
@@ -85,6 +83,11 @@ repos:
     hooks:
       - id: bandit
         args: [-c, bandit.yaml]
+
+  - repo: https://github.com/astral-sh/uv-pre-commit
+    rev: 0.9.25
+    hooks:
+      - id: uv-lock
 
   - repo: meta
     hooks:

@@ -10,37 +10,30 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 
-import subprocess
+import os
 import sys
 from pathlib import Path
 
 from packaging.version import Version
 
-try:
-    from setuptools_git_versioning import version_from_git
+PROJECT_ROOT_DIR = Path(__file__).parent.parent.resolve()
 
-    ver = Version(version_from_git())
-except (ImportError, NameError):
-    sys.path.insert(0, str(Path(__file__).parent.parent.absolute()))
-    ver = Version(
-        subprocess.check_output(  # nosec
-            f"{sys.executable} ../setup.py --version",
-            shell=True,
-        )
-        .decode("utf-8")
-        .strip()
-    )
+sys.path.insert(0, os.fspath(PROJECT_ROOT_DIR))
 
-# -- Project information -----------------------------------------------------
+from setuptools_git_versioning import version_from_git  # noqa: E402
 
-project = "setuptools-git-versioning"
-copyright = "2020-2024, dolfinus"
-author = "dolfinus"
+ver = Version(version_from_git())
 
 # The short X.Y version
 version = ver.base_version
 # The full version, including alpha/beta/rc tags
 release = ver.public
+
+# -- Project information -----------------------------------------------------
+
+project = "setuptools-git-versioning"
+copyright = "2020-present, dolfinus"
+author = "dolfinus"
 
 
 # -- General configuration ---------------------------------------------------

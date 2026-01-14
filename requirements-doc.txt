@@ -1,8 +1,0 @@
-changelog
-furo
-numpydoc
-sphinx
-sphinx-argparse
-sphinx-autodoc-typehints
-sphinx-last-updated-by-git
-sphinx-tabs

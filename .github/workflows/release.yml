@@ -32,35 +32,16 @@ jobs:
         with:
           python-version: ${{ env.DEFAULT_PYTHON }}
 
-      - name: Cache pip
-        uses: actions/cache@v5
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
         with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-python-${{ env.DEFAULT_PYTHON }}-release-${{ hashFiles('requirements*.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-python-${{ env.DEFAULT_PYTHON }}-release-${{ hashFiles('requirements*.txt') }}
-            ${{ runner.os }}-python-${{ env.DEFAULT_PYTHON }}-release-
-            ${{ runner.os }}-python
-            ${{ runner.os }}-
+          enable-cache: "false"
 
-      - name: Upgrade pip
-        run: python -m pip install --upgrade pip setuptools wheel
-
-      - name: Install dependencies
-        run: pip install -r requirements.txt -r requirements-doc.txt
-
-      - name: Inject slug/short variables
-        uses: rlespinasse/github-slug-action@v4.x
-
-      - name: Patch setup.py with explicit version number
+      - name: Fix version number
       # Fix for https://github.com/dolfinus/setuptools-git-versioning/issues/72#issuecomment-1312589464
         run: |
-          version=$(echo $GITHUB_REF_SLUG | sed -E "s/v(.*)/\1/")
-          sed -i -E "/from setuptools_git_versioning.*/d" setup.py
-          sed -i -E "s/version=.*/version='${version}',/" setup.py
-
-      - name: Build package
-        run: python setup.py sdist bdist_wheel
+          version=$(uv run -m setuptools_git_versioning)
+          sed -i -E "s/dynamic = .*/version = "${version}"/" pyproject.toml
 
       - name: Build release notes
         run: |

@@ -1,17 +1,17 @@
 version: 2
 
+sphinx:
+  configuration: docs/conf.py
+
 build:
   os: ubuntu-22.04
   tools:
-    python: '3.12'
+    python: '3.13'
   jobs:
     post_checkout:
       - git fetch --unshallow || true
-
-python:
-  install:
-    - requirements: requirements-doc.txt
-    - requirements: requirements.txt
-
-sphinx:
-  configuration: docs/conf.py
+    post_create_environment:
+      - UV_PROJECT_ENVIRONMENT=$READTHEDOCS_VIRTUALENV_PATH python -m pip install uv
+    post_install:
+      - UV_PROJECT_ENVIRONMENT=$READTHEDOCS_VIRTUALENV_PATH uv sync --no-install-project --group docs
+      - VIRTUAL_ENV=$READTHEDOCS_VIRTUALENV_PATH python -m pip list -v
