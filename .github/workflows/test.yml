@@ -56,14 +56,14 @@ jobs:
 
       - name: Run tests
         run: |
-          mkdir reports/
-          coverage run -m pytest -n auto -m ${{ matrix.mark }}
+          mkdir -p reports/junit/
+          coverage run -m pytest -n auto -m ${{ matrix.mark }} --junitxml=reports/junit/${{ matrix.os }}-${{ matrix.python-version }}-${{ matrix.mark }}.xml
 
       - name: Upload coverage results
         uses: actions/upload-artifact@v6
         with:
           name: code-coverage-${{ matrix.os }}-${{ matrix.python-version }}-${{ matrix.mark }}
-          path: reports/.coverage*
+          path: reports/*
           # https://github.com/actions/upload-artifact/issues/602
           include-hidden-files: true
 
