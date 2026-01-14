@@ -5,14 +5,14 @@ from pathlib import Path
 
 import pytest
 
-from tests.lib.util import create_file, execute, rand_str
+from tests.lib.util import create_file, execute
 
 root = Path(__file__).parent.parent
 
 
 @pytest.fixture
-def repo_dir(tmpdir_factory):
-    repo_dir = tmpdir_factory.mkdir(rand_str())
+def repo_dir(temp_path_factory: pytest.TempPathFactory):
+    repo_dir = temp_path_factory.mktemp("repo")
     coveragerc = root.joinpath(".coveragerc")
     reports = repo_dir.joinpath("reports")
 
