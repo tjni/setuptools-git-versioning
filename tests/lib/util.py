@@ -40,7 +40,13 @@ def execute(cwd: str | os.PathLike, *cmd: str, **kwargs) -> str:
         if pythonpath:
             kwargs["env"]["PYTHONPATH"] = pythonpath
 
-    return subprocess.check_output(cmd, cwd=cwd, universal_newlines=True, **kwargs)  # nosec
+    with subprocess.Popen(cmd, cwd=cwd, **kwargs, stdout=subprocess.PIPE, universal_newlines=True) as process:
+        stdout, stderr = process.communicate()
+        if process.returncode != 0:
+            log.error("Failed to execute '%s' at '%s':\nstdout=%s\nstderr=%s", cmd, cwd, stdout, stderr)
+            raise subprocess.CalledProcessError(process.returncode, cmd, output=stdout, stderr=stderr)
+
+    return stdout
 
 
 def get_full_sha(cwd: str | os.PathLike, **kwargs) -> str:
@@ -316,10 +322,6 @@ def get_version_module(cwd: str | os.PathLike, args: list[str] | None = None, **
 def get_version_script(cwd: str | os.PathLike, args: list[str] | None = None, **kwargs) -> str:
     return execute(
         cwd,
-        sys.executable,
-        "-m",
-        "coverage",
-        "run",
         "setuptools-git-versioning",
         *(args or []),
         "-vv",

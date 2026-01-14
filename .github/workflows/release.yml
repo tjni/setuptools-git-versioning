@@ -35,19 +35,19 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@v7
         with:
+          activate-environment: "true"
           enable-cache: "false"
 
       - name: Fix version number
       # Fix for https://github.com/dolfinus/setuptools-git-versioning/issues/72#issuecomment-1312589464
         run: |
-          version=$(uv run -m setuptools_git_versioning)
+          version=$(echo $GITHUB_REF_SLUG | sed -E "s/v(.*)/\1/")
           sed -i -E "s/dynamic = .*/version = \"${version}\"/" pyproject.toml
 
       - name: Build release notes
         run: |
           mkdir reports/
-          pip install -e .
-          version=$(echo $GITHUB_REF_SLUG | sed -E "s/v(.*)/\1/")
+          uv pip install -e .
           # lines 1 and 3 are empty, line 2 contains version number, line 4 contains release date
           changelog generate-md -c ./docs/conf.py CHANGELOG.rst -v $version | sed "1,4d" > reports/release.md
           sed -i -E 's/:github-user:`(.*)`/@\1/g' reports/release.md
