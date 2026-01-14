@@ -14,6 +14,11 @@ Changelog
         Fix calling ``get_version(root=...)`` in combination with version-file strategy -
         relative file version was resolved against ``os.cwd``, not explicitly passed ``root``.
 
+    .. change::
+        :tags: bugfix
+
+        Fix epoch versions like ``0!2025.12.3`` were wrongly converted to ``0.2025.12.3``.
+
 .. changelog::
     :version: 2.1.0
     :released: 10.01.2025

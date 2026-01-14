@@ -36,7 +36,7 @@ ENV_VARS_REGEXP = re.compile(r"\{env:(?P<name>[^:}]+):?(?P<default>[^}]+\}*)?\}"
 TIMESTAMP_REGEXP = re.compile(r"\{timestamp:?(?P<fmt>[^:}]+)?\}", re.IGNORECASE | re.UNICODE)
 
 # https://github.com/pypa/setuptools/blob/bc39d28bda2a1faee6680ae30e42526b9d775151/setuptools/command/dist_info.py#L108-L131
-UNSUPPORTED_SYMBOL_REGEXP = re.compile(r"[^\w\d]+", re.IGNORECASE | re.UNICODE)
+UNSUPPORTED_SYMBOL_REGEXP = re.compile(r"[^\w\d!]+", re.IGNORECASE | re.UNICODE)
 
 LOG_FORMAT = "[%(asctime)s] %(levelname)+8s: %(message)s"
 # setuptools v60.2.0 changed default logging level to DEBUG: https://github.com/pypa/setuptools/pull/2974

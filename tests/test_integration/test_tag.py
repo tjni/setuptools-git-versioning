@@ -108,6 +108,7 @@ def test_tag_missing(repo, create_config, starting_version, version):
     [
         ("1.0.0", "1.0.0"),
         ("v1.2.3", "1.2.3"),
+        ("1!2.3", "1!2.3"),
         ("1.2.3dev1", "1.2.3.dev1"),
         ("1.2.3.dev1", "1.2.3.dev1"),
         ("1.2.3-dev1", "1.2.3.dev1"),
