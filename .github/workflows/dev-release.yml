@@ -1,10 +1,6 @@
 name: Dev release
 
 on:
-  push:
-    branches-ignore:
-      - dependabot/**
-      - pre-commit-ci-update-config
   workflow_dispatch:
 
 env:
