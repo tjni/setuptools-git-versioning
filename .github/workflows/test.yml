@@ -59,7 +59,7 @@ jobs:
           git version
           git tag -l --sort=-creatordate --merged
           mkdir reports/
-          coverage run -m pytest -m ${{ matrix.mark }}
+          coverage run -m pytest -n auto -m ${{ matrix.mark }}
 
       - name: Upload coverage results
         uses: actions/upload-artifact@v6
