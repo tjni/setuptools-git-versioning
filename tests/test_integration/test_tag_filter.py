@@ -1,7 +1,7 @@
-import os
 import subprocess
 import textwrap
 from datetime import datetime, timedelta
+from pathlib import Path
 
 import pytest
 
@@ -20,7 +20,7 @@ pytestmark = pytest.mark.all
 
 @pytest.mark.important
 @pytest.mark.parametrize(
-    "tag_filter, version",
+    ("tag_filter", "version"),
     [
         ("product_x/(?P<tag>.*)", "1.1.0"),
         ("product_y/(?P<tag>.*)", "1.1.10"),
@@ -48,7 +48,7 @@ def test_tag_filter(repo, create_config, tag_filter, version):
 
 
 @pytest.mark.parametrize(
-    "tag, version, filter_regex",
+    ("tag", "version", "filter_regex"),
     [
         ("1.0.0", "1.0.0", r"(?P<tag>[\d.]+)"),
         ("release/1.0.0", "0.0.1", r"(?P<tag>[\d.]+)"),
@@ -90,8 +90,8 @@ def test_tag_filter_external(repo, create_config, tag, version, filter_regex):
     assert get_version_module(repo) == version
 
     # path to the repo can be passed as positional argument
-    assert get_version_script(os.getcwd(), args=[repo]) == version
-    assert get_version_module(os.getcwd(), args=[repo]) == version
+    assert get_version_script(Path.cwd(), args=[repo]) == version
+    assert get_version_module(Path.cwd(), args=[repo]) == version
 
 
 def test_tag_filter_without_tag_formatter(repo, create_config):

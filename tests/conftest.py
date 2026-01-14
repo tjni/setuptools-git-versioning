@@ -1,29 +1,34 @@
 import os
 import shutil
 import textwrap
+from pathlib import Path
 
 import pytest
 
 from tests.lib.util import create_file, execute, rand_str
 
-root = os.path.dirname(os.path.dirname(__file__))
+root = Path(__file__).parent.parent
 
 
 @pytest.fixture
-def repo_dir(tmpdir):
-    repo_dir = str(tmpdir.mkdir(rand_str()))
+def repo_dir(tmpdir_factory):
+    repo_dir = tmpdir_factory.mkdir(rand_str())
+    coveragerc = root.joinpath(".coveragerc")
+    reports = repo_dir.joinpath("reports")
+
     # collect coverage data
-    with open(os.path.join(root, ".coveragerc")) as f:
+    with coveragerc.open("r") as f:
         create_file(repo_dir, ".coveragerc", f.read(), add=False, commit=False)
-    os.mkdir(os.path.join(repo_dir, "reports"))
+
+    reports.mkdir(parents=True, exist_ok=True)
 
     yield repo_dir
 
     if os.environ.get("CI", "false").lower() in ["1", "true"]:
         # move collect coverage data to reports directory
-        for root_path, _dirs, files in os.walk(os.path.join(repo_dir, "reports")):
+        for root_path, _dirs, files in os.walk(reports):
             for file in files:
-                shutil.move(os.path.join(root_path, file), os.path.join(root, "reports", file))
+                shutil.move(root_path / file, reports / file)
 
 
 @pytest.fixture

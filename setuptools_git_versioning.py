@@ -9,7 +9,7 @@ import re
 import subprocess  # nosec
 import sys
 import textwrap
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from pprint import pformat
 from typing import TYPE_CHECKING, Any, Callable
@@ -69,10 +69,10 @@ DEFAULT_CONFIG = {
 log = logging.getLogger(__name__)
 
 
-def _exec(cmd: str, root: str | os.PathLike | None = None) -> list[str]:
-    log.log(DEBUG, "Executing %r at '%s'", cmd, root or os.getcwd())
+def _exec(*cmd: str, root: str | os.PathLike | None = None) -> list[str]:
+    log.log(DEBUG, "Executing %r at '%s'", cmd, root or Path.cwd())
     try:
-        stdout = subprocess.check_output(cmd, shell=True, text=True, cwd=root)  # nosec
+        stdout = subprocess.check_output(cmd, text=True, cwd=root)  # noqa: S603
     except subprocess.CalledProcessError as e:
         stdout = e.output
     lines = stdout.splitlines()
@@ -81,26 +81,20 @@ def _exec(cmd: str, root: str | os.PathLike | None = None) -> list[str]:
 
 def get_branches(root: str | os.PathLike | None = None) -> list[str]:
     """Return list of branch names in the git repository"""
-    branches = _exec("git branch -l --format '%(refname:short)'", root=root)
-    if branches:
-        return branches
-    return []
+    branches = _exec("git", "branch", "-l", "--format", "%(refname:short)", root=root)
+    return branches or []
 
 
 def get_branch(root: str | os.PathLike | None = None) -> str | None:
     """Return branch name pointing to HEAD, or None"""
-    branches = _exec("git rev-parse --abbrev-ref HEAD", root=root)
-    if branches:
-        return branches[0]
-    return None
+    branches = _exec("git", "rev-parse", "--abbrev-ref", "HEAD", root=root)
+    return branches[0] if branches else None
 
 
 def get_all_tags(sort_by: str = DEFAULT_SORT_BY, root: str | os.PathLike | None = None) -> list[str]:
     """Return list of tags in the git repository"""
-    tags = _exec(f"git tag --sort=-{sort_by}", root=root)
-    if tags:
-        return tags
-    return []
+    tags = _exec("git", "tag", f"--sort=-{sort_by}", root=root)
+    return tags or []
 
 
 def get_tags(
@@ -109,35 +103,28 @@ def get_tags(
     root: str | os.PathLike | None = None,
 ) -> list[str]:
     """Return list of tags merged into HEAD history tree"""
-    tags = _exec(f"git tag --sort=-{sort_by} --merged", root=root)
+    tags = _exec("git", "tag", f"--sort=-{sort_by} --merged", root=root)
     if filter_callback:
         # pull the tags that don't start with tag_prefix out of the list
-        mytags = list(filter(filter_callback, tags))
-        return mytags
-    if tags:
-        return tags
-    return []
+        return list(filter(filter_callback, tags))
+    return tags or []
 
 
 def get_tag(*args, **kwargs) -> str | None:
     """Return latest tag merged into HEAD history tree"""
     tags = get_tags(*args, **kwargs)
-    if tags:
-        return tags[0]
-    return None
+    return tags[0] if tags else None
 
 
 def get_sha(name: str = "HEAD", root: str | os.PathLike | None = None) -> str | None:
     """Get commit SHA-1 hash"""
-    sha = _exec(f'git rev-list -n 1 "{name}"', root=root)
-    if sha:
-        return sha[0]
-    return None
+    sha = _exec("git", "rev-list", "-n", "1", name, root=root)
+    return sha[0] if sha else None
 
 
 def get_latest_file_commit(path: str | os.PathLike, root: str | os.PathLike | None = None) -> str | None:
     """Get SHA-1 hash of latest commit of the file in the repository"""
-    sha = _exec(f'git log -n 1 --pretty=format:%H -- "{path}"', root=root)
+    sha = _exec("git", "log", "-n", "1", "--pretty=format:%H", "--", os.fspath(path), root=root)
     if sha:
         return sha[0]
     return None
@@ -145,15 +132,13 @@ def get_latest_file_commit(path: str | os.PathLike, root: str | os.PathLike | No
 
 def is_dirty(root: str | os.PathLike | None = None) -> bool:
     """Check index status, and return True if there are some uncommitted changes"""
-    res = _exec("git status --short", root=root)
-    if res:
-        return True
-    return False
+    res = _exec("git", "status", "--short", root=root)
+    return bool(res)
 
 
 def count_since(name: str, root: str | os.PathLike | None = None) -> int | None:
     """Get number of commits between HEAD and the commit, or None if they are not related"""
-    res = _exec(f'git rev-list --count HEAD "^{name}"', root=root)
+    res = _exec("git", "rev-list", "--count", "HEAD", f"^{name}", root=root)
     if res:
         return int(res[0])
     return None
@@ -165,14 +150,15 @@ def _set_default_options(config: dict):
 
 
 def _read_toml(name_or_path: str | os.PathLike = "pyproject.toml", root: str | os.PathLike | None = None) -> dict:
-    project_root = Path(root or os.getcwd())
+    project_root = Path(root) if root else Path.cwd()
     file_path = project_root.joinpath(name_or_path)
     if not file_path.exists():
         log.log(INFO, "'%s' does not exist", file_path)
         return {}
 
     if not file_path.is_file():
-        raise OSError(f"'{file_path}' is not a file")
+        msg = f"'{file_path}' is not a file"
+        raise OSError(msg)
 
     log.log(INFO, "Trying 'pyproject.toml' ...")
     try:
@@ -194,7 +180,7 @@ def _read_toml(name_or_path: str | os.PathLike = "pyproject.toml", root: str | o
 
 
 def _infer_setup_py(name_or_path: str = "setup.py", root: str | os.PathLike | None = None) -> str | None:
-    project_root = Path(root or os.getcwd())
+    project_root = Path(root) if root else Path.cwd()
     setup_py_path = project_root.joinpath(name_or_path)
     if not setup_py_path.exists():
         log.log(INFO, "'%s' does not exist", setup_py_path)
@@ -207,7 +193,7 @@ def _infer_setup_py(name_or_path: str = "setup.py", root: str | os.PathLike | No
     # also some setup.py files can contain imports of other files from the package,
     # and if they will be missing from sys.path, import will fail.
     # emulating `python setup.py` call by modifying current dir and sys.path, but restore everything back after import
-    original_cwd = os.getcwd()
+    original_cwd = os.getcwd()  # noqa: PTH109
     original_sys_path = sys.path.copy()
     original_sys_modules = sys.modules.copy()
     try:
@@ -223,7 +209,7 @@ def _infer_setup_py(name_or_path: str = "setup.py", root: str | os.PathLike | No
 
 def parse_config(dist: Distribution, attr: Any, value: Any) -> None:
     "Dummy function used only to register in distutils"
-    return None
+    return
 
 
 def infer_version(dist: Distribution, root: str | os.PathLike | None = None) -> str | None:
@@ -237,9 +223,12 @@ def infer_version(dist: Distribution, root: str | os.PathLike | None = None) -> 
     if config is None:
         config = toml_config
     elif toml_config:
-        raise DistutilsSetupError(
+        msg = (
             "Both 'setup.py' and 'pyproject.toml' have 'setuptools_git_versioning' config section. "
-            "Please remove one of them",
+            "Please remove one of them"
+        )
+        raise DistutilsSetupError(
+            msg,
         )
 
     if config is None:
@@ -247,7 +236,8 @@ def infer_version(dist: Distribution, root: str | os.PathLike | None = None) -> 
         return None
 
     if not isinstance(config, dict):
-        raise DistutilsOptionError(f"Wrong config format. Expected dict, got: {config}")
+        msg = f"Wrong config format. Expected dict, got: {config}"
+        raise DistutilsOptionError(msg)
 
     if not config or not config.pop("enabled", True):
         # Nothing to do here
@@ -262,12 +252,13 @@ def infer_version(dist: Distribution, root: str | os.PathLike | None = None) -> 
 
 def _substitute_env_variables(template: str) -> str:
     log.log(DEBUG, "Substitute environment variables in template %r", template)
-    for var, default in ENV_VARS_REGEXP.findall(template):
+    for var, default_value in ENV_VARS_REGEXP.findall(template):
         log.log(DEBUG, "Variable: %r", var)
 
-        if default.upper() == "IGNORE":
+        default = default_value
+        if default_value.upper() == "IGNORE":
             default = ""
-        elif not default:
+        elif not default_value:
             default = "UNKNOWN"
         log.log(DEBUG, "Default: %r", default)
 
@@ -283,7 +274,7 @@ def _substitute_env_variables(template: str) -> str:
 def _substitute_timestamp(template: str) -> str:
     log.log(DEBUG, "Substitute timestamps in template %r", template)
 
-    now = datetime.now()
+    now = datetime.now(tz=timezone.utc).astimezone()
     for fmt in TIMESTAMP_REGEXP.findall(template):
         format_string = fmt or "%s"
         log.log(DEBUG, "Format: %r", format_string)
@@ -306,8 +297,7 @@ def _resolve_substitutions(template: str, *args, **kwargs) -> str:
             new_template = _substitute_env_variables(template)
             if new_template == template:
                 break
-            else:
-                template = new_template
+            template = new_template
         else:
             break
 
@@ -318,7 +308,7 @@ def _resolve_substitutions(template: str, *args, **kwargs) -> str:
 
 
 def _add_to_sys_path(root: str | os.PathLike | None) -> None:
-    project_root = os.fspath(Path(root or os.getcwd()))
+    project_root = os.fspath(root) if root else os.getcwd()  # noqa: PTH109
     if project_root not in sys.path:
         log.log(DEBUG, "Adding '%s' folder to sys.path", project_root)
         sys.path.insert(0, project_root)
@@ -330,7 +320,8 @@ def _import_reference(
     root: str | os.PathLike | None = None,
 ) -> Any:
     if ":" not in ref:
-        raise NameError(f"Wrong reference name: {ref}")
+        msg = f"Wrong reference name: {ref}"
+        raise NameError(msg)
 
     _add_to_sys_path(root)
 
@@ -348,7 +339,8 @@ def _load_callable(
 ) -> Callable:
     ref = _import_reference(inp, package_name, root=root)
     if not callable(ref):
-        raise ValueError(f"{ref} of type {type(ref)} is not callable")
+        msg = f"{ref} of type {type(ref)} is not callable"
+        raise TypeError(msg)
 
     return ref
 
@@ -361,7 +353,8 @@ def _branch_formatter_factory(regexp: str) -> Callable[[str], str]:
         if match:
             return match.group("branch")
 
-        raise ValueError(f"Branch name {branch} does not match regexp '{regexp}'")
+        msg = f"Branch name {branch} does not match regexp '{regexp}'"
+        raise ValueError(msg)
 
     return branch_formatter
 
@@ -374,7 +367,8 @@ def _tag_formatter_factory(regexp: str) -> Callable[[str], str]:
         if match:
             return match.group("tag")
 
-        raise ValueError(f"Tag name {tag} does not match regexp '{regexp}'")
+        msg = f"Tag name {tag} does not match regexp '{regexp}'"
+        raise ValueError(msg)
 
     return tag_formatter
 
@@ -387,8 +381,7 @@ def _tag_filter_factory(regexp: str) -> Callable[[str], str | None]:
         if match:
             log.info("Matched %s", tag)
             return tag
-        else:
-            return None
+        return None
 
     return tag_filter
 
@@ -414,8 +407,9 @@ def _callable_factory(
     try:
         return callable_factory(regexp_or_ref)
     except re.error as e:
-        log.error("%s is not valid regexp neither a valid function reference: %s", callable_name, e)
-        raise ValueError(f"Cannot parse {callable_name}") from e
+        log.exception("%s is not valid regexp neither a valid function reference", callable_name)
+        msg = f"Cannot parse {callable_name}"
+        raise ValueError(msg) from e
 
 
 # TODO: return Version object instead of str
@@ -470,8 +464,9 @@ def _sanitize_version(version: str) -> str:
 
 
 # TODO: return Version object instead of str
-def version_from_git(
+def version_from_git(  # noqa: PLR0915, PLR0912, PLR0913, C901
     package_name: str | None = None,
+    *,
     template: str = DEFAULT_TEMPLATE,
     dev_template: str = DEFAULT_DEV_TEMPLATE,
     dirty_template: str = DEFAULT_DIRTY_TEMPLATE,
@@ -486,7 +481,7 @@ def version_from_git(
     root: str | os.PathLike | None = None,
 ) -> str:
     # Check if PKG-INFO file exists and Version is present in it
-    project_root = Path(root or os.getcwd())
+    project_root = Path(root) if root else Path.cwd()
     pkg_info = project_root.joinpath("PKG-INFO")
     if pkg_info.exists():
         log.log(INFO, "File '%s' is found, reading its content", pkg_info)
@@ -500,8 +495,9 @@ def version_from_git(
 
     if version_callback is not None:
         if version_file is not None:
+            msg = "Either 'version_file' or 'version_callback' can be passed, but not both at the same time"
             raise ValueError(
-                "Either 'version_file' or 'version_callback' can be passed, but not both at the same time",
+                msg,
             )
         return _get_version_from_callback(version_callback, package_name, root=root)
 
@@ -623,7 +619,7 @@ def get_version(config: dict | None = None, root: str | os.PathLike | None = Non
 
     if not config:
         log.log(INFO, "No explicit config passed")
-        log.log(INFO, "Searching for config files in '%s' folder", root or os.getcwd())
+        log.log(INFO, "Searching for config files in '%s' folder", root or Path.cwd())
         result = _infer_setup_py(root=root)
         if result is not None:
             return Version(result)
@@ -635,15 +631,12 @@ def get_version(config: dict | None = None, root: str | os.PathLike | None = Non
             textwrap.dedent(
                 f"""
                 'setuptools-git-versioning' command can be used only
-                with 'pyproject.toml' or 'setup.py' file present in folder '{root or os.getcwd()}',
+                with 'pyproject.toml' or 'setup.py' file present in folder '{root or Path.cwd()}',
                 containing the 'enabled: True' setting
                 (see https://setuptools-git-versioning.readthedocs.io/en/stable/install.html)
                 """,
             ),
         )
-
-    if not isinstance(config, dict):
-        raise RuntimeError(f"Wrong config format. Expected dict, got: {config}")
 
     _set_default_options(config)
     result = version_from_git(**config, root=root)
@@ -672,12 +665,12 @@ def _parser() -> argparse.ArgumentParser:
     return parser
 
 
-def __main__():
+def __main__():  # noqa: N807
     parser = _parser()
     namespace = parser.parse_args()
     log_level = VERBOSITY_LEVELS.get(namespace.verbose, logging.DEBUG)
     logging.basicConfig(level=log_level, format=LOG_FORMAT, stream=sys.stderr)
-    print(str(get_version(root=namespace.root)))
+    print(str(get_version(root=namespace.root)))  # noqa: T201
 
 
 if __name__ == "__main__":

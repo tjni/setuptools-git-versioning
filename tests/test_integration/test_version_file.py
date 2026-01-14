@@ -49,7 +49,7 @@ def test_version_file(repo, create_config, template):
 
 @pytest.mark.flaky(reruns=3)  # sha and full_sha can start with 0 which are removed, just try again
 @pytest.mark.parametrize(
-    "template, subst",
+    ("template", "subst"),
     [
         (None, "1.0.0.post{ccount}+git.{sha}"),
         ("{tag}.post{ccount}+git.{full_sha}", "1.0.0.post{ccount}+git.{full_sha}"),
@@ -83,7 +83,7 @@ def test_version_file_count_commits(repo, create_config, template, subst):
 
 @pytest.mark.flaky(reruns=3)  # sha and full_sha can start with 0 which are removed, just try again
 @pytest.mark.parametrize(
-    "template, subst",
+    ("template", "subst"),
     [
         (None, "1.0.0.post{ccount}+git.{sha}.dirty"),
         ("{tag}.post{ccount}+git.{full_sha}.dirty", "1.0.0.post{ccount}+git.{full_sha}.dirty"),
@@ -120,7 +120,7 @@ def test_version_file_dirty(repo, create_config, add, template, subst):
 
 
 @pytest.mark.parametrize(
-    "version, real_version",
+    ("version", "real_version"),
     [
         ("1.0.0", "1.0.0"),
         ("v1.2.3", "1.2.3"),
@@ -210,7 +210,7 @@ def test_version_file_tagged_head(repo, create_config):
     assert get_version(repo) == "1.0.0"
 
 
-@pytest.mark.parametrize("starting_version, version", [(None, "0.0.1"), ("1.2.3", "1.2.3")])
+@pytest.mark.parametrize(("starting_version", "version"), [(None, "0.0.1"), ("1.2.3", "1.2.3")])
 @pytest.mark.parametrize("create_version", [True, False])
 def test_version_file_missing(repo, create_config, create_version, starting_version, version):
     config = {

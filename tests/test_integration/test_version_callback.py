@@ -1,5 +1,6 @@
 import os
 import subprocess
+from pathlib import Path
 
 import pytest
 
@@ -91,8 +92,8 @@ def test_version_callback(repo, version_callback, create_config):
     assert get_version_module(repo) == "1.0.0"
 
     # path to the repo can be passed as positional argument
-    assert get_version_script(os.getcwd(), args=[repo]) == "1.0.0"
-    assert get_version_module(os.getcwd(), args=[repo]) == "1.0.0"
+    assert get_version_script(Path.cwd(), args=[repo]) == "1.0.0"
+    assert get_version_module(Path.cwd(), args=[repo]) == "1.0.0"
 
     # git status does not influence callback result
     create_file(repo)
@@ -123,8 +124,8 @@ def test_version_callback_setup_py_direct_import(repo, setup_py):
     assert get_version_module(repo) == "1.0.0"
 
     # path to the repo can be passed as positional argument
-    assert get_version_script(os.getcwd(), args=[repo]) == "1.0.0"
-    assert get_version_module(os.getcwd(), args=[repo]) == "1.0.0"
+    assert get_version_script(Path.cwd(), args=[repo]) == "1.0.0"
+    assert get_version_module(Path.cwd(), args=[repo]) == "1.0.0"
 
     # git status does not influence callback result
     create_file(repo)
@@ -148,7 +149,7 @@ def test_version_callback_missing(repo, create_version_py, create_config):
 
 
 @pytest.mark.parametrize(
-    "version, real_version",
+    ("version", "real_version"),
     [
         ("1.0.0", "1.0.0"),
         ("v1.2.3", "1.2.3"),
@@ -202,8 +203,11 @@ def test_version_callback_not_a_repo(repo_dir, create_config):
     assert get_version_module(repo_dir) == version
 
     # path to the repo can be passed as positional argument
-    assert get_version_script(os.getcwd(), args=[repo_dir]) == version
-    assert get_version_module(os.getcwd(), args=[repo_dir]) == version
+    assert get_version_script(os.getcwd(), args=[repo_dir]) == version  # noqa: PTH109
+    assert get_version_module(os.getcwd(), args=[repo_dir]) == version  # noqa: PTH109
+
+    assert get_version_script(Path.cwd(), args=[repo_dir]) == version
+    assert get_version_module(Path.cwd(), args=[repo_dir]) == version
 
 
 def test_version_callback_has_higher_priority_than_tag(repo, create_config):
@@ -242,10 +246,7 @@ def test_version_callback_conflicts_with_version_file(repo, create_config):
     "template",
     [
         "{tag}.post{env:PIPELINE_ID:123}",
-        "{tag}.post{env:PIPELINE_ID:123}",
         "{tag}.post{env:PIPELINE_ID:IGNORE}",
-        "{tag}.post{env:PIPELINE_ID:IGNORE}",
-        "{tag}.post{env:PIPELINE_ID:{ccount}}",
         "{tag}.post{env:PIPELINE_ID:{ccount}}",
         "{tag}.post{timestamp}",
         "{tag}.post{timestamp:%s}",

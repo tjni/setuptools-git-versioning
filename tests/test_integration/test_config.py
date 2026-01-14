@@ -1,6 +1,6 @@
-import os
 import subprocess
 import textwrap
+from pathlib import Path
 
 import pytest
 import tomli_w
@@ -91,8 +91,8 @@ def test_config_enabled_true(repo, create_config):
     assert get_version_module(repo) == "0.0.1"
 
     # path to the repo can be passed as positional argument
-    assert get_version_script(os.getcwd(), args=[repo]) == "0.0.1"
-    assert get_version_module(os.getcwd(), args=[repo]) == "0.0.1"
+    assert get_version_script(Path.cwd(), args=[repo]) == "0.0.1"
+    assert get_version_module(Path.cwd(), args=[repo]) == "0.0.1"
 
 
 @pytest.mark.parametrize(

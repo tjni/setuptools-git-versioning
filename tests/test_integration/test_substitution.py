@@ -45,7 +45,7 @@ def test_substitution_ccount(repo, dev_template):
 
 
 @pytest.mark.parametrize(
-    "branch, suffix",
+    ("branch", "suffix"),
     [
         ("alpha", "a"),
         ("beta", "b"),
@@ -56,7 +56,7 @@ def test_substitution_ccount(repo, dev_template):
     ],
 )
 @pytest.mark.parametrize(
-    "template, real_template",
+    ("template", "real_template"),
     [
         ("{tag}{branch}", "{tag}{suffix}0"),
         ("{tag}{branch}+a{branch}", "{tag}{suffix}0+a{branch}"),
@@ -71,7 +71,7 @@ def test_substitution_branch(repo, template, real_template, branch, suffix):
 
 
 @pytest.mark.parametrize(
-    "dev_template, pipeline_id, suffix",
+    ("dev_template", "pipeline_id", "suffix"),
     [
         # leading zeros are removed by setuptools
         ("{tag}.post{env:PIPELINE_ID}", "234", "234"),
@@ -128,7 +128,7 @@ def test_substitution_env(repo, dev_template, pipeline_id, suffix):
 
 @pytest.mark.flaky(reruns=3)  # running subprocess takes some time, so we can get previous second
 @pytest.mark.parametrize(
-    "template, fmt, callback",
+    ("template", "fmt", "callback"),
     [
         ("{tag}.post{timestamp}", "{tag}.post{}", lambda dt: (int(dt.strftime("%s")) // 100,)),
         ("{tag}.post{timestamp:}", "{tag}.post{}", lambda dt: (int(dt.strftime("%s")) // 100,)),
@@ -153,7 +153,7 @@ def test_substitution_timestamp(repo, template, fmt, callback):
     create_setup_py(repo, {"template": template})
     create_tag(repo, "1.2.3")
 
-    value = fmt.format(tag="1.2.3", ccount=0, *callback(datetime.now()))
+    value = fmt.format(*callback(datetime.now()), tag="1.2.3", ccount=0)
     pattern = re.compile(r"([^\d\w])0+(\d+[^\d\w]|\d+$)")
     while True:
         # leading zeros are removed even in local part of version

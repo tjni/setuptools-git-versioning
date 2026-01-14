@@ -32,7 +32,7 @@ release = ver.public
 # -- Project information -----------------------------------------------------
 
 project = "setuptools-git-versioning"
-copyright = "2020-present, dolfinus"
+copyright = "2020-present, dolfinus"  # noqa: A001
 author = "dolfinus"
 
 
@@ -72,7 +72,6 @@ html_extra_path = ["robots.txt"]
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named 'default.css' will overwrite the builtin 'default.css'.
-# html_static_path = ['_static']
 
 
 extlinks = {

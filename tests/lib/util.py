@@ -5,12 +5,15 @@ import os
 import subprocess
 import sys
 import textwrap
-from datetime import datetime
 from pathlib import Path
 from secrets import token_hex
-from typing import Any, Callable
+from typing import TYPE_CHECKING, Any, Callable
 
 import tomli_w
+
+if TYPE_CHECKING:
+    from datetime import datetime
+
 
 log = logging.getLogger(__name__)
 root = Path(__file__).parent.parent
@@ -29,7 +32,7 @@ def rand_sha() -> str:
 
 
 def execute(cwd: str | os.PathLike, cmd: str, **kwargs) -> str:
-    log.info(f"Executing '{cmd}' at '{cwd}'")
+    log.info("Executing '%s' at '%s'", cmd, cwd)
 
     if "env" in kwargs:
         kwargs["env"]["PATH"] = os.environ["PATH"]
@@ -96,7 +99,7 @@ def create_tag(
     return execute(cwd, f"git tag {options} {tag} {commit}", **kwargs)
 
 
-def checkout_branch(cwd: str | os.PathLike, branch: str, new: bool = True, **kwargs) -> str:
+def checkout_branch(cwd: str | os.PathLike, branch: str, *, new: bool = True, **kwargs) -> str:
     options = ""
     if new:
         options += " -b"
@@ -106,6 +109,7 @@ def checkout_branch(cwd: str | os.PathLike, branch: str, new: bool = True, **kwa
 def create_folder(
     cwd: str | os.PathLike,
     name: str | None = None,
+    *,
     add: bool = True,
     commit: bool = True,
     **kwargs,
@@ -136,6 +140,7 @@ def create_file(
     cwd: str | os.PathLike,
     name: str | None = None,
     content: str | None = None,
+    *,
     add: bool = True,
     commit: bool = True,
     **kwargs,
@@ -165,6 +170,7 @@ def create_file(
 def create_pyproject_toml(
     cwd: str | os.PathLike,
     config: dict | None = None,
+    *,
     commit: bool = True,
     **kwargs,
 ) -> str | None:
@@ -228,10 +234,9 @@ def create_setup_py(
     if config is None:
         config = {"enabled": True}
 
+    cfg = f"setuptools_git_versioning={config},"
     if config == NotImplemented:
         cfg = ""
-    else:
-        cfg = f"setuptools_git_versioning={config},"
 
     return create_file(
         cwd,
@@ -265,7 +270,7 @@ def create_setup_py(
     )
 
 
-def typed_config(
+def typed_config(  # noqa: PLR0913
     repo: str | os.PathLike,
     config_creator: Callable,
     config_type: str,
@@ -273,16 +278,14 @@ def typed_config(
     template_name: str | None = None,
     config: dict | None = None,
 ) -> None:
+    cfg = {"version_file": "VERSION.txt", "count_commits_from_version_file": True}
     if config_type == "tag":
         cfg = {}
-    else:
-        cfg = {"version_file": "VERSION.txt", "count_commits_from_version_file": True}
 
     if template_name is None:
+        template_name = "dev_template"
         if config_type == "tag":
             template_name = "template"
-        else:
-            template_name = "dev_template"
 
     if template:
         cfg[template_name] = template
@@ -317,7 +320,7 @@ def get_version_script(cwd: str | os.PathLike, args: list[str] | None = None, **
     return execute(cwd, f"setuptools-git-versioning {args_str} -vv", **kwargs).strip()
 
 
-def get_version(cwd: str | os.PathLike, isolated: bool = False, **kwargs) -> str:
+def get_version(cwd: str | os.PathLike, *, isolated: bool = False, **kwargs) -> str:
     cmd = f"{sys.executable} -m build -s"
     if not isolated:
         cmd += " --no-isolation"

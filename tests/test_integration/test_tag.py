@@ -20,7 +20,7 @@ pytestmark = pytest.mark.all
 @pytest.mark.important
 @pytest.mark.flaky(reruns=3)  # sha and full_sha can start with 0 which are removed, just try again
 @pytest.mark.parametrize(
-    "template, subst",
+    ("template", "subst"),
     [
         (None, "1.0.0"),
         ("{tag}.post{ccount}+git.{full_sha}", "1.0.0.post0+git.{full_sha}"),
@@ -44,7 +44,7 @@ def test_tag(repo, create_config, template, subst):
 
 @pytest.mark.flaky(reruns=3)  # sha and full_sha can start with 0 which are removed, just try again
 @pytest.mark.parametrize(
-    "template, subst",
+    ("template", "subst"),
     [
         (None, "1.0.0.post1+git.{sha}"),
         ("{tag}.post{ccount}+git.{full_sha}", "1.0.0.post1+git.{full_sha}"),
@@ -69,7 +69,7 @@ def test_tag_dev(repo, create_config, template, subst):
 
 @pytest.mark.flaky(reruns=3)  # sha and full_sha can start with 0 which are removed, just try again
 @pytest.mark.parametrize(
-    "template, subst",
+    ("template", "subst"),
     [
         (None, "1.0.0.post0+git.{sha}.dirty"),
         ("{tag}.post{ccount}+git.{full_sha}.dirty", "1.0.0.post0+git.{full_sha}.dirty"),
@@ -93,7 +93,7 @@ def test_tag_dirty(repo, create_config, add, template, subst):
     assert get_version(repo) == subst.format(sha=sha, full_sha=full_sha)
 
 
-@pytest.mark.parametrize("starting_version, version", [(None, "0.0.1"), ("1.2.3", "1.2.3")])
+@pytest.mark.parametrize(("starting_version", "version"), [(None, "0.0.1"), ("1.2.3", "1.2.3")])
 def test_tag_missing(repo, create_config, starting_version, version):
     if starting_version:
         create_config(repo, {"starting_version": starting_version})
@@ -104,7 +104,7 @@ def test_tag_missing(repo, create_config, starting_version, version):
 
 
 @pytest.mark.parametrize(
-    "tag, version",
+    ("tag", "version"),
     [
         ("1.0.0", "1.0.0"),
         ("v1.2.3", "1.2.3"),
