@@ -5,6 +5,16 @@ Changelog
 ---
 
 .. changelog::
+    :version: 2.1.1
+    :released: 14.01.2026
+
+    .. change::
+        :tags: bugfix
+
+        Fix calling ``get_version(root=...)`` in combination with version-file strategy -
+        relative file version was resolved against ``os.cwd``, not explicitly passed ``root``.
+
+.. changelog::
     :version: 2.1.0
     :released: 10.01.2025
 

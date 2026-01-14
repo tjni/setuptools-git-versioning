@@ -165,7 +165,8 @@ def _set_default_options(config: dict):
 
 
 def _read_toml(name_or_path: str | os.PathLike = "pyproject.toml", root: str | os.PathLike | None = None) -> dict:
-    file_path = Path(root or os.getcwd()).joinpath(name_or_path)
+    project_root = Path(root or os.getcwd())
+    file_path = project_root.joinpath(name_or_path)
     if not file_path.exists():
         log.log(INFO, "'%s' does not exist", file_path)
         return {}
@@ -193,10 +194,10 @@ def _read_toml(name_or_path: str | os.PathLike = "pyproject.toml", root: str | o
 
 
 def _infer_setup_py(name_or_path: str = "setup.py", root: str | os.PathLike | None = None) -> str | None:
-    root_path = Path(root or os.getcwd())
-    file_path = root_path.joinpath(name_or_path)
-    if not file_path.exists():
-        log.log(INFO, "'%s' does not exist", file_path)
+    project_root = Path(root or os.getcwd())
+    setup_py_path = project_root.joinpath(name_or_path)
+    if not setup_py_path.exists():
+        log.log(INFO, "'%s' does not exist", setup_py_path)
         return None
 
     from distutils.core import run_setup
@@ -210,9 +211,9 @@ def _infer_setup_py(name_or_path: str = "setup.py", root: str | os.PathLike | No
     original_sys_path = sys.path.copy()
     original_sys_modules = sys.modules.copy()
     try:
-        _add_to_sys_path(root_path)
-        os.chdir(root_path)
-        dist = run_setup(os.fspath(file_path), stop_after="init")
+        _add_to_sys_path(project_root)
+        os.chdir(project_root)
+        dist = run_setup(os.fspath(setup_py_path), stop_after="init")
         return infer_version(dist, root=root)
     finally:
         sys.path[:] = original_sys_path
@@ -257,10 +258,6 @@ def infer_version(dist: Distribution, root: str | os.PathLike | None = None) -> 
     version = version_from_git(dist.metadata.name, **config, root=root)
     dist.metadata.version = version
     return version
-
-
-def _read_version_from_file(name_or_path: str | os.PathLike, root: str | os.PathLike | None = None) -> str:
-    return Path(root or os.getcwd()).joinpath(name_or_path).read_text().strip()
 
 
 def _substitute_env_variables(template: str) -> str:
@@ -321,10 +318,10 @@ def _resolve_substitutions(template: str, *args, **kwargs) -> str:
 
 
 def _add_to_sys_path(root: str | os.PathLike | None) -> None:
-    root_path = os.fspath(Path(root or os.getcwd()))
-    if root_path not in sys.path:
-        log.log(DEBUG, "Adding '%s' folder to sys.path", root_path)
-        sys.path.insert(0, root_path)
+    project_root = os.fspath(Path(root or os.getcwd()))
+    if project_root not in sys.path:
+        log.log(DEBUG, "Adding '%s' folder to sys.path", project_root)
+        sys.path.insert(0, project_root)
 
 
 def _import_reference(
@@ -489,7 +486,8 @@ def version_from_git(
     root: str | os.PathLike | None = None,
 ) -> str:
     # Check if PKG-INFO file exists and Version is present in it
-    pkg_info = Path(root or os.getcwd()).joinpath("PKG-INFO")
+    project_root = Path(root or os.getcwd())
+    pkg_info = project_root.joinpath("PKG-INFO")
     if pkg_info.exists():
         log.log(INFO, "File '%s' is found, reading its content", pkg_info)
         lines = pkg_info.read_text().splitlines()
@@ -537,17 +535,18 @@ def version_from_git(
     if version_file:
         log.log(INFO, "Checking for 'version_file'")
 
-        if not Path(version_file).exists():
+        version_file_path = project_root.joinpath(version_file)
+        if not version_file_path.exists():
             log.log(
                 INFO,
                 "version_file '%s' does not exist, return starting_version %r",
-                version_file,
+                version_file_path,
                 starting_version,
             )
             tag = None
         else:
             log.log(INFO, "Reading version_file '%s' content", version_file)
-            tag = _read_version_from_file(version_file, root=root) or None
+            tag = version_file_path.read_text().strip() or None
 
             if not tag:
                 log.log(INFO, "File %r is empty", version_file)
