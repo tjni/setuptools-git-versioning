@@ -9,6 +9,7 @@ import re
 import subprocess  # nosec
 import sys
 import textwrap
+from contextlib import suppress
 from datetime import datetime, timezone
 from pathlib import Path
 from pprint import pformat
@@ -125,9 +126,7 @@ def get_sha(name: str = "HEAD", root: str | os.PathLike | None = None) -> str | 
 def get_latest_file_commit(path: str | os.PathLike, root: str | os.PathLike | None = None) -> str | None:
     """Get SHA-1 hash of latest commit of the file in the repository"""
     sha = _exec("git", "log", "-n", "1", "--pretty=format:%H", "--", os.fspath(path), root=root)
-    if sha:
-        return sha[0]
-    return None
+    return sha[0] if sha else None
 
 
 def is_dirty(root: str | os.PathLike | None = None) -> bool:
@@ -140,7 +139,8 @@ def count_since(name: str, root: str | os.PathLike | None = None) -> int | None:
     """Get number of commits between HEAD and the commit, or None if they are not related"""
     res = _exec("git", "rev-list", "--count", "HEAD", f"^{name}", root=root)
     if res:
-        return int(res[0])
+        with suppress(ValueError, TypeError):
+            return int(res[0])
     return None
 
 
