@@ -1,12 +1,27 @@
 Changelog
 ==========
 
-2.1
+2.2
 ---
 
 .. changelog::
-    :version: 2.1.1
+    :version: 2.2.0
     :released: 15.01.2026
+
+    .. change::
+        :tags: refactor
+
+        Do not use ``Popen(shell=True)`` anymore.
+
+    .. change::
+        :tags: refactor
+
+        Make most of args in ``version_from_git()`` keyword-only.
+
+    .. change::
+        :tags: refactor
+
+        Timestamps in version template are now timezone-aware
 
     .. change::
         :tags: bugfix
@@ -18,6 +33,9 @@ Changelog
         :tags: bugfix
 
         Fix epoch versions like ``0!2025.12.3`` were wrongly converted to ``0.2025.12.3``.
+
+2.1
+---
 
 .. changelog::
     :version: 2.1.0
