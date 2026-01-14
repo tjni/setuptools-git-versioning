@@ -227,9 +227,7 @@ def infer_version(dist: Distribution, root: str | os.PathLike | None = None) -> 
             "Both 'setup.py' and 'pyproject.toml' have 'setuptools_git_versioning' config section. "
             "Please remove one of them"
         )
-        raise DistutilsSetupError(
-            msg,
-        )
+        raise DistutilsSetupError(msg)
 
     if config is None:
         # Nothing to do here
@@ -496,9 +494,7 @@ def version_from_git(  # noqa: PLR0915, PLR0912, PLR0913, C901
     if version_callback is not None:
         if version_file is not None:
             msg = "Either 'version_file' or 'version_callback' can be passed, but not both at the same time"
-            raise ValueError(
-                msg,
-            )
+            raise ValueError(msg)
         return _get_version_from_callback(version_callback, package_name, root=root)
 
     head_sha = get_sha(root=root)
