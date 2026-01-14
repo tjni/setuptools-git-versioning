@@ -1,5 +1,4 @@
 import os
-import shutil
 import textwrap
 from pathlib import Path
 
@@ -11,8 +10,8 @@ root = Path(__file__).parent.parent
 
 
 @pytest.fixture
-def repo_dir(temp_path_factory: pytest.TempPathFactory):
-    repo_dir = temp_path_factory.mktemp("repo")
+def repo_dir(tmp_path_factory: pytest.TempPathFactory):
+    repo_dir = tmp_path_factory.mktemp("repo")
     coveragerc = root.joinpath(".coveragerc")
     reports = repo_dir.joinpath("reports")
 
@@ -26,9 +25,8 @@ def repo_dir(temp_path_factory: pytest.TempPathFactory):
 
     if os.environ.get("CI", "false").lower() in ["1", "true"]:
         # move collect coverage data to reports directory
-        for root_path, _dirs, files in os.walk(reports):
-            for file in files:
-                shutil.move(root_path / file, reports / file)
+        for file in reports.glob("*"):
+            file.rename(reports / file.name)
 
 
 @pytest.fixture

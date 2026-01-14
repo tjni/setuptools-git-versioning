@@ -103,7 +103,7 @@ def get_tags(
     root: str | os.PathLike | None = None,
 ) -> list[str]:
     """Return list of tags merged into HEAD history tree"""
-    tags = _exec("git", "tag", f"--sort=-{sort_by} --merged", root=root)
+    tags = _exec("git", "tag", f"--sort=-{sort_by}", "--merged", root=root)
     if filter_callback:
         # pull the tags that don't start with tag_prefix out of the list
         return list(filter(filter_callback, tags))

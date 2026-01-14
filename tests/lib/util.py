@@ -306,7 +306,7 @@ def get_version_setup_py(cwd: str | os.PathLike, **kwargs) -> str:
 
 
 def get_version_module(cwd: str | os.PathLike, args: list[str] | None = None, **kwargs) -> str:
-    args_str = " ".join(args or [])
+    args_str = " ".join(map(str, args or []))
 
     return execute(
         cwd,
@@ -316,7 +316,7 @@ def get_version_module(cwd: str | os.PathLike, args: list[str] | None = None, **
 
 
 def get_version_script(cwd: str | os.PathLike, args: list[str] | None = None, **kwargs) -> str:
-    args_str = " ".join(args or [])
+    args_str = " ".join(map(str, args or []))
     return execute(cwd, f"setuptools-git-versioning {args_str} -vv", **kwargs).strip()
 
 
