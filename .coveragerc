@@ -5,3 +5,7 @@ omit =
     tests/*
 parallel = true
 data_file = reports/.coverage
+patch =
+  subprocess
+  execv
+  _exit
