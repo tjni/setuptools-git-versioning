@@ -1,4 +1,5 @@
 import os
+import shutil
 import textwrap
 from pathlib import Path
 
@@ -16,8 +17,7 @@ def repo_dir(tmp_path_factory: pytest.TempPathFactory):
     reports = repo_dir.joinpath("reports")
 
     # collect coverage data
-    with coveragerc.open("r") as f:
-        create_file(repo_dir, ".coveragerc", f.read(), add=False, commit=False)
+    shutil.copy(coveragerc, repo_dir)
 
     reports.mkdir(parents=True, exist_ok=True)
 
