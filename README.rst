@@ -61,13 +61,6 @@ Documentation
 
 See https://setuptools-git-versioning.readthedocs.io/en/stable/
 
-.. contribution
-
-Contribution Guide
-------------------
-
-See ./CONTRIBUTING.rst
-
 .. installation
 
 Install
