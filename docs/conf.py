@@ -14,15 +14,13 @@ import os
 import sys
 from pathlib import Path
 
-from packaging.version import Version
-
 PROJECT_ROOT_DIR = Path(__file__).parent.parent.resolve()
 
 sys.path.insert(0, os.fspath(PROJECT_ROOT_DIR))
 
-from setuptools_git_versioning import version_from_git  # noqa: E402
+from setuptools_git_versioning import get_version  # noqa: E402
 
-ver = Version(version_from_git())
+ver = get_version(root=PROJECT_ROOT_DIR)
 
 # The short X.Y version
 version = ver.base_version

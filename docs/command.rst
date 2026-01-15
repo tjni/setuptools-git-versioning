@@ -5,7 +5,7 @@ Console command
 
 Package contains script ``setuptools-git-versioning``` which can be used for calculating version number.\
 
-See :ref:`_installation` instruction for creating the repo with your package.
+See :ref:`installation` instruction for creating the repo with your package.
 
 To get current package version in ``mypackage`` repo just execute:
 
@@ -97,6 +97,6 @@ Command help
 ~~~~~~~~~~~~~
 
 .. argparse::
-    :module: setuptools_git_versioning
-    :func: _parser
+    :module: setuptools_git_versioning.cli
+    :func: get_parser
     :prog: setuptools-git-versioning
