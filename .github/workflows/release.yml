@@ -44,6 +44,9 @@ jobs:
           version=$(echo $GITHUB_REF_SLUG | sed -E "s/v(.*)/\1/")
           sed -i -E "s/dynamic = .*/version = \"${version}\"/" pyproject.toml
 
+      - name: Build package
+        run: uv build
+
       - name: Publish package
         uses: pypa/gh-action-pypi-publish@release/v1
 
