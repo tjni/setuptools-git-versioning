@@ -41,7 +41,7 @@ To get version in such a format you can set a template in the config file:
 
         setuptools.setup(
             ...,
-            setup_requires=["setuptools-git-versioning>=2.0,<3"],
+            setup_requires=["setuptools-git-versioning>=3.0,<4"],
             setuptools_git_versioning={
                 "enabled": True,
                 "dirty_template": "{tag}.post{ccount}+dirty",  # <---
@@ -51,7 +51,7 @@ To get version in such a format you can set a template in the config file:
     .. code-tab:: toml ``pyproject.toml``
 
         [build-system]
-        requires = [ "setuptools>=41", "wheel", "setuptools-git-versioning>=2.0,<3", ]
+        requires = [ "setuptools>=41", "wheel", "setuptools-git-versioning>=3.0,<4", ]
         build-backend = "setuptools.build_meta"
 
         [tool.setuptools-git-versioning]

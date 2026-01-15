@@ -21,7 +21,7 @@ You can change this version by setting up ``starting_version`` option in your co
 
         setuptools.setup(
             ...,
-            setup_requires=["setuptools-git-versioning>=2.0,<3"],
+            setup_requires=["setuptools-git-versioning>=3.0,<4"],
             setuptools_git_versioning={
                 "enabled": True,
                 "starting_version": "1.0.0",  # <---
@@ -31,7 +31,7 @@ You can change this version by setting up ``starting_version`` option in your co
     .. code-tab:: toml ``pyproject.toml`` file
 
         [build-system]
-        requires = [ "setuptools>=41", "wheel", "setuptools-git-versioning>=2.0,<3", ]
+        requires = [ "setuptools>=41", "wheel", "setuptools-git-versioning>=3.0,<4", ]
         build-backend = "setuptools.build_meta"
 
         [project]

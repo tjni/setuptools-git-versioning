@@ -71,7 +71,7 @@ name and return a properly formatted one:
 
         setuptools.setup(
             ...,
-            setup_requires=["setuptools-git-versioning>=2.0,<3"],
+            setup_requires=["setuptools-git-versioning>=3.0,<4"],
             setuptools_git_versioning={
                 "enabled": True,
                 "dev_template": "{tag}.dev{ccount}",
@@ -83,7 +83,7 @@ name and return a properly formatted one:
     .. code-tab:: toml ``pyproject.toml`` file
 
         [build-system]
-        requires = [ "setuptools>=41", "wheel", "setuptools-git-versioning>=2.0,<3", ]
+        requires = [ "setuptools>=41", "wheel", "setuptools-git-versioning>=3.0,<4", ]
         # __legacy__ is required to have access to package
         # during build step
         build-backend = "setuptools.build_meta:__legacy__"

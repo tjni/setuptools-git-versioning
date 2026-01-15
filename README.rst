@@ -83,7 +83,7 @@ add a section ``tool.setuptools-git-versioning`` with config options, and mark t
 .. code:: toml
 
     [build-system]
-    requires = [ "setuptools>=41", "wheel", "setuptools-git-versioning>=2.0,<3", ]
+    requires = [ "setuptools>=41", "wheel", "setuptools-git-versioning>=3.0,<4", ]
     build-backend = "setuptools.build_meta"
 
     [tool.setuptools-git-versioning]
@@ -119,7 +119,7 @@ and then add new argument ``setuptools_git_versioning`` with config options:
         setuptools_git_versioning={
             "enabled": True,
         },
-        setup_requires=["setuptools-git-versioning>=2.0,<3"],
+        setup_requires=["setuptools-git-versioning>=3.0,<4"],
     )
 
 And check the package version generated (see `command help <https://setuptools-git-versioning.readthedocs.io/en/stable/command.html>`_):

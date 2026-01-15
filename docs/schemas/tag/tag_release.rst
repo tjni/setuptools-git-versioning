@@ -55,7 +55,7 @@ You can change this template in the config file:
 
         setuptools.setup(
             ...,
-            setup_requires=["setuptools-git-versioning>=2.0,<3"],
+            setup_requires=["setuptools-git-versioning>=3.0,<4"],
             setuptools_git_versioning={
                 "template": "2022.{tag}",  # <---
             },
@@ -64,7 +64,7 @@ You can change this template in the config file:
     .. code-tab:: toml ``pyproject.toml``
 
         [build-system]
-        requires = [ "setuptools>=41", "wheel", "setuptools-git-versioning>=2.0,<3", ]
+        requires = [ "setuptools>=41", "wheel", "setuptools-git-versioning>=3.0,<4", ]
         build-backend = "setuptools.build_meta"
 
         [tool.setuptools-git-versioning]

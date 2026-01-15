@@ -44,7 +44,7 @@ Then update your config file:
 
         setuptools.setup(
             ...,
-            setup_requires=["setuptools-git-versioning>=2.0,<3"],
+            setup_requires=["setuptools-git-versioning>=3.0,<4"],
             setuptools_git_versioning={
                 "enabled": True,
                 "version_file": version_file,
@@ -57,7 +57,7 @@ Then update your config file:
     .. code-tab:: toml ``pyproject.toml``
 
         [build-system]
-        requires = [ "setuptools>=41", "wheel", "setuptools-git-versioning>=2.0,<3", ]
+        requires = [ "setuptools>=41", "wheel", "setuptools-git-versioning>=3.0,<4", ]
         build-backend = "setuptools.build_meta"
 
         [project]
@@ -111,7 +111,7 @@ For example, if the branch name is something like ``alpha``, ``beta``,
 
         setuptools.setup(
             ...,
-            setup_requires=["setuptools-git-versioning>=2.0,<3"],
+            setup_requires=["setuptools-git-versioning>=3.0,<4"],
             setuptools_git_versioning={
                 "enabled": True,
                 "version_file": version_file,
@@ -124,7 +124,7 @@ For example, if the branch name is something like ``alpha``, ``beta``,
     .. code-tab:: toml ``pyproject.toml``
 
         [build-system]
-        requires = [ "setuptools>=41", "wheel", "setuptools-git-versioning>=2.0,<3", ]
+        requires = [ "setuptools>=41", "wheel", "setuptools-git-versioning>=3.0,<4", ]
         build-backend = "setuptools.build_meta"
 
         [project]
@@ -162,7 +162,7 @@ It is also possible to use branch names like ``1.0-alpha`` or ``1.1.beta``:
 
         setuptools.setup(
             ...,
-            setup_requires=["setuptools-git-versioning>=2.0,<3"],
+            setup_requires=["setuptools-git-versioning>=3.0,<4"],
             setuptools_git_versioning={
                 "enabled": True,
                 "count_commits_from_version_file": True,
@@ -175,7 +175,7 @@ It is also possible to use branch names like ``1.0-alpha`` or ``1.1.beta``:
     .. code-tab:: toml ``pyproject.toml``
 
         [build-system]
-        requires = [ "setuptools>=41", "wheel", "setuptools-git-versioning>=2.0,<3", ]
+        requires = [ "setuptools>=41", "wheel", "setuptools-git-versioning>=3.0,<4", ]
         build-backend = "setuptools.build_meta"
 
         [project]

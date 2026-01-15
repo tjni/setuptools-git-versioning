@@ -1,22 +1,32 @@
 Changelog
 ==========
 
-2.2
+3.0
 ---
 
 .. changelog::
-    :version: 2.2.0
+    :version: 3.0.0
     :released: 15.01.2026
 
     .. change::
-        :tags: refactor,breaking
+        :tags: breaking
 
-        Make most of args in ``version_from_git()`` keyword-only.
+        Make most of args in ``version_from_git`` keyword-only.
 
     .. change::
-        :tags: refactor,breaking
+        :tags: breaking
+
+        Change return type of ``version_from_git`` and ``infer_version`` from ``str`` to ``packaging.Version``
+
+    .. change::
+        :tags: refactor, breaking
 
         Timestamps in version templates are now timezone-aware.
+
+    .. change::
+        :tags: refactor
+
+        Split ``setuptools_git_versioning.py`` into smaller set of files.
 
     .. change::
         :tags: refactor

@@ -42,7 +42,7 @@ Then place it in both the branches and update your config:
 
         setuptools.setup(
             ...,
-            setup_requires=["setuptools-git-versioning>=2.0,<3"],
+            setup_requires=["setuptools-git-versioning>=3.0,<4"],
             setuptools_git_versioning={
                 "enabled": True,
                 "version_callback": get_version,  # <---
@@ -52,7 +52,7 @@ Then place it in both the branches and update your config:
     .. code-tab:: toml ``pyproject.toml`` file
 
         [build-system]
-        requires = [ "setuptools>=41", "wheel", "setuptools-git-versioning>=2.0,<3", ]
+        requires = [ "setuptools>=41", "wheel", "setuptools-git-versioning>=3.0,<4", ]
         # __legacy__ is required to have access to package
         # during build step
         build-backend = "setuptools.build_meta:__legacy__"
@@ -84,7 +84,7 @@ If a value of this option is not a function but just str, it also could be used:
 
         setuptools.setup(
             ...,
-            setup_requires=["setuptools-git-versioning>=2.0,<3"],
+            setup_requires=["setuptools-git-versioning>=3.0,<4"],
             setuptools_git_versioning={
                 "enabled": True,
                 "version_callback": my_module.__version__,  # <---
@@ -94,7 +94,7 @@ If a value of this option is not a function but just str, it also could be used:
     ..  code-tab:: toml ``pyproject.toml`` file
 
         [build-system]
-        requires = [ "setuptools>=41", "wheel", "setuptools-git-versioning>=2.0,<3", ]
+        requires = [ "setuptools>=41", "wheel", "setuptools-git-versioning>=3.0,<4", ]
         # __legacy__ is required to have access to package
         # during build step
         build-backend = "setuptools.build_meta:__legacy__"

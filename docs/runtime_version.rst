@@ -30,7 +30,7 @@ To resolve version number in runtime, you should move ``VERSION`` file to your m
 
             setuptools.setup(
                 ...,
-                setup_requires=["setuptools-git-versioning>=2.0,<3"],
+                setup_requires=["setuptools-git-versioning>=3.0,<4"],
                 setuptools_git_versioning={
                     "enabled": True,
                     "version_file": version_file,
@@ -44,7 +44,7 @@ To resolve version number in runtime, you should move ``VERSION`` file to your m
     .. code-tab:: toml ``pyproject.toml``
 
         [build-system]
-        requires = [ "setuptools>=41", "wheel", "setuptools-git-versioning>=2.0,<3", ]
+        requires = [ "setuptools>=41", "wheel", "setuptools-git-versioning>=3.0,<4", ]
         build-backend = "setuptools.build_meta"
 
         [project]
