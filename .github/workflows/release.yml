@@ -54,6 +54,5 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           draft: false
           prerelease: false
-          body_path: reports/release.md
           files: |
             dist/*
