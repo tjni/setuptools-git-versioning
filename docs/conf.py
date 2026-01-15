@@ -43,12 +43,19 @@ extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.extlinks",
     "sphinx_autodoc_typehints",
+    "sphinx_copybutton",
     "changelog",
     "numpydoc",
     "sphinxarg.ext",
     "sphinx_tabs.tabs",
     "sphinx_last_updated_by_git",
 ]
+
+# prevent >>>, ... and doctest outputs from copying
+copybutton_prompt_text = r">>> |\.\.\. |\$ |In \[\d*\]: | {2,5}\.\.\.: | {5,8}: "
+copybutton_prompt_is_regexp = True
+copybutton_copy_empty_lines = False
+copybutton_only_copy_prompt_lines = True
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
