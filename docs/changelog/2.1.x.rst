@@ -1,0 +1,15 @@
+2.1.x
+======
+
+2.1.0 (2025-01-10)
+-------------------
+
+Dependency
+~~~~~~~~~~
+
+Replace outdated ``toml`` package with modern ``tomli`` (:github:issue:`108`).  Thanks to :github:user:`graingert`
+
+Features
+~~~~~~~~
+
+Declare Python 3.13 support.

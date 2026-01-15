@@ -1,0 +1,24 @@
+1.11.x
+======
+
+1.11.0 (2022-10-02)
+-------------------
+
+Features
+~~~~~~~~
+
+- Allow ``setuptools-git-versioning`` script to infer version from ``setup.py`` if ``pyproject.toml`` is missing (:github:issue:`58`).
+- Raise error if ``pyproject.toml`` exists, but is not a file.
+- Add ``cwd`` argument to most of functions, allowing to get versions of a specific repo without changing current directory.
+- Add info and debug messages to the module.
+
+Documentation
+~~~~~~~~~~~~~
+
+Add documentation for ``setuptools-git-versioning`` script (:github:issue:`58`).
+
+Refactoring
+~~~~~~~~~~~
+
+Use builtin type annotations (instead of type comments) in ``tests/lib/util.py``,
+use modern annotations syntax (``type | None`` instead of ``Optional[type]``).

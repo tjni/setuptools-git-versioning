@@ -1,0 +1,28 @@
+1.7.x
+=====
+
+1.7.0 (2021-10-21)
+------------------
+
+- Add support of ``env`` variables substitution.
+- Add support of ``timestamp`` substitution.
+
+1.7.1 (2021-10-28)
+------------------
+
+Strip leading 'v' symbol from tag name (:github:issue:`29`).
+
+1.7.2 (2021-10-28)
+------------------
+
+Strip leading 'v' symbol from tag name (:github:issue:`29`).
+
+1.7.3 (2021-10-31)
+------------------
+
+Change release workflow action from ``actions/create-release@v1`` to ``softprops/action-gh-release@v1``.
+
+1.7.4 (2021-10-31)
+------------------
+
+Change release workflow action from ``actions/create-release@v1`` to ``softprops/action-gh-release@v1``.

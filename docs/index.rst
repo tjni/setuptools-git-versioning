@@ -29,8 +29,8 @@
     :name: develop
     :hidden:
 
-    contributing
     changelog
+    contributing
 
 .. toctree::
     :maxdepth: 1

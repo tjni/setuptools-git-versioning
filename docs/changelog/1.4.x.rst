@@ -1,0 +1,12 @@
+1.4.x
+=====
+
+1.4.0 (2021-05-12)
+------------------
+
+- Use absolute paths in ``setup.py``
+- Add JetBrains config files to ``.gitignore`` (:github:pull:`13`).
+  Thanks to :github:user:`LeComptoirDesPharmacies`.
+
+- Add ``branch_formatter`` option. (:github:pull:`14`).
+  Thanks to :github:user:`LeComptoirDesPharmacies`.

@@ -43,12 +43,13 @@ extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.extlinks",
     "sphinx_autodoc_typehints",
-    "sphinx_copybutton",
-    "changelog",
     "numpydoc",
     "sphinxarg.ext",
-    "sphinx_tabs.tabs",
+    "sphinx_copybutton",
     "sphinx_last_updated_by_git",
+    "sphinx_tabs.tabs",
+    "sphinx_toolbox.github",
+    "sphinxcontrib.towncrier",  # provides `towncrier-draft-entries` directive
 ]
 
 # prevent >>>, ... and doctest outputs from copying
@@ -56,6 +57,10 @@ copybutton_prompt_text = r">>> |\.\.\. |\$ |In \[\d*\]: | {2,5}\.\.\.: | {5,8}: 
 copybutton_prompt_is_regexp = True
 copybutton_copy_empty_lines = False
 copybutton_only_copy_prompt_lines = True
+
+towncrier_draft_autoversion_mode = "draft"
+towncrier_draft_include_empty = False
+towncrier_draft_working_directory = PROJECT_ROOT_DIR
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
@@ -79,31 +84,8 @@ html_extra_path = ["robots.txt"]
 # so a file named 'default.css' will overwrite the builtin 'default.css'.
 
 
-extlinks = {
-    "github-user": ("https://github.com/%s", "@%s"),
-    "issue": ("https://github.com/dolfinus/setuptools-git-versioning/issues/%s", "#%s"),
-    "pr": ("https://github.com/dolfinus/setuptools-git-versioning/pull/%s", "#%s"),
-}
-
-changelog_sections = [
-    "general",
-    "core",
-    "dependency",
-    "config",
-    "docs",
-    "ci",
-    "tests",
-    "dev",
-]
-
-changelog_caption_class = ""
-
-changelog_inner_tag_sort = ["breaking", "deprecated", "feature", "bug", "refactor"]
-changelog_hide_sections_from_tags = True
-
-changelog_render_ticket = "https://github.com/dolfinus/setuptools-git-versioning/issues/%s"
-changelog_render_pullreq = {"default": "https://github.com/dolfinus/setuptools-git-versioning/pull/%s"}
-changelog_render_changeset = "https://github.com/dolfinus/setuptools-git-versioning/commit/%s"
+github_username = "dolfinus"
+github_repository = "setuptools-git-versioning"
 
 language = "en"
 

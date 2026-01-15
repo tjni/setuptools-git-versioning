@@ -1,0 +1,10 @@
+1.5.x
+=====
+
+1.5.0 (2021-08-16)
+------------------
+
+- Add ``setuptools-scm`` and ``versioneer`` to comparison table (:github:issue:`15`).
+- Add resolution for issue when all versions produced by CI pipeline are ``dirty`` (:github:issue:`17`, :github:pull:`16`).
+- Skip duplicated Github Actions runs.
+- Add ``pre-commit`` hooks and commit changes made by it.

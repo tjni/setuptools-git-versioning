@@ -1,0 +1,30 @@
+3.0.x
+======
+
+3.0.0 (2026-01-15)
+-------------------
+
+Breaking
+~~~~~~~~
+
+- Make most of args in ``version_from_git`` keyword-only.
+- Change return type of ``version_from_git`` and ``infer_version`` from ``str`` to ``packaging.version.Version``.
+- Timestamps in version templates are now timezone-aware.
+
+Refactoring
+~~~~~~~~~~~~
+
+- Split ``setuptools_git_versioning.py`` into smaller set of files.
+- Do not use ``Popen(shell=True)`` anymore.
+- Switch from ``setup.py`` to ``pyproject.toml``.
+- Switch from ``pip`` to ``uv``, use lock files.
+- Switch from ``black`` + ``isort`` + ``pyupgrade`` to ``ruff format``.
+- Switch from ``flake8`` to ``ruff``.
+- Switch from ``pre-commit`` to ``prek``.
+
+Bug Fixes
+~~~~~~~~~
+
+- Fix calling ``get_version(root=...)`` in combination with version-file strategy -
+  relative file version was resolved against ``os.cwd``, not explicitly passed ``root``.
+- Fix epoch versions like ``0!2025.12.3`` were wrongly converted to ``0.2025.12.3`` (:github:issue:`122`).

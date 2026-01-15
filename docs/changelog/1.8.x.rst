@@ -1,0 +1,48 @@
+1.8.x
+=====
+
+1.8.0 (2022-01-07)
+------------------
+
+Breaking
+~~~~~~~~~
+
+- Drop Python 3.3 and 3.4 support (:github:pull:`37`).
+- Python 2.7, 3.5 and 3.6 support is deprecated due to their end of life.
+
+- ``get_branch_tags`` function is renamed to ``get_tags``.
+  It will be removed in ``2.0.0`` release. A warning message is added.
+
+- ``version_config`` keyword in ``setup.py`` is renamed to ``setuptools_git_versioning``.
+  It will be removed in ``2.0.0`` release. A warning message is added.
+
+- Prefer using ``"enabled": True`` / ``"enabled": False`` option
+  instead of pure boolean values (``True``, ``False``) for config.
+
+  Old behavior is deprecated and will be removed in ``2.0`` version. A warning message is added.
+
+Features
+~~~~~~~~
+
+- Add support of reading config from ``pyproject.toml`` (:github:issue:`35`, :github:pull:`37`).
+  Thanks to :github:user:`Bloodmallet`.
+
+- Allow to pass regexp to ``branch_formatter`` option.
+- Add ``tag_formatter`` option (:github:issue:`31`).
+- Allow nested default values to be passed to ``env`` substitution.
+- Add integration tests.
+- Check test coverage and fail if it has been decreased.
+
+Documentation
+~~~~~~~~~~~~~
+
+- Build docs using ReadTheDocs project.
+- Major docs improvement.
+- Added ``CHANGELOG.rst``.
+- Add ``miniver`` and ``versioningit`` to comparison table.
+
+
+1.8.1 (2022-01-10)
+------------------
+
+Fix issue with empty ``pyproject.toml`` (:github:issue:`35`).

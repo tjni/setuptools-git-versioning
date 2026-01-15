@@ -1,0 +1,16 @@
+1.6.x
+=====
+
+1.6.0 (2021-09-15)
+------------------
+
+- Fix skipping duplicated runs.
+- Add automerge action for ``precommit-ci`` bot.
+- Fix tests workflow.
+- Sort tags by commit date instead of name (:github:issue:`22`).
+- Fix release pipeline.
+
+1.6.1 (2021-09-16)
+------------------
+
+Fix sorting for annotated tags (:github:issue:`23`).

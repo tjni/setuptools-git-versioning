@@ -1,0 +1,44 @@
+1.3.x
+=====
+
+1.3.0 (2021-03-01)
+------------------
+
+Add ``full_sha`` substitution support.
+
+1.3.1 (2021-03-01)
+------------------
+
+- Add Windows support column into comparison table (:github:issue:`8`).
+- Fix Github Actions.
+- Replace default suffix for dev and dirty versions from ``dev`` to ``post``.
+
+1.3.2 (2021-03-12)
+------------------
+
+Fix minor typos in documentation.
+
+1.3.3 (2021-03-12)
+------------------
+
+Replace forbidden chars in local version label (:github:pull:`11`).
+
+Thanks to :github:user:`ajasmin`.
+
+1.3.4 (2021-03-12)
+------------------
+
+- Add list of supported substitutions into comparison table.
+- Add ``bad-setuptools-git-version`` and ``another-setuptools-git-version`` to comparison table.
+
+1.3.5 (2021-03-12)
+------------------
+
+- Fix comparison table typo.
+- Add license column into comparison table.
+
+1.3.6 (2021-03-12)
+------------------
+
+- Update package short description.
+- Set license in ``setup.py`` file.

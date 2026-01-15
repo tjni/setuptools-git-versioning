@@ -1,0 +1,106 @@
+1.13.x
+======
+
+1.13.0 (2022-11-01)
+-------------------
+
+Breaking
+~~~~~~~~
+
+Make all internal functions private.
+
+Features
+~~~~~~~~
+
+Add ``tag_filter`` option (:github:issue:`68`, :github:issue:`69`). Thanks to :github:user:`vortechs2000`
+
+Dependency
+~~~~~~~~~~
+
+For Python 3.11 use built-in ``tomllib`` instead of ``toml`` package.
+
+Documentation
+~~~~~~~~~~~~~
+
+- Add documentation about fetching package version in runtime (:github:issue:`55`).
+- Add description for some functions.
+
+1.13.1 (2022-11-13)
+-------------------
+
+Features
+~~~~~~~~
+
+- Build and publish sdist package again (:github:issue:`72`, :github:issue:`49`).
+- Allow to install package from ``.tar.gz`` without ``--no-build-isolation`` flag (:github:issue:`72`, :github:issue:`49`).
+
+Dependency
+~~~~~~~~~~
+
+Get rid of ``deprecated`` package dependency (:github:issue:`72`).
+
+CI
+~~~
+
+- Publish development releases to `Test PyPI <test.pypi.org>`_.
+- Use ``pypa/gh-action-pypi-publish`` Github action to publish releases to PyPI.
+- Remove local part of version because it is not allowed in PyPI.
+
+1.13.2 (2023-02-26)
+-------------------
+
+Documentation
+~~~~~~~~~~~~~
+
+- Recommend users to use file-based schema instead of tag-based due some cases (:github:issue:`77`, :github:issue:`75`).
+- Add small example of ``.gitignore`` file to common issues section (:github:issue:`17`). Thanks to :github:user:`aram-eskandari`.
+- Improve examples of fetching package version in runtime (:github:issue:`55`).
+
+1.13.3 (2023-03-14)
+-------------------
+
+Documentation
+~~~~~~~~~~~~~
+
+Move ``zip-safe`` option to ``tool.setuptools`` section of ``pyproject.toml`` (:github:issue:`78`).
+
+Thanks to :github:user:`cclecle`.
+
+1.13.4 (2023-07-31)
+-------------------
+
+Feature
+~~~~~~~
+
+Declare PyPy 3.10 support.
+
+Documentation
+~~~~~~~~~~~~~
+
+Update documentation to mention shallow clone issues (`:github:issue:83`).
+
+CI
+~~~
+
+Push release using ``Trusted publishers`` feature of PyPI.org.
+
+1.13.5 (2023-08-08)
+-------------------
+
+Bug Fixes
+~~~~~~~~~
+
+Import ``setuptools`` before importing ``distutils`` (:github:pull:`84`). Thanks to :github:user:`tjni`.
+
+1.13.6 (2024-01-30)
+-------------------
+
+Features
+~~~~~~~~
+
+Declare Python 3.12 support.
+
+Improvements
+~~~~~~~~~~~~
+
+Remove useless warning if ``tag_filter``, ``tag_formatter`` or ``branch_formatter`` is a regexp instead of function reference (:github:issue:`93`).

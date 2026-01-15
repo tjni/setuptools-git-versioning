@@ -158,12 +158,10 @@ Calling internals of ``setuptools_git_versioning`` module
 .. code-block:: python
     :caption: my_module/__init__.py
 
-    from setuptools_git_versioning import get_version
+    from setuptools_git_versioning import get_version, get_tag, get_all_tags
 
     # uses setup.py or pyproject.toml as config source
     version = get_version()
-
-    from setuptools_git_versioning import get_tag, get_all_tags
 
     # calls `git` executable to get latest tag merged into HEAD history tree
     latest_tag = get_tag()

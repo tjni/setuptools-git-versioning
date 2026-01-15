@@ -1,0 +1,64 @@
+1.2.x
+=====
+
+1.2.0 (2020-09-10)
+------------------
+
+Add ``version_file`` option.
+
+1.2.1 (2020-09-10)
+------------------
+
+Add ``count_commits_from_version_file`` option.
+
+1.2.2 (2020-09-14)
+------------------
+
+Fix building version from VERSION file.
+
+1.2.3 (2020-09-16)
+------------------
+
+- Add ``get_all_tags`` function.
+- Add ``get_branch_tags`` function.
+
+1.2.4 (2020-09-30)
+------------------
+
+ix Python 2.7 dependencies.
+
+1.2.5 (2020-09-30)
+------------------
+
+Fix Python 2.7 dependencies.
+
+1.2.6 (2020-10-07)
+------------------
+
+Fix version detection in case of missing .git folder.
+
+1.2.7 (2020-11-24)
+------------------
+
+Fix python error if no tag is found (:github:pull:`5`).
+
+Thanks to :github:user:`bmiklautz`.
+
+1.2.7 (2020-11-29)
+------------------
+
+Fixed typo in code examples (:github:pull:`6`).
+
+Thanks to :github:user:`Stedders`.
+
+1.2.9 (2021-01-20)
+------------------
+
+Use Github Actions instead of TravisCI (:github:pull:`7`).
+
+1.2.10 (2021-02-04)
+-------------------
+
+- Fix Windows compatibility (:github:issue:`8`).
+- Fix release workflow (:github:pull:`7`).
+- Add some issue and PR automatization (:github:pull:`7`).

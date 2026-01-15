@@ -1,0 +1,26 @@
+1.10.x
+======
+
+1.10.0 (2022-07-18)
+-------------------
+
+Breaking
+~~~~~~~~
+
+:ref:`version-callback-option` option is used even if there are some tags in the current branch.
+
+Improvements
+~~~~~~~~~~~~
+
+- Raise exception if both :ref:`version-callback-option` and :ref:`version-file-option` options are set.
+- Remove all non-numeric symbols from version prefix, not just ``v``.
+
+
+1.10.1 (2022-09-03)
+-------------------
+
+Features
+~~~~~~~~
+
+- Add ``setuptools-git-versioning`` script to infer version from ``pyproject.toml`` config (:github:issue:`58`).
+- Declare Python 3.11 support.
