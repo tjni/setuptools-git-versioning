@@ -104,6 +104,31 @@ And check the package version generated (see `command help <https://setuptools-g
     $ setuptools-git-versioning
     0.0.1
 
+When add a git tag:
+
+.. code:: bash
+
+    $ git add .
+    $ git commit -m "Test tagged"
+    $ git tag 1.2.3
+
+And now version is based on git tag:
+
+.. code:: bash
+
+    $ setuptools-git-versioning
+    1.2.3
+
+    $ echo 1 > uncommitted.change
+    $ git add .
+    $ setuptools-git-versioning
+    1.2.3.post0+git.d2bc6516.dirty
+
+    $ git commit -m "Test committed"
+    $ setuptools-git-versioning
+    1.2.3.post1+git.d452190b
+
+
 ``setup.py``
 ~~~~~~~~~~~~
 
@@ -122,19 +147,4 @@ and then add new argument ``setuptools_git_versioning`` with config options:
         setup_requires=["setuptools-git-versioning>=3.0,<4"],
     )
 
-And check the package version generated (see `command help <https://setuptools-git-versioning.readthedocs.io/en/stable/command.html>`_):
-
-.. code:: bash
-
-    $ python setup.py --version
-    0.0.1
-
-    # or
-
-    $ python -m setuptools_git_versioning
-    0.0.1
-
-    # or
-
-    $ setuptools-git-versioning
-    0.0.1
+Commands are the same as above, plus ``python -m setup.py`` returns the same version.
