@@ -35,13 +35,12 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@v7
         with:
-          activate-environment: "true"
           enable-cache: "false"
 
       - name: Fix version number
       # Fix for https://github.com/dolfinus/setuptools-git-versioning/issues/72#issuecomment-1312589464
         run: |
-          version=$(echo $GITHUB_REF_SLUG | sed -E "s/v(.*)/\1/")
+          version=$(uv run -m setuptools_git_versioning)
           sed -i -E "s/dynamic = .*/version = \"${version}\"/" pyproject.toml
 
       - name: Build package
