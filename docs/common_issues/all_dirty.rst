@@ -13,7 +13,8 @@ as ``dirty``.
 
 You should such files to the ``.gitignore`` file. In most the cases adding these lines solves the issue:
 
-.. code:: gitignore
+.. code-block:: txt
+    :caption: .gitignore
 
     build/
     dist/

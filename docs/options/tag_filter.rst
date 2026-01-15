@@ -34,7 +34,8 @@ If, for example, your repo has:
 
 and you only want versions from ``product_y``, simply set:
 
-.. code:: toml
+.. code-block:: toml
+    :caption: pyproject.toml
 
     tag_filter = "product_y/(?P<tag>.*)"
 

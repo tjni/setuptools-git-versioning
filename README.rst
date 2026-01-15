@@ -135,7 +135,8 @@ And now version is based on git tag:
 Just add ``setuptools-git-versioning`` to ``setup_requires`` argument of ``setuptools.setup`` function call,
 and then add new argument ``setuptools_git_versioning`` with config options:
 
-.. code:: python
+.. code-block:: python
+    :caption: setup.py
 
     import setuptools
 

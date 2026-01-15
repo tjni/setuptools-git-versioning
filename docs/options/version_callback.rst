@@ -43,7 +43,8 @@ Possible values
 
     If your config file is ``pyproject.toml`` you should add this to allow ``setuptools-git-versioning`` to access your module source code:
 
-    .. code:: toml
+    .. code-block:: toml
+        :caption: pyprojecy.toml
 
         [build-system]
         ...

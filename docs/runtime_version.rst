@@ -17,11 +17,15 @@ To resolve version number in runtime, you should move ``VERSION`` file to your m
 
         Create ``MANIFEST.in`` file in the project root:
 
+        .. code-block:: txt
+            :caption: MANIFEST.in
+
             include my_module/VERSION
 
         Then make few changes in ``setup.py``:
 
-        .. code:: python
+        .. code-block:: python
+            :caption: setup.py
 
             from path import Path
 
@@ -65,9 +69,8 @@ To resolve version number in runtime, you should move ``VERSION`` file to your m
 
 And then read this file:
 
-.. code:: python
-
-    # content of my_module/__init__.py
+.. code-block:: python
+    :caption: my_module/__init__.py
 
     from pathlib import Path
 
@@ -80,9 +83,8 @@ Using ``version_callback`` option
 
 In case of using :ref:`version_callback <version-callback>` option you can directly call this callback inside a module:
 
-.. code:: python
-
-    # content of my_module/__init__.py
+.. code-block:: python
+    :caption: my_module/__init__.py
 
     from my_module.version import get_version
 
@@ -97,7 +99,8 @@ you can retrieve it at runtime from :pep:`0566` metadata using
 ``importlib.metadata`` from the standard library (added in Python 3.8)
 or the `importlib_metadata`_ backport:
 
-.. code:: python
+.. code-block:: python
+    :caption: my_module/__init__.py
 
     from importlib.metadata import version, PackageNotFoundError
 
@@ -119,7 +122,8 @@ custom import mechanism.
 Instead, you can use ``pkg_resources`` which is included in ``setuptools``
 (but has a significant runtime cost):
 
-.. code:: python
+.. code-block:: python
+    :caption: my_module/__init__.py
 
     from pkg_resources import get_distribution, DistributionNotFound
 
@@ -151,7 +155,8 @@ Calling internals of ``setuptools_git_versioning`` module
     ``.git`` folder and ``git`` executable presence is crucial
     for ``setuptools-git-versioning`` to work properly.
 
-.. code:: python
+.. code-block:: python
+    :caption: my_module/__init__.py
 
     from setuptools_git_versioning import get_version
 

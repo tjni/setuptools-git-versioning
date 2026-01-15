@@ -23,10 +23,11 @@ If you want to create development releases (prereleases) for the next planned ve
 so every commit to ``dev`` branch should produce version number like ``1.1.0.dev123`` (just plain increment)
 or even ``1.1.0.dev123+git.sha`` (to describe which commit was used for this exact version).
 
-In such a case you need to create a text file (for example, ``VERSION`` or ``VERSION.txt``)
+In such a case you need to create a text file
 with your **next release number** (e.g. ``1.1.0``):
 
-.. code:: txt
+.. code-block:: txt
+    :caption mymodule/VERSION
 
     1.1.0
 

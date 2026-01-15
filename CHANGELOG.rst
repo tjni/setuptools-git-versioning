@@ -16,7 +16,7 @@ Changelog
     .. change::
         :tags: breaking
 
-        Change return type of ``version_from_git`` and ``infer_version`` from ``str`` to ``packaging.Version``
+        Change return type of ``version_from_git`` and ``infer_version`` from ``str`` to ``packaging.version.Version``
 
     .. change::
         :tags: refactor, breaking

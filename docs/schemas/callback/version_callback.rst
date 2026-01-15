@@ -24,10 +24,10 @@ initial value (see :ref:`starting-version-option` option),
 because there are no tags in the ``dev`` branch.
 
 If you want to get synchronized version numbers in both ``master`` and ``dev`` branches,
-you can create a function in some file (for example, in the
-``my_module/version.py`` file):
+you can create a function in some file:
 
-.. code:: python
+.. code-block:: python
+    :caption: mymodule/version.py
 
     def get_version():
         return "1.0.0"
