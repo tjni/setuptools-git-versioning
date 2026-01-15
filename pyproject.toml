@@ -43,7 +43,6 @@ Homepage = "https://setuptools-git-versioning.readthedocs.io"
 Documentation = "https://setuptools-git-versioning.readthedocs.io"
 Source = "https://github.com/dolfinus/setuptools-git-versioning"
 "CI/CD" = "https://github.com/dolfinus/setuptools-git-versioning/actions"
-Coverage = "https://app.codecov.io/gh/dolfinus/setuptools-git-versioning"
 Tracker = "https://github.com/dolfinus/setuptools-git-versioning/issues"
 
 [project.entry-points."distutils.setup_keywords"]

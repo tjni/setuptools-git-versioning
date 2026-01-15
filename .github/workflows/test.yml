@@ -104,12 +104,32 @@ jobs:
           uv run --group test coverage combine
           uv run --group test coverage xml -o reports/coverage.xml
 
-      - name: Check coverage
-        uses: codecov/codecov-action@v5
+      - name: Coverage comment
+        id: coverage
+        uses: MishaKav/pytest-coverage-comment@v1
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          directory: ./reports
-          fail_ci_if_error: true
+          pytest-xml-coverage-path: ./reports/coverage.xml
+          default-branch: master
+          xml-skip-covered: true
+          report-only-changed-files: true
+          hide-comment: ${{ github.event_name != 'pull_request' }}
+
+      - name: Dynamic Badges
+        uses: schneegans/dynamic-badges-action@v1.7.0
+        if: github.repository == 'dolfinus/setuptools-git-versioning' && github.event_name == 'push'
+        with:
+          auth: ${{ secrets.PERSONAL_TOKEN }}
+          gistID: 38b81533c2b8c389db378e3bae7df034
+          filename: setuptools_git_versioning_badge.json
+          label: Coverage
+          message: ${{ steps.coverage.outputs.coverage }}
+          color: ${{ steps.coverage.outputs.color }}
+
+      - name: Fail if coverage too low
+        if: ${{ steps.coverage.outputs.coverage < env.MIN_COVERAGE }}
+        run: |
+          echo "Coverage is below ${{ env.MIN_COVERAGE }}%!"
+          exit 1
 
       - name: All done
         run: echo 1

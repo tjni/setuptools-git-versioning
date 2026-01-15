@@ -18,8 +18,9 @@ setuptools-git-versioning
     :target: https://setuptools-git-versioning.readthedocs.io
 .. |Build| image:: https://github.com/dolfinus/setuptools-git-versioning/workflows/Tests/badge.svg
     :target: https://github.com/dolfinus/setuptools-git-versioning/actions
-.. |Coverage| image:: https://codecov.io/gh/dolfinus/setuptools-git-versioning/branch/master/graph/badge.svg?token=GIMVHUTNW4
-    :target: https://codecov.io/gh/dolfinus/setuptools-git-versioning
+.. |Test Coverage| image:: https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/
+    dolfinus/38b81533c2b8c389db378e3bae7df034/raw/setuptools_git_versioning_badge.json
+    :target: https://github.com/dolfinus/setuptools-git-versioning/actions
 .. |pre-commit.ci| image:: https://results.pre-commit.ci/badge/github/dolfinus/setuptools-git-versioning/master.svg
     :target: https://results.pre-commit.ci/latest/github/dolfinus/setuptools-git-versioning/master
 

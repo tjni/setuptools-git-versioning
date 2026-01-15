@@ -39,5 +39,4 @@
 
     Source Code <https://github.com/dolfinus/setuptools-git-versioning>
     CI/CD <https://github.com/dolfinus/setuptools-git-versioning/actions>
-    Code Coverage <https://app.codecov.io/gh/dolfinus/setuptools-git-versioning>
     Issue Tracker <https://github.com/dolfinus/setuptools-git-versioning/issues>
