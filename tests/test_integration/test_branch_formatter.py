@@ -34,7 +34,7 @@ def test_branch_formatter_external(repo, template_config, create_config, branch,
             import re
 
             def branch_formatter(branch):
-                return re.sub("[^\\d]+", "", branch)
+                return re.sub(r"[^\\d]+", "", branch)
             """
         ),
     )
@@ -68,7 +68,7 @@ def test_branch_formatter_external_missing(repo, template_config, create_config,
                 import re
 
                 def branch_formatter(branch):
-                    return re.sub("[^\\d]+", "", branch)
+                    return re.sub(r"[^\\d]+", "", branch)
                 """
             ),
         )
@@ -133,7 +133,7 @@ def test_branch_formatter_external_setup_py_direct_import(repo, template_config)
                     import pickle
 
                     def branch_formatter(branch):
-                        return re.sub("[^\\d]+", "", branch)
+                        return re.sub(r"[^\\d]+", "", branch)
 
                     version_config = {cfg}
                     version_config["branch_formatter"] = branch_formatter

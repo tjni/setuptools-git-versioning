@@ -1,9 +1,0 @@
-include README.rst LICENSE pyproject.toml setuptools_git_versioning.py
-recursive-exclude * __pycache__
-recursive-exclude * *.pyc
-recursive-exclude * *.pyo
-recursive-exclude * *.orig
-recursive-exclude docs *
-recursive-exclude tests *
-prune docs*
-prune tests*
