@@ -57,7 +57,7 @@ jobs:
       - name: Run tests
         run: |
           mkdir -p reports/junit/
-          coverage run -m pytest -m ${{ matrix.mark }} --junitxml=reports/junit/${{ matrix.os }}-${{ matrix.python-version }}-${{ matrix.mark }}.xml
+          coverage run --parallel-mode -m pytest -n auto -m ${{ matrix.mark }} --junitxml=reports/junit/${{ matrix.os }}-${{ matrix.python-version }}-${{ matrix.mark }}.xml
 
       - name: Upload coverage results
         uses: actions/upload-artifact@v6

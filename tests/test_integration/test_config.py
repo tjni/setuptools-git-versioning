@@ -33,20 +33,11 @@ def test_config_not_used(repo):
         "setup.py",
         textwrap.dedent(
             """
-            from coverage.control import Coverage
+            import setuptools
 
-            coverage = Coverage()
-            coverage.start()
-
-            try:
-                import setuptools
-
-                setuptools.setup(
-                    name="mypkg",
-                )
-            finally:
-                coverage.stop()
-                coverage.save()
+            setuptools.setup(
+                name="mypkg",
+            )
             """
         ),
     )

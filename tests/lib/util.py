@@ -242,27 +242,18 @@ def create_setup_py(
         "setup.py",
         textwrap.dedent(
             f"""
-            from coverage.control import Coverage
+            import setuptools
 
-            coverage = Coverage()
-            coverage.start()
-
-            try:
-                import setuptools
-
-                setuptools.setup(
-                    name="mypkg",
-                    {cfg}
-                    setup_requires=[
-                        "setuptools>=41",
-                        "wheel",
-                        "coverage",
-                        "setuptools-git-versioning",
-                    ]
-                )
-            finally:
-                coverage.stop()
-                coverage.save()
+            setuptools.setup(
+                name="mypkg",
+                {cfg}
+                setup_requires=[
+                    "setuptools>=41",
+                    "wheel",
+                    "coverage",
+                    "setuptools-git-versioning",
+                ]
+            )
             """
         ),
         **kwargs,
@@ -308,9 +299,6 @@ def get_version_module(cwd: str | os.PathLike, args: list[str] | None = None, **
     return execute(
         cwd,
         sys.executable,
-        "-m",
-        "coverage",
-        "run",
         "-m",
         "setuptools_git_versioning",
         *(args or []),
