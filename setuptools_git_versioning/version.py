@@ -167,7 +167,7 @@ def version_from_git(  # noqa: PLR0915, PLR0912, PLR0913, C901
                 file_sha = get_latest_file_commit(version_file, root=root)
                 log.log(DEBUG, "File SHA-256: %r", file_sha)
 
-                ccount = count_since(file_sha, root=root) if file_sha is not None else None
+                ccount = count_since(file_sha, root=root) if file_sha else None
                 log.log(INFO, "Commits count between HEAD and last version file change: %r", ccount)
 
     elif not head_sha:
@@ -208,6 +208,6 @@ def version_from_git(  # noqa: PLR0915, PLR0912, PLR0913, C901
         t = template
 
     full_sha = head_sha if head_sha is not None else ""
-    version = resolve_substitutions(t, sha=full_sha[:8], tag=tag, ccount=ccount, branch=branch, full_sha=full_sha)
+    version = resolve_substitutions(t, sha=full_sha[:8], tag=tag, ccount=ccount or 0, branch=branch, full_sha=full_sha)
     log.log(INFO, "Version number after resolving substitutions: %r", version)
     return sanitize_version(version)

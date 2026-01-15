@@ -1,7 +1,7 @@
 3.0.x
 ======
 
-3.0.0 (2026-01-15)
+3.0.0 (2026-01-16)
 -------------------
 
 Breaking
@@ -28,3 +28,4 @@ Bug Fixes
 - Fix calling ``get_version(root=...)`` in combination with version-file strategy -
   relative file version was resolved against ``os.cwd``, not explicitly passed ``root``.
 - Fix epoch versions like ``0!2025.12.3`` were wrongly converted to ``0.2025.12.3`` (:github:issue:`122`).
+- Using version_file-based schema with shallow git clone lead to version numbers like ``1.2.3.postNone``, now it is ``1.2.3.post0`` (:github:issue:`104`).

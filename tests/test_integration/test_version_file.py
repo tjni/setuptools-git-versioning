@@ -6,6 +6,7 @@ from tests.lib.util import (
     create_commit,
     create_file,
     create_tag,
+    execute,
     get_full_sha,
     get_sha,
     get_version,
@@ -208,6 +209,21 @@ def test_version_file_tagged_head(repo, create_config):
     # template is for release, because commit is tagged
     # but version_file content is up to user
     assert get_version(repo) == "1.0.0"
+
+
+def test_version_file_with_shallow_clone(repo, create_config):
+    execute(repo, "git", "checkout", "--orphan", "disembed")
+    create_file(repo, "VERSION.txt", "1.0.0", commit=False)
+    create_config(
+        repo,
+        {
+            "version_file": "VERSION.txt",
+            "count_commits_from_version_file": True,
+        },
+        commit=False,
+    )
+
+    assert get_version(repo) == "1.0.0.post0+git.dirty"
 
 
 @pytest.mark.parametrize(("starting_version", "version"), [(None, "0.0.1"), ("1.2.3", "1.2.3")])
