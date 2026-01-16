@@ -6,3 +6,4 @@ Common issues
 
     all_dirty
     wrong_tag
+    sphinx_usage
