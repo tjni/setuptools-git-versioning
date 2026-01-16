@@ -27,10 +27,21 @@ To determine current project version in Sphinx with the following config:
     # The full version, including alpha/beta/rc tags
     release = "???"
 
-Add these lines:
+Use ``get_version`` function:
 
 .. code-block:: python
     :caption: docs/conf.py
+
+    # same as above
+    import os
+    import sys
+    from pathlib import Path
+
+    PROJECT_ROOT_DIR = Path(__file__).parent.parent.resolve()
+
+    sys.path.insert(0, os.fspath(PROJECT_ROOT_DIR))
+
+    # add lines below
 
     from setuptools_git_versioning import get_version
 
