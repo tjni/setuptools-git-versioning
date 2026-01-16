@@ -1,3 +1,4 @@
+import os
 import subprocess
 import time
 from datetime import datetime, timedelta
@@ -190,6 +191,23 @@ def test_tag_linear_history(repo, create_config):
 
     sha = get_sha(repo)
     assert get_version(repo) == f"1.0.0.post1+git.{sha}"
+
+
+def test_tag_git_missing(repo, create_config):
+    create_config(repo)
+    create_tag(repo, "1.0.0")
+    # repo cloned into machine/container with no git executable
+    assert get_version(repo, env={"PATH": ""}) == "0.0.1"
+
+
+def test_tag_git_not_executable(repo, create_config, tmp_path_factory):
+    create_config(repo)
+    create_tag(repo, "1.0.0")
+
+    # repo cloned into machine/container without permissions to execute subprocesses
+    tmp_path = tmp_path_factory.mktemp("bin")
+    tmp_path.joinpath("git").touch()
+    assert get_version(repo, env={"PATH": os.fspath(tmp_path)}) == "0.0.1"
 
 
 @pytest.mark.parametrize(

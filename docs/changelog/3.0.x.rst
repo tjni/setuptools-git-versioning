@@ -1,6 +1,15 @@
 3.0.x
 ======
 
+3.0.1 (2026-01-16)
+-------------------
+
+Bug Fixes
+~~~~~~~~~
+
+Fix ``OSErrorr`` exception raised if using ``setuptools-git-versioning`` in system without ``git`` installed (:github:pull:`126`).
+Thanks to :github:user:`jeffawang`.
+
 3.0.0 (2026-01-16)
 -------------------
 

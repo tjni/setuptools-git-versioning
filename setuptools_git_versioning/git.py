@@ -18,8 +18,9 @@ def _exec(*cmd: str, root: str | os.PathLike | None = None) -> list[str]:
     try:
         stdout = subprocess.check_output(cmd, text=True, cwd=root)  # noqa: S603
     except subprocess.CalledProcessError as e:
+        log.log(DEBUG, "Subprocess exited with code %d: %r", e.returncode, e.output)
         stdout = e.output
-    except (FileNotFoundError, OSError) as e:
+    except OSError as e:
         # Handle case where git executable is not found
         # FileNotFoundError on Unix, OSError on some other systems
         log.log(DEBUG, "Command not found: %r", e)

@@ -1,3 +1,4 @@
+import os
 import subprocess
 
 import pytest
@@ -244,7 +245,7 @@ def test_version_file_missing(repo, create_config, create_version, starting_vers
 
 
 @pytest.mark.parametrize("count_commits", [True, False])
-def test_version_file_not_a_repo(repo_dir, create_config, count_commits):
+def test_version_file_not_a_git_repo(repo_dir, create_config, count_commits):
     create_file(
         repo_dir,
         "VERSION.txt",
@@ -263,3 +264,51 @@ def test_version_file_not_a_repo(repo_dir, create_config, count_commits):
     )
 
     assert get_version(repo_dir) == "1.0.0"
+
+
+@pytest.mark.parametrize("count_commits", [True, False])
+def test_version_file_git_missing(repo, create_config, count_commits):
+    create_file(
+        repo,
+        "VERSION.txt",
+        "1.0.0",
+        add=False,
+        commit=False,
+    )
+    create_config(
+        repo,
+        {
+            "version_file": "VERSION.txt",
+            "count_commits_from_version_file": count_commits,
+        },
+        add=False,
+        commit=False,
+    )
+
+    # repo cloned into machine/container with no git executable
+    assert get_version(repo, env={"PATH": ""}) == "1.0.0"
+
+
+@pytest.mark.parametrize("count_commits", [True, False])
+def test_version_file_git_not_executable(repo, create_config, count_commits, tmp_path_factory):
+    create_file(
+        repo,
+        "VERSION.txt",
+        "1.0.0",
+        add=False,
+        commit=False,
+    )
+    create_config(
+        repo,
+        {
+            "version_file": "VERSION.txt",
+            "count_commits_from_version_file": count_commits,
+        },
+        add=False,
+        commit=False,
+    )
+
+    # repo cloned into machine/container without permissions to execute subprocesses
+    tmp_path = tmp_path_factory.mktemp("bin")
+    tmp_path.joinpath("git").touch()
+    assert get_version(repo, env={"PATH": os.fspath(tmp_path)}) == "1.0.0"

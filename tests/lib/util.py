@@ -31,16 +31,17 @@ def rand_sha() -> str:
     return token_hex(8)
 
 
-def execute(cwd: str | os.PathLike, *cmd: str, **kwargs) -> str:
+def execute(cwd: str | os.PathLike, *cmd: str, env: dict | None = None, **kwargs) -> str:
     log.info("Executing '%s' at '%s'", cmd, cwd)
 
-    if "env" in kwargs:
-        kwargs["env"]["PATH"] = os.environ["PATH"]
+    if env is not None:
+        if "PATH" not in env:
+            env["PATH"] = os.getenv("PATH")
         pythonpath = os.getenv("PYTHONPATH", None)
         if pythonpath:
-            kwargs["env"]["PYTHONPATH"] = pythonpath
+            env["PYTHONPATH"] = pythonpath
 
-    with subprocess.Popen(cmd, cwd=cwd, stdout=subprocess.PIPE, universal_newlines=True, **kwargs) as process:
+    with subprocess.Popen(cmd, cwd=cwd, stdout=subprocess.PIPE, universal_newlines=True, env=env, **kwargs) as process:
         stdout, stderr = process.communicate()
         if process.returncode != 0:
             log.error("Failed to execute '%s' at '%s':\nstdout=%s\nstderr=%s", cmd, cwd, stdout, stderr)
