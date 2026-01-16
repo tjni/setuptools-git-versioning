@@ -1,7 +1,7 @@
 .. _env-substitution:
 
 ``env``
-~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~
 
 Substituted by environment variable.
 

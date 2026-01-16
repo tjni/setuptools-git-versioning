@@ -1,7 +1,7 @@
 .. _branch-formatter-option:
 
 ``branch_formatter``
-~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~
 
 Callback to be used for formatting a branch name before template substitution
 
@@ -10,9 +10,8 @@ Callback to be used for formatting a branch name before template substitution
     This option is used only with :ref:`tag-release` or :ref:`version-file` versioning schemas.
 
 Type
-^^^^^^^^^^^^^^
-
-``str`` or ``callable``
+^^^^
+``str`` or ``Callable[[str], str]``
 
 
 Default value

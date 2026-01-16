@@ -1,7 +1,7 @@
 .. _config-options:
 
 Config options
----------------
+--------------
 
 .. toctree::
     :maxdepth: 1

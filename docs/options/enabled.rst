@@ -1,12 +1,12 @@
 .. _enabled-option:
 
 ``enabled``
-~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~
 
 Enables ``setuptools-git-versioning`` for current project
 
 Type
-^^^^^
+^^^^
 ``bool``
 
 Default value

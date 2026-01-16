@@ -1,7 +1,7 @@
 .. _tag-formatter-option:
 
 ``tag_formatter``
-~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~
 
 Callback to be used for formatting a tag name before template substitution.
 
@@ -11,9 +11,8 @@ Callback to be used for formatting a tag name before template substitution.
     Please set up your VERSION file or callback to return proper version in the first place.
 
 Type
-^^^^^^^^^^^^^^
-
-``str`` or ``callable``
+^^^^
+``str`` or ``Callable[[str], str]``
 
 
 Default value
@@ -21,7 +20,7 @@ Default value
 ``None``
 
 Usage
-^^^^^^
+^^^^^
 
 It is possible to use (see :ref:`tag-release`) tag name in version number.
 

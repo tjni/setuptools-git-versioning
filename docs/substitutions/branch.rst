@@ -1,7 +1,7 @@
 .. _branch-substitution:
 
 ``branch``
-~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~
 
 Substituted by current branch name.
 

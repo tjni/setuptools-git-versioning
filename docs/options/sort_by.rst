@@ -1,7 +1,7 @@
 .. _sort-by-option:
 
 ``sort_by``
-~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~
 
 Format string passed to ``git tag --sort=`` command to sort the output.
 
@@ -13,18 +13,18 @@ Used by :ref:`tag-release` versioning schema to get the latest tag in the curren
     because git commit history is not fetched in such a case.
 
 Type
-^^^^^^^^^^^^^^
+^^^^
 
 ``str``
 
 
 Default value
-^^^^^^^^^^^^^^
+^^^^^^^^^^^^^
 ``"creatordate"``
 
 
 Possible values
-^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^
 - ``"creatordate"`` (either commit date or tag creation date)
 
 - ``"version:refname"`` (alphanumeric sort by tag name)

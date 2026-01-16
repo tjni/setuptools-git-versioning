@@ -1,7 +1,7 @@
 .. _template-option:
 
 ``template``
-~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~
 
 Version number template for :ref:`tag-release` versioning schema.
 
@@ -13,7 +13,7 @@ Used if no untracked files and current commit is tagged.
     because git commit history is not fetched in such a case.
 
 Type
-^^^^^
+^^^^
 ``str``
 
 Default value

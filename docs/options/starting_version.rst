@@ -1,7 +1,7 @@
 .. _starting-version-option:
 
 ``starting_version``
-~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~
 
 If you're using:
 
@@ -46,13 +46,13 @@ You can change this version by setting up ``starting_version`` option in your co
     This option is completely ignored if :ref:`version-callback` schema is used.
 
 Type
-^^^^^^^^^^^^^^
+^^^^
 
 ``str``
 
 
 Default value
-^^^^^^^^^^^^^^
+^^^^^^^^^^^^^
 
 ``"0.0.1"``
 

@@ -1,7 +1,7 @@
 .. _dirty-template-option:
 
 ``dirty_template``
-~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~
 
 Version number template for :ref:`tag-release` or :ref:`version-file` versioning schemas.
 
@@ -13,7 +13,7 @@ Used if untracked files exist or uncommitted changes have been made.
     because git commit history is not fetched in such a case.
 
 Type
-^^^^^
+^^^^
 ``str``
 
 Default value

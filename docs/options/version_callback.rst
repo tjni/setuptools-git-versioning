@@ -1,7 +1,7 @@
 .. _version-callback-option:
 
 ``version_callback``
-~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~
 
 Callback to be used for getting a version number.
 
@@ -12,13 +12,12 @@ Used by :ref:`version-callback` versioning schema.
     This option conflicts with :ref:`version-file-option`, only one of them can be set.
 
 Type
-^^^^^^^^^^^^^^
-
-``str`` or ``callable``
+^^^^
+``str`` or ``Callable[[], str]``
 
 
 Default value
-^^^^^^^^^^^^^^
+^^^^^^^^^^^^^
 ``None``
 
 

@@ -1,7 +1,7 @@
 .. _tag_filter-option:
 
 ``tag_filter``
-~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~
 
 Callback to be used for filtering tag names before formatting and template
 substitution.
@@ -13,14 +13,14 @@ substitution.
 
 Type
 ^^^^^
-``str`` or ``callable``
+``str`` or ``Callable[[str], bool]``
 
 Default value
 ^^^^^^^^^^^^^
 ``None``
 
 Usage
-^^^^^^
+^^^^^
 
 Set when multiple products are tagged in a single repo.
 

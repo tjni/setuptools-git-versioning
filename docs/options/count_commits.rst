@@ -12,7 +12,7 @@ Enables feature of tracking commits history for file passed to :ref:`version-fil
     This option used only with :ref:`version-file-option`
 
 Type
-^^^^^
+^^^^
 ``bool``
 
 Default value

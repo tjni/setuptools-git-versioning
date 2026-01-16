@@ -1,7 +1,7 @@
 .. _timestamp-substitution:
 
 ``timestamp``
-~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~
 
 Substituted by current timestamp with formatting it.
 
