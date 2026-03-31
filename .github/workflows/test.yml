@@ -14,7 +14,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  DEFAULT_PYTHON: '3.13'
+  DEFAULT_PYTHON: '3.14'
   MIN_COVERAGE: 94
 
 jobs:
@@ -28,7 +28,7 @@ jobs:
         # run all the tests on latest Python version
           - os: ubuntu-latest
             mark: all
-            python-version: '3.13'
+            python-version: '3.14'
         # run only minimal set of tests on other Python versions because it takes too much time
           - os: ubuntu-22.04
             mark: important
