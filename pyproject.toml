@@ -66,8 +66,8 @@ dev_template = "{tag}.post{ccount}"
 
 [dependency-groups]
 dev = [
-  "ruff~=0.15.13",
-  "prek~=0.4.0",
+  "ruff~=0.15.22",
+  "prek~=0.5.0",
 ]
 test = [
   "build>=1.1.1",
