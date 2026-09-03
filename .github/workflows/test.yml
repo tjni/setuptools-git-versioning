@@ -17,6 +17,10 @@ env:
   DEFAULT_PYTHON: '3.14'
   MIN_COVERAGE: 94
 
+permissions:
+  checks: write
+  pull-requests: write
+
 jobs:
   tests:
     name: Run ${{ matrix.mark}} tests (${{ matrix.python-version }} on ${{ matrix.os }})
@@ -107,9 +111,8 @@ jobs:
 
       - name: Coverage comment
         id: coverage
-        uses: MishaKav/pytest-coverage-comment@v1.12.1
+        uses: MishaKav/pytest-coverage-comment@v1.11.2
         with:
-          github-token: ${{ secrets.PERSONAL_TOKEN }}
           pytest-xml-coverage-path: ./reports/coverage.xml
           default-branch: master
           xml-skip-covered: true
